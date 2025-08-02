@@ -424,9 +424,6 @@ const PurchasePlan = () => {
             <p>产品的采购计划安排</p>
           </div>
           <Space>
-            <Button type="default" onClick={handleAddPartsRow} icon={<PlusOutlined />}>
-              新增
-            </Button>
             <Button type="primary" onClick={handleSave} icon={<SaveOutlined />}>
               保存计划
             </Button>
@@ -464,6 +461,9 @@ const PurchasePlan = () => {
             <p>零件的采购计划安排</p>
           </div>
           <Space>
+            <Button type="default" onClick={handleAddPartsRow} icon={<PlusOutlined />}>
+              新增
+            </Button>
             <Button type="primary" onClick={handleSave} icon={<SaveOutlined />}>
               保存计划
             </Button>
