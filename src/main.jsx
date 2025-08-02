@@ -10,7 +10,7 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ConfigProvider locale={zhCN}>
-      <BrowserRouter>
+      <BrowserRouter basename="/hrb_caigou">
         <App />
       </BrowserRouter>
     </ConfigProvider>
