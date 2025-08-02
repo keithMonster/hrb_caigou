@@ -128,7 +128,7 @@ const ProductionPlan = () => {
         fixed: 'left',
       },
       {
-        title: '剩余库存',
+        title: '往期结转',
         dataIndex: 'initialStock',
         key: 'initialStock',
         width: 100,
@@ -227,7 +227,7 @@ const ProductionPlan = () => {
     const exportData = dataSource.map(row => {
       const rowData = {
         '型号': row.model,
-        '剩余库存': row.initialStock,
+        '往期结转': row.initialStock,
       }
       
       dateColumns.forEach((date, index) => {

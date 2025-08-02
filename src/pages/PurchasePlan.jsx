@@ -6,6 +6,7 @@ import {
   DatePicker,
   Form,
   InputNumber,
+  Input,
   message,
   Table,
   Divider,
@@ -15,6 +16,7 @@ import {
   DownloadOutlined,
   SearchOutlined,
   ReloadOutlined,
+  PlusOutlined,
 } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import * as XLSX from 'xlsx'
@@ -172,6 +174,30 @@ const PurchasePlan = () => {
     }
   }
 
+  // 处理零件名称变更
+  const handlePartNameChange = (record, value) => {
+    const newData = [...partsDataSource]
+    const targetRecord = newData.find(item => item.key === record.key)
+    if (targetRecord) {
+      targetRecord.partName = value
+      setPartsDataSource(newData)
+    }
+  }
+
+  // 新增零件行
+  const handleAddPartsRow = () => {
+    const newKey = Date.now().toString()
+    const newRow = {
+      key: newKey,
+      partName: '',
+      initialStock: 0,
+      dailyPlans: new Array(dateColumns.length).fill(0),
+      dailyInputs: new Array(dateColumns.length).fill(0),
+      totalPlan: 0,
+    }
+    setPartsDataSource([...partsDataSource, newRow])
+  }
+
   // 生成产品表格列配置
   const generateProductColumns = () => {
     const columns = [
@@ -236,11 +262,19 @@ const PurchasePlan = () => {
         title: '零件名称',
         dataIndex: 'partName',
         key: 'partName',
-        width: 120,
+        width: 150,
         fixed: 'left',
+        render: (value, record) => (
+          <Input
+            size="small"
+            value={value}
+            onChange={(e) => handlePartNameChange(record, e.target.value)}
+            placeholder="请输入零件名称"
+          />
+        ),
       },
       {
-        title: '剩余库存',
+        title: '当前库存',
         dataIndex: 'initialStock',
         key: 'initialStock',
         width: 100,
@@ -256,18 +290,16 @@ const PurchasePlan = () => {
         key: `day_${index}`,
         width: 90,
         render: (_, record) => (
-          <div className="cell-content">
-            <div className="plan-value">{record.dailyPlans[index] || 0}</div>
-            <InputNumber
-              size="small"
-              min={0}
-              precision={0}
-              value={record.dailyInputs[index]}
-              onChange={(value) => handlePartsDailyChange(record, index, value)}
-              className="daily-input"
-              controls={false}
-            />
-          </div>
+          <InputNumber
+            size="small"
+            min={0}
+            precision={0}
+            value={record.dailyInputs[index]}
+            onChange={(value) => handlePartsDailyChange(record, index, value)}
+            className="daily-input"
+            controls={false}
+            style={{ width: '100%' }}
+          />
         ),
       })
     })
@@ -280,13 +312,9 @@ const PurchasePlan = () => {
       align: 'center',
       fixed: 'right',
       render: (_, record) => {
-        const planTotal = record.dailyPlans.reduce((sum, val) => sum + (val || 0), 0)
         const inputTotal = record.dailyInputs.reduce((sum, val) => sum + (val || 0), 0)
         return (
-          <div className="cell-content">
-            <div className="plan-value total-value">{planTotal}</div>
-            <div className="plan-value total-value">{inputTotal}</div>
-          </div>
+          <span style={{ fontWeight: 500 }}>{inputTotal}</span>
         )
       },
     })
@@ -331,7 +359,7 @@ const PurchasePlan = () => {
     const partsExportData = partsDataSource.map(row => {
       const rowData = {
         '零件名称': row.partName,
-        '剩余库存': row.initialStock,
+        '当前库存': row.initialStock,
       }
       
       dateColumns.forEach((date, index) => {
@@ -396,6 +424,9 @@ const PurchasePlan = () => {
             <p>产品的采购计划安排</p>
           </div>
           <Space>
+            <Button type="default" onClick={handleAddPartsRow} icon={<PlusOutlined />}>
+              新增
+            </Button>
             <Button type="primary" onClick={handleSave} icon={<SaveOutlined />}>
               保存计划
             </Button>
