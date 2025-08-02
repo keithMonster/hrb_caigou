@@ -291,21 +291,7 @@ const PurchasePlan = () => {
       },
     })
 
-    // 添加计划库存列
-    columns.push({
-      title: '计划库存',
-      dataIndex: 'finalStock',
-      key: 'finalStock',
-      width: 100,
-      align: 'center',
-      fixed: 'right',
-      render: (_, record) => {
-        const planTotal = record.dailyPlans.reduce((sum, val) => sum + (val || 0), 0)
-        const inputTotal = record.dailyInputs.reduce((sum, val) => sum + (val || 0), 0)
-        const finalStock = record.initialStock + inputTotal - planTotal
-        return <span style={{ fontWeight: 500, color: '#1890ff' }}>{finalStock}</span>
-      },
-    })
+
 
     return columns
   }
@@ -353,9 +339,6 @@ const PurchasePlan = () => {
       })
       
       rowData['汇总'] = row.totalPlan
-      const planTotal = row.dailyPlans.reduce((sum, val) => sum + (val || 0), 0)
-      const inputTotal = row.dailyInputs.reduce((sum, val) => sum + (val || 0), 0)
-      rowData['计划库存'] = row.initialStock + inputTotal - planTotal
       return rowData
     })
     
