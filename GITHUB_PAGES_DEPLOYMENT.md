@@ -83,10 +83,14 @@ https://你的用户名.github.io/hrb_caigou/
 2. 确认 `vite.config.js` 中的 `base` 路径正确
 3. 确认 GitHub Pages 设置正确
 
-### 静态资源加载失败
+### 静态资源加载失败（404 错误）
 1. 检查网络标签页的 404 错误
 2. 确认资源路径是否正确
 3. 清除浏览器缓存后重试
+4. 如果看到类似 `GET https://用户名.github.io/src/main.jsx net::ERR_ABORTED 404` 的错误：
+   - 这通常是 `vite.config.js` 中的路径配置问题
+   - 确保 `resolve.alias` 使用正确的路径解析
+   - 重新构建并部署项目
 
 ## 注意事项
 
