@@ -7,6 +7,7 @@ import {
   Form,
   InputNumber,
   Input,
+  Select,
   message,
   Table,
   Divider,
@@ -22,6 +23,7 @@ import dayjs from 'dayjs'
 import * as XLSX from 'xlsx'
 
 const { RangePicker } = DatePicker
+const { Option } = Select
 
 const PurchasePlan = () => {
   const [filterForm] = Form.useForm()
@@ -42,6 +44,26 @@ const PurchasePlan = () => {
   }
 
   const dateColumns = generateDateColumns()
+
+  // 原材料名称选项
+  const partNameOptions = [
+    '内圈-6205',
+    '内圈-6206', 
+    '内圈-6207',
+    '外圈-6205',
+    '外圈-6206',
+    '外圈-6207',
+    '外圈-SKF-001',
+    '滚动体-6205',
+    '滚动体-6206',
+    '滚动体-6207',
+    '保持架-6205',
+    '保持架-6206',
+    '保持架-6207',
+    '润滑脂-通用型',
+    '润滑脂-高温型',
+    '润滑脂-低温型'
+  ]
 
   // 初始化产品采购模拟数据
   const initProductMockData = () => {
@@ -85,7 +107,7 @@ const PurchasePlan = () => {
     setProductDataSource(mockData)
   }
 
-  // 初始化零件采购模拟数据
+  // 初始化原材料采购模拟数据
   const initPartsMockData = () => {
     const mockData = [
       {
@@ -164,7 +186,7 @@ const PurchasePlan = () => {
     }
   }
 
-  // 处理零件每日计划变更
+  // 处理原材料每日计划变更
   const handlePartsDailyChange = (record, index, value) => {
     const newData = [...partsDataSource]
     const targetRecord = newData.find(item => item.key === record.key)
@@ -174,7 +196,7 @@ const PurchasePlan = () => {
     }
   }
 
-  // 处理零件名称变更
+  // 处理原材料名称变更
   const handlePartNameChange = (record, value) => {
     const newData = [...partsDataSource]
     const targetRecord = newData.find(item => item.key === record.key)
@@ -184,7 +206,7 @@ const PurchasePlan = () => {
     }
   }
 
-  // 新增零件行
+  // 新增原材料行
   const handleAddPartsRow = () => {
     const newKey = Date.now().toString()
     const newRow = {
@@ -255,22 +277,31 @@ const PurchasePlan = () => {
     return columns
   }
 
-  // 生成零件表格列配置
+  // 生成原材料表格列配置
   const generatePartsColumns = () => {
     const columns = [
       {
-        title: '零件名称',
+        title: '原材料名称',
         dataIndex: 'partName',
         key: 'partName',
         width: 150,
         fixed: 'left',
         render: (value, record) => (
-          <Input
+          <Select
             size="small"
             value={value}
-            onChange={(e) => handlePartNameChange(record, e.target.value)}
-            placeholder="请输入零件名称"
-          />
+            onChange={(selectedValue) => handlePartNameChange(record, selectedValue)}
+            placeholder="请选择原材料名称"
+            style={{ width: '100%' }}
+            showSearch
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {partNameOptions.map(option => (
+              <Option key={option} value={option}>{option}</Option>
+            ))}
+          </Select>
         ),
       },
       {
@@ -355,10 +386,10 @@ const PurchasePlan = () => {
       return rowData
     })
     
-    // 导出零件采购计划
+    // 导出原材料采购计划
     const partsExportData = partsDataSource.map(row => {
       const rowData = {
-        '零件名称': row.partName,
+        '原材料名称': row.partName,
         '当前库存': row.initialStock,
       }
       
@@ -376,7 +407,7 @@ const PurchasePlan = () => {
     XLSX.utils.book_append_sheet(wb, productWs, '产品采购计划')
     
     const partsWs = XLSX.utils.json_to_sheet(partsExportData)
-    XLSX.utils.book_append_sheet(wb, partsWs, '零件采购计划')
+    XLSX.utils.book_append_sheet(wb, partsWs, '原材料采购计划')
     
     XLSX.writeFile(wb, `采购计划_${dayjs().format('YYYY-MM-DD')}.xlsx`)
     
@@ -387,7 +418,7 @@ const PurchasePlan = () => {
     <div>
       <div className="page-header">
         <h1>采购计划</h1>
-        <p>包含产品采购计划和零件采购计划，按旬（10天）维度进行采购安排</p>
+        <p>包含产品采购计划和原材料采购计划，按旬（10天）维度进行采购安排</p>
       </div>
 
       {/* 筛选区域 */}
@@ -453,12 +484,12 @@ const PurchasePlan = () => {
 
       <Divider />
 
-      {/* 零件采购计划表格 */}
+      {/* 原材料采购计划表格 */}
       <Card className="table-card">
         <div className="table-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h3>零件采购计划</h3>
-            <p>零件的采购计划安排</p>
+            <h3>原材料采购计划</h3>
+            <p>原材料的采购计划安排</p>
           </div>
           <Space>
             <Button type="default" onClick={handleAddPartsRow} icon={<PlusOutlined />}>
