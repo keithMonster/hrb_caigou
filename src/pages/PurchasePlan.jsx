@@ -30,22 +30,75 @@ const PurchasePlan = () => {
   const [loading, setLoading] = useState(false);
   const [productDataSource, setProductDataSource] = useState([]);
   const [partsDataSource, setPartsDataSource] = useState([]);
-  const [filteredPartsDataSource, setFilteredPartsDataSource] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(['全部']);
+  const [filteredPartsDataSource, setFilteredPartsDataSource] = useState([]);
+  const [selectedXun, setSelectedXun] = useState('2025-08-上旬');
   const productTableRef = useRef();
   const partsTableRef = useRef();
 
-  // 生成当前旬的日期列（10天）
-  const generateDateColumns = () => {
-    const startDate = dayjs('2024-08-01');
+  // 生成旬期选项
+  const generateXunOptions = () => {
+    const options = [];
+    const currentYear = 2025;
+    const currentMonth = dayjs().month() + 1;
+    
+    // 生成当前年份的所有旬期
+    for (let month = 1; month <= 12; month++) {
+      const monthStr = month.toString().padStart(2, '0');
+      options.push({
+        label: `${currentYear}年${monthStr}月上旬`,
+        value: `${currentYear}-${monthStr}-上旬`,
+        startDate: dayjs(`${currentYear}-${monthStr}-01`),
+        endDate: dayjs(`${currentYear}-${monthStr}-10`)
+      });
+      options.push({
+        label: `${currentYear}年${monthStr}月中旬`,
+        value: `${currentYear}-${monthStr}-中旬`,
+        startDate: dayjs(`${currentYear}-${monthStr}-11`),
+        endDate: dayjs(`${currentYear}-${monthStr}-20`)
+      });
+      const lastDay = dayjs(`${currentYear}-${monthStr}-01`).endOf('month').date();
+      options.push({
+        label: `${currentYear}年${monthStr}月下旬`,
+        value: `${currentYear}-${monthStr}-下旬`,
+        startDate: dayjs(`${currentYear}-${monthStr}-21`),
+        endDate: dayjs(`${currentYear}-${monthStr}-${lastDay}`)
+      });
+    }
+    return options;
+  };
+
+  const xunOptions = generateXunOptions();
+
+  // 根据选中的旬期生成日期列（10天）
+  const generateDateColumns = (selectedXun) => {
+    if (!selectedXun) {
+      // 默认显示2025年8月上旬
+      const startDate = dayjs('2025-08-01');
+      const dates = [];
+      for (let i = 0; i < 10; i++) {
+        dates.push(startDate.add(i, 'day'));
+      }
+      return dates;
+    }
+    
+    const xunOption = xunOptions.find(option => option.value === selectedXun);
+    if (!xunOption) return [];
+    
     const dates = [];
-    for (let i = 0; i < 10; i++) {
+    const startDate = xunOption.startDate;
+    const endDate = xunOption.endDate;
+    const daysDiff = endDate.diff(startDate, 'day') + 1;
+    
+    // 如果是下旬且天数不足10天，补齐到10天
+    const totalDays = Math.max(daysDiff, 10);
+    for (let i = 0; i < totalDays && i < 10; i++) {
       dates.push(startDate.add(i, 'day'));
     }
     return dates;
   };
 
-  const dateColumns = generateDateColumns();
+  const dateColumns = generateDateColumns(selectedXun);
 
   // 原材料选项
   const partNameOptions = [
@@ -540,12 +593,31 @@ const PurchasePlan = () => {
 
       {/* 筛选区域 */}
       <Card className='filter-card' size='small'>
-        <Form form={filterForm} layout='inline' onFinish={handleFilter}>
-          <Form.Item label='计划旬期' name='dateRange'>
-            <RangePicker
-              format='YYYY-MM-DD'
-              placeholder={['开始日期', '结束日期']}
-            />
+          <Form 
+            form={filterForm} 
+            layout='inline' 
+            onFinish={handleFilter}
+            initialValues={{ xunPeriod: '2025-08-上旬' }}
+          >
+          <Form.Item label='计划旬期' name='xunPeriod'>
+            <Select
+              placeholder='请选择旬期'
+              style={{ width: 200 }}
+              value={selectedXun}
+              onChange={(value) => {
+                 setSelectedXun(value);
+                 filterForm.setFieldsValue({ xunPeriod: value });
+               }}
+               defaultValue="2025-08-上旬"
+              allowClear
+              onClear={() => setSelectedXun(null)}
+            >
+              {xunOptions.map(option => (
+                <Option key={option.value} value={option.value}>
+                  {option.label}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item>
             <Space>
