@@ -27,6 +27,7 @@ const ProductionPlan = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [selectedXun, setSelectedXun] = useState('2025-08-上旬');
+  const [selectedFactory, setSelectedFactory] = useState('全部');
   const tableRef = useRef();
 
   // 生成旬期选项
@@ -176,15 +177,7 @@ const ProductionPlan = () => {
     }
   };
 
-  // 处理分厂变更
-  const handleFactoryChange = (record, value) => {
-    const newData = [...dataSource];
-    const targetRecord = newData.find((item) => item.key === record.key);
-    if (targetRecord) {
-      targetRecord.factory = value;
-      setDataSource(newData);
-    }
-  };
+
 
   // 处理生产线变更
   const handleProductionLineChange = (record, value) => {
@@ -194,6 +187,11 @@ const ProductionPlan = () => {
       targetRecord.productionLine = value;
       setDataSource(newData);
     }
+  };
+
+  // 处理分厂筛选变化
+  const handleFactoryFilterChange = (factory) => {
+    setSelectedFactory(factory);
   };
 
   // 处理总计变更
@@ -259,26 +257,7 @@ const ProductionPlan = () => {
       });
     });
 
-    // 添加分厂列
-    columns.push({
-      title: '分厂',
-      dataIndex: 'factory',
-      key: 'factory',
-      width: 100,
-      render: (value, record) => (
-        <Select
-          size='small'
-          value={value}
-          onChange={(val) => handleFactoryChange(record, val)}
-          style={{ width: '100%', marginTop: '30px' }}
-        >
-          <Option value='电机'>电机</Option>
-          <Option value='铁路'>铁路</Option>
-          <Option value='精密'>精密</Option>
-          <Option value='黄海'>黄海</Option>
-        </Select>
-      ),
-    });
+
 
     // 添加生产线列
     columns.push({
@@ -461,7 +440,6 @@ const ProductionPlan = () => {
         >
           <div>
             <h3>生产计划</h3>
-            <p>成品的生产计划安排</p>
           </div>
           <Space>
             <Button
@@ -476,6 +454,29 @@ const ProductionPlan = () => {
             </Button>
           </Space>
         </div>
+
+        {/* 分厂筛选器 */}
+        <div
+          style={{
+            marginBottom: 16,
+            padding: '12px 0',
+            borderBottom: '1px solid #f0f0f0',
+          }}
+        >
+          <Space wrap>
+             {['全部', '电机', '铁路', '精密', '黄海'].map((factory) => (
+               <Button
+                 key={factory}
+                 type={selectedFactory === factory ? 'primary' : 'default'}
+                 onClick={() => handleFactoryFilterChange(factory)}
+                 size='small'
+               >
+                 {factory}
+               </Button>
+             ))}
+           </Space>
+        </div>
+
         <Table
           ref={tableRef}
           dataSource={dataSource}
@@ -558,12 +559,6 @@ const ProductionPlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={dateColumns.length + 3}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={dateColumns.length + 4}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -575,7 +570,7 @@ const ProductionPlan = () => {
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 5}
+                  index={dateColumns.length + 4}
                   className='text-right'
                   style={{
                     fontWeight: 'bold',

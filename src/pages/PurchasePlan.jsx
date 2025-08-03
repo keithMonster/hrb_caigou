@@ -466,15 +466,7 @@ const PurchasePlan = () => {
           </Select>
         ),
       },
-      {
-        title: '当前库存',
-        dataIndex: 'initialStock',
-        key: 'initialStock',
-        width: 100,
-        fixed: 'left',
-        align: 'right',
-        render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
-      },
+
     ];
 
     // 添加日期列
@@ -527,12 +519,12 @@ const PurchasePlan = () => {
 
   // 保存功能
   const handleSave = () => {
-    message.success('采购计划已保存');
+    message.success('采购需求已保存');
   };
 
   // 导出功能
   const handleExport = () => {
-    // 导出成品采购计划
+    // 导出成品采购需求
     const productExportData = productDataSource.map((row) => {
       const rowData = {
         型号: row.spec,
@@ -546,7 +538,7 @@ const PurchasePlan = () => {
       return rowData;
     });
 
-    // 导出原材料采购计划
+    // 导出原材料采购需求
     const partsExportData = partsDataSource.map((row) => {
       const rowData = {
         原材料: row.partName,
@@ -564,12 +556,12 @@ const PurchasePlan = () => {
     const wb = XLSX.utils.book_new();
 
     const productWs = XLSX.utils.json_to_sheet(productExportData);
-    XLSX.utils.book_append_sheet(wb, productWs, '成品采购计划');
+    XLSX.utils.book_append_sheet(wb, productWs, '成品采购需求');
 
     const partsWs = XLSX.utils.json_to_sheet(partsExportData);
-    XLSX.utils.book_append_sheet(wb, partsWs, '原材料采购计划');
+    XLSX.utils.book_append_sheet(wb, partsWs, '原材料采购需求');
 
-    XLSX.writeFile(wb, `采购计划_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    XLSX.writeFile(wb, `采购需求_${dayjs().format('YYYY-MM-DD')}.xlsx`);
 
     message.success('导出成功');
   };
@@ -577,8 +569,8 @@ const PurchasePlan = () => {
   return (
     <div>
       <div className='page-header'>
-        <h1>采购计划</h1>
-        <p>包含成品采购计划和原材料采购计划，按旬（10天）维度进行采购安排</p>
+        <h1>采购需求</h1>
+        <p>包含成品采购需求和原材料采购需求，按旬（10天）维度进行采购安排</p>
       </div>
 
       {/* 筛选区域 */}
@@ -611,7 +603,7 @@ const PurchasePlan = () => {
         </Form>
       </Card>
 
-      {/* 成品采购计划表格 */}
+      {/* 成品采购需求表格 */}
       <Card className='table-card'>
         <div
           className='table-header'
@@ -622,8 +614,7 @@ const PurchasePlan = () => {
           }}
         >
           <div>
-            <h3>成品采购计划</h3>
-            <p>成品的采购计划安排</p>
+            <h3>成品采购需求</h3>
           </div>
           <Space>
             <Button
@@ -656,7 +647,7 @@ const PurchasePlan = () => {
           bordered
           size='small'
           summary={(pageData) => {
-            // 计算成品采购计划合计数据
+            // 计算成品采购需求合计数据
             const totalDailyPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
@@ -725,7 +716,7 @@ const PurchasePlan = () => {
 
       <Divider />
 
-      {/* 原材料采购计划表格 */}
+      {/* 原材料采购需求表格 */}
       <Card className='table-card'>
         <div
           className='table-header'
@@ -736,8 +727,7 @@ const PurchasePlan = () => {
           }}
         >
           <div>
-            <h3>原材料采购计划</h3>
-            <p>原材料的采购计划安排</p>
+            <h3>原材料采购需求</h3>
           </div>
           <Space>
             <Button
@@ -807,10 +797,6 @@ const PurchasePlan = () => {
           size='small'
           summary={(pageData) => {
             // 计算原材料采购计划合计数据
-            const totalInitialStock = pageData.reduce(
-              (sum, record) => sum + (record.initialStock || 0),
-              0
-            );
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
             pageData.forEach((record) => {
@@ -840,17 +826,10 @@ const PurchasePlan = () => {
                 >
                   -
                 </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={2}
-                  className='text-right' 
-                  style={{ fontWeight: 'bold', textAlign: 'right' }}
-                >
-                  {totalInitialStock}
-                </Table.Summary.Cell>
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`parts_summary_${index}`}
-                    index={index + 3}
+                    index={index + 2}
                   >
                     <div
                       style={{
@@ -864,7 +843,7 @@ const PurchasePlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
+                  index={dateColumns.length + 2}
                   className='text-right'
                   style={{
                     fontWeight: 'bold',

@@ -30,7 +30,7 @@ function App() {
         {
           key: '/purchase',
           icon: <ShoppingCartOutlined />,
-          label: '采购计划',
+          label: '采购需求',
         },
       ],
     },
