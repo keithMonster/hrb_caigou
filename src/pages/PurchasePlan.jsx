@@ -605,10 +605,9 @@ const PurchasePlan = () => {
               style={{ width: 200 }}
               value={selectedXun}
               onChange={(value) => {
-                 setSelectedXun(value);
-                 filterForm.setFieldsValue({ xunPeriod: value });
-               }}
-               defaultValue="2025-08-上旬"
+                  setSelectedXun(value);
+                  filterForm.setFieldsValue({ xunPeriod: value });
+                }}
               allowClear
               onClear={() => setSelectedXun(null)}
             >
