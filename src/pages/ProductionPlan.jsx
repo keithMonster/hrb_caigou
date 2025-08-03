@@ -100,6 +100,21 @@ const ProductionPlan = () => {
     initMockData();
   }, []);
 
+  // 在数据初始化后，对每条记录执行一次handleTotalChange
+  React.useEffect(() => {
+    if (dataSource.length > 0) {
+      dataSource.forEach((record) => {
+        const expectedTotal = record.expectedPlans.reduce(
+          (sum, val) => sum + (val || 0),
+          0
+        );
+        if (expectedTotal > 0) {
+          handleTotalChange(record, expectedTotal);
+        }
+      });
+    }
+  }, [dataSource.length]);
+
   // 处理每日计划变更
   const handleDailyChange = (record, index, value) => {
     const newData = [...dataSource];
@@ -166,7 +181,6 @@ const ProductionPlan = () => {
         align: 'right',
         render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
       },
-
     ];
 
     // 添加日期列
@@ -228,8 +242,10 @@ const ProductionPlan = () => {
           onChange={(val) => handleProductionLineChange(record, val)}
           style={{ width: '100%', marginTop: '30px' }}
         >
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-            <Option key={num} value={num.toString()}>{num}</Option>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+            <Option key={num} value={num.toString()}>
+              {num}
+            </Option>
           ))}
         </Select>
       ),
@@ -259,7 +275,7 @@ const ProductionPlan = () => {
               size='small'
               min={0}
               precision={0}
-              value={planTotal || undefined}
+              value={planTotal || expectedTotal || undefined}
               onChange={(value) => handleTotalChange(record, value)}
               className='total-input'
               controls={false}
@@ -513,7 +529,7 @@ const ProductionPlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={dateColumns.length + 5}
-                  className='text-right' 
+                  className='text-right'
                   style={{
                     fontWeight: 'bold',
                     color: '#1890ff',
