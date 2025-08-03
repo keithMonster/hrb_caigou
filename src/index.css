@@ -124,3 +124,7 @@ body {
 .total-input .ant-input-number-input {
   text-align: right;
 }
+
+.text-right{
+  text-align: right;
+}

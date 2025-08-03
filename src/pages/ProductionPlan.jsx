@@ -350,35 +350,61 @@ const ProductionPlan = () => {
           size='small'
           summary={(pageData) => {
             // 计算合计数据
-            const totalInitialStock = pageData.reduce((sum, record) => sum + (record.initialStock || 0), 0);
+            const totalInitialStock = pageData.reduce(
+              (sum, record) => sum + (record.initialStock || 0),
+              0
+            );
             const totalExpectedPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
-            
-            pageData.forEach(record => {
+
+            pageData.forEach((record) => {
               record.expectedPlans.forEach((val, index) => {
-                totalExpectedPlans[index] += (val || 0);
+                totalExpectedPlans[index] += val || 0;
               });
               record.dailyInputs.forEach((val, index) => {
-                totalDailyInputs[index] += (val || 0);
+                totalDailyInputs[index] += val || 0;
               });
             });
-            
-            const totalExpected = totalExpectedPlans.reduce((sum, val) => sum + val, 0);
-            const totalInput = totalDailyInputs.reduce((sum, val) => sum + val, 0);
-            const totalFinalStock = totalInitialStock + totalInput - totalExpected;
-            
+
+            const totalExpected = totalExpectedPlans.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+            const totalInput = totalDailyInputs.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+            const totalFinalStock =
+              totalInitialStock + totalInput - totalExpected;
+
             return (
-              <Table.Summary.Row style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}>
-                <Table.Summary.Cell index={0} style={{ fontWeight: 'bold', color: '#1890ff' }}>
+              <Table.Summary.Row
+                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
+              >
+                <Table.Summary.Cell
+                  index={0}
+                  style={{ fontWeight: 'bold', color: '#1890ff' }}
+                >
                   合计
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={1} style={{ fontWeight: 'bold', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={1}
+                  className='text-right'
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
                   {totalInitialStock}
                 </Table.Summary.Cell>
                 {dateColumns.map((_, index) => (
-                  <Table.Summary.Cell key={`summary_${index}`} index={index + 2} style={{ textAlign: 'right' }}>
+                  <Table.Summary.Cell
+                    key={`summary_${index}`}
+                    index={index + 2}
+                    style={{ textAlign: 'right' }}
+                  >
                     <div className='cell-content'>
-                      <div className='plan-value' style={{ fontWeight: 'bold' }}>
+                      <div
+                        className='plan-value'
+                        style={{ fontWeight: 'bold' }}
+                      >
                         {totalExpectedPlans[index]}
                       </div>
                       <div style={{ fontWeight: 'bold', color: '#1890ff' }}>
@@ -387,13 +413,27 @@ const ProductionPlan = () => {
                     </div>
                   </Table.Summary.Cell>
                 ))}
-                <Table.Summary.Cell index={dateColumns.length + 2} style={{ fontWeight: 'bold', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 2}
+                  className='text-right'
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
                   <div className='cell-content'>
-                    <div className='plan-value total-value'>{totalExpected}</div>
+                    <div className='plan-value total-value'>
+                      {totalExpected}
+                    </div>
                     <div style={{ color: '#1890ff' }}>{totalInput}</div>
                   </div>
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={dateColumns.length + 3} style={{ fontWeight: 'bold', color: '#1890ff', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 3}
+                  className='text-right' 
+                  style={{
+                    fontWeight: 'bold',
+                    color: '#1890ff',
+                    textAlign: 'right',
+                  }}
+                >
                   {totalFinalStock}
                 </Table.Summary.Cell>
               </Table.Summary.Row>

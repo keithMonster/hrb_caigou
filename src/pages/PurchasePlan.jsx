@@ -572,28 +572,46 @@ const PurchasePlan = () => {
             // 计算产品采购计划合计数据
             const totalDailyPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
-            
-            pageData.forEach(record => {
+
+            pageData.forEach((record) => {
               record.dailyPlans.forEach((val, index) => {
-                totalDailyPlans[index] += (val || 0);
+                totalDailyPlans[index] += val || 0;
               });
               record.dailyInputs.forEach((val, index) => {
-                totalDailyInputs[index] += (val || 0);
+                totalDailyInputs[index] += val || 0;
               });
             });
-            
-            const totalPlan = totalDailyPlans.reduce((sum, val) => sum + val, 0);
-            const totalInput = totalDailyInputs.reduce((sum, val) => sum + val, 0);
-            
+
+            const totalPlan = totalDailyPlans.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+            const totalInput = totalDailyInputs.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+
             return (
-              <Table.Summary.Row style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}>
-                <Table.Summary.Cell index={0} style={{ fontWeight: 'bold', color: '#1890ff' }}>
+              <Table.Summary.Row
+                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
+              >
+                <Table.Summary.Cell
+                  index={0}
+                  style={{ fontWeight: 'bold', color: '#1890ff' }}
+                >
                   合计
                 </Table.Summary.Cell>
                 {dateColumns.map((_, index) => (
-                  <Table.Summary.Cell key={`product_summary_${index}`} index={index + 1} style={{ textAlign: 'right' }}>
+                  <Table.Summary.Cell
+                    key={`product_summary_${index}`}
+                    index={index + 1}
+                    style={{ textAlign: 'right' }}
+                  >
                     <div className='cell-content'>
-                      <div className='plan-value' style={{ fontWeight: 'bold' }}>
+                      <div
+                        className='plan-value'
+                        style={{ fontWeight: 'bold' }}
+                      >
                         {totalDailyPlans[index]}
                       </div>
                       <div style={{ fontWeight: 'bold', color: '#1890ff' }}>
@@ -602,7 +620,11 @@ const PurchasePlan = () => {
                     </div>
                   </Table.Summary.Cell>
                 ))}
-                <Table.Summary.Cell index={dateColumns.length + 1} style={{ fontWeight: 'bold', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 1}
+                  className='text-right'
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
                   <div className='cell-content'>
                     <div className='plan-value total-value'>{totalPlan}</div>
                     <div style={{ color: '#1890ff' }}>{totalInput}</div>
@@ -698,33 +720,65 @@ const PurchasePlan = () => {
           size='small'
           summary={(pageData) => {
             // 计算原材料采购计划合计数据
-            const totalInitialStock = pageData.reduce((sum, record) => sum + (record.initialStock || 0), 0);
+            const totalInitialStock = pageData.reduce(
+              (sum, record) => sum + (record.initialStock || 0),
+              0
+            );
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
-            
-            pageData.forEach(record => {
+
+            pageData.forEach((record) => {
               record.dailyInputs.forEach((val, index) => {
-                totalDailyInputs[index] += (val || 0);
+                totalDailyInputs[index] += val || 0;
               });
             });
-            
-            const totalInput = totalDailyInputs.reduce((sum, val) => sum + val, 0);
-            
+
+            const totalInput = totalDailyInputs.reduce(
+              (sum, val) => sum + val,
+              0
+            );
+
             return (
-              <Table.Summary.Row style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}>
-                <Table.Summary.Cell index={0} style={{ fontWeight: 'bold', color: '#1890ff' }}>
+              <Table.Summary.Row
+                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
+              >
+                <Table.Summary.Cell
+                  index={0}
+                  style={{ fontWeight: 'bold', color: '#1890ff' }}
+                >
                   合计
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={1} style={{ fontWeight: 'bold', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={1}
+                  className='text-right' 
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
                   {totalInitialStock}
                 </Table.Summary.Cell>
                 {dateColumns.map((_, index) => (
-                  <Table.Summary.Cell key={`parts_summary_${index}`} index={index + 2}>
-                    <div style={{ fontWeight: 'bold', color: '#1890ff', textAlign: 'right' }}>
+                  <Table.Summary.Cell
+                    key={`parts_summary_${index}`}
+                    index={index + 2}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 'bold',
+                        color: '#1890ff',
+                        textAlign: 'right',
+                      }}
+                    >
                       {totalDailyInputs[index]}
                     </div>
                   </Table.Summary.Cell>
                 ))}
-                <Table.Summary.Cell index={dateColumns.length + 2} style={{ fontWeight: 'bold', color: '#1890ff', textAlign: 'right' }}>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 2}
+                  className='text-right'
+                  style={{
+                    fontWeight: 'bold',
+                    color: '#1890ff',
+                    textAlign: 'right',
+                  }}
+                >
                   {totalInput}
                 </Table.Summary.Cell>
               </Table.Summary.Row>
