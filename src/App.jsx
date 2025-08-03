@@ -75,6 +75,7 @@ function App() {
             backgroundColor: '#fff',
           }}
         >
+          <img src="/favicon.ico" style={{marginRight: 8}} alt="" />
           {collapsed ? '产供销' : '产供销协同工作台'}
         </div>
         <Menu
