@@ -83,6 +83,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  text-align: right;
 }
 
 .plan-value {
