@@ -47,7 +47,7 @@ const PurchasePlan = () => {
 
   const dateColumns = generateDateColumns();
 
-  // 原材料名称选项
+  // 原材料选项
   const partNameOptions = [
     '内圈-6205',
     '内圈-6206',
@@ -255,7 +255,7 @@ const PurchasePlan = () => {
     }
   };
 
-  // 处理原材料名称变更
+  // 处理原材料变更
   const handlePartNameChange = (record, value) => {
     const newData = [...partsDataSource];
     const targetRecord = newData.find((item) => item.key === record.key);
@@ -283,7 +283,7 @@ const PurchasePlan = () => {
   const generateProductColumns = () => {
     const columns = [
       {
-        title: '规格',
+        title: '型号',
         dataIndex: 'spec',
         key: 'spec',
         width: 120,
@@ -350,7 +350,7 @@ const PurchasePlan = () => {
   const generatePartsColumns = () => {
     const columns = [
       {
-        title: '原材料名称',
+        title: '原材料',
         dataIndex: 'partName',
         key: 'partName',
         width: 150,
@@ -362,7 +362,7 @@ const PurchasePlan = () => {
             onChange={(selectedValue) =>
               handlePartNameChange(record, selectedValue)
             }
-            placeholder='请选择原材料名称'
+            placeholder='请选择原材料'
             style={{ width: '100%' }}
             showSearch
             filterOption={(input, option) =>
@@ -454,7 +454,7 @@ const PurchasePlan = () => {
     // 导出产品采购计划
     const productExportData = productDataSource.map((row) => {
       const rowData = {
-        规格: row.spec,
+        型号: row.spec,
       };
 
       dateColumns.forEach((date, index) => {
@@ -468,7 +468,7 @@ const PurchasePlan = () => {
     // 导出原材料采购计划
     const partsExportData = partsDataSource.map((row) => {
       const rowData = {
-        原材料名称: row.partName,
+        原材料: row.partName,
         当前库存: row.initialStock,
       };
 
