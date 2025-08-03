@@ -48,6 +48,8 @@ const ProductionPlan = () => {
       {
         key: '1',
         model: '6205',
+        factory: '电机',
+        productionLine: '1',
         initialStock: 100,
         // 预计数据：只有8.2、8.4、8.6、8.10这四天有数据
         expectedPlans: [0, 25, 0, 18, 0, 32, 0, 0, 0, 15],
@@ -57,6 +59,8 @@ const ProductionPlan = () => {
       {
         key: '2',
         model: '6206',
+        factory: '铁路',
+        productionLine: '3',
         initialStock: 0,
         expectedPlans: [0, 12, 0, 20, 0, 8, 0, 0, 0, 25],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,6 +68,8 @@ const ProductionPlan = () => {
       {
         key: '3',
         model: '6207',
+        factory: '精密',
+        productionLine: '5',
         initialStock: 0,
         expectedPlans: [0, 35, 0, 28, 0, 42, 0, 0, 0, 20],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -71,6 +77,8 @@ const ProductionPlan = () => {
       {
         key: '4',
         model: 'SKF-001',
+        factory: '黄海',
+        productionLine: '7',
         initialStock: 0,
         expectedPlans: [0, 8, 0, 15, 0, 12, 0, 0, 0, 10],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -78,6 +86,8 @@ const ProductionPlan = () => {
       {
         key: '5',
         model: 'NSK-002',
+        factory: '电机',
+        productionLine: '2',
         initialStock: 0,
         expectedPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 12],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -96,6 +106,26 @@ const ProductionPlan = () => {
     const targetRecord = newData.find((item) => item.key === record.key);
     if (targetRecord) {
       targetRecord.dailyInputs[index] = value || 0;
+      setDataSource(newData);
+    }
+  };
+
+  // 处理分厂变更
+  const handleFactoryChange = (record, value) => {
+    const newData = [...dataSource];
+    const targetRecord = newData.find((item) => item.key === record.key);
+    if (targetRecord) {
+      targetRecord.factory = value;
+      setDataSource(newData);
+    }
+  };
+
+  // 处理生产线变更
+  const handleProductionLineChange = (record, value) => {
+    const newData = [...dataSource];
+    const targetRecord = newData.find((item) => item.key === record.key);
+    if (targetRecord) {
+      targetRecord.productionLine = value;
       setDataSource(newData);
     }
   };
@@ -136,6 +166,7 @@ const ProductionPlan = () => {
         align: 'right',
         render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
       },
+
     ];
 
     // 添加日期列
@@ -161,6 +192,47 @@ const ProductionPlan = () => {
           </div>
         ),
       });
+    });
+
+    // 添加分厂列
+    columns.push({
+      title: '分厂',
+      dataIndex: 'factory',
+      key: 'factory',
+      width: 100,
+      render: (value, record) => (
+        <Select
+          size='small'
+          value={value}
+          onChange={(val) => handleFactoryChange(record, val)}
+          style={{ width: '100%', marginTop: '30px' }}
+        >
+          <Option value='电机'>电机</Option>
+          <Option value='铁路'>铁路</Option>
+          <Option value='精密'>精密</Option>
+          <Option value='黄海'>黄海</Option>
+        </Select>
+      ),
+    });
+
+    // 添加生产线列
+    columns.push({
+      title: '生产线',
+      dataIndex: 'productionLine',
+      key: 'productionLine',
+      width: 100,
+      render: (value, record) => (
+        <Select
+          size='small'
+          value={value}
+          onChange={(val) => handleProductionLineChange(record, val)}
+          style={{ width: '100%', marginTop: '30px' }}
+        >
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+            <Option key={num} value={num.toString()}>{num}</Option>
+          ))}
+        </Select>
+      ),
     });
 
     // 添加汇总列
@@ -417,6 +489,18 @@ const ProductionPlan = () => {
                 ))}
                 <Table.Summary.Cell
                   index={dateColumns.length + 2}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 3}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 4}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -428,7 +512,7 @@ const ProductionPlan = () => {
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
+                  index={dateColumns.length + 5}
                   className='text-right' 
                   style={{
                     fontWeight: 'bold',

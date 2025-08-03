@@ -141,6 +141,7 @@ const PurchasePlan = () => {
       {
         key: '1',
         partName: '内圈-6205',
+        purchaseType: '外购',
         initialStock: 50,
         dailyPlans: [0, 25, 0, 30, 0, 20, 0, 0, 0, 35],
         dailyInputs: [0, 25, 0, 30, 0, 20, 0, 0, 0, 35],
@@ -149,6 +150,7 @@ const PurchasePlan = () => {
       {
         key: '2',
         partName: '内圈-6206',
+        purchaseType: '外购',
         initialStock: 0,
         dailyPlans: [0, 20, 0, 25, 0, 15, 0, 0, 0, 30],
         dailyInputs: [0, 20, 0, 25, 0, 15, 0, 0, 0, 30],
@@ -157,6 +159,7 @@ const PurchasePlan = () => {
       {
         key: '3',
         partName: '外圈-6205',
+        purchaseType: '外购',
         initialStock: 80,
         dailyPlans: [0, 30, 0, 35, 0, 25, 0, 0, 0, 40],
         dailyInputs: [0, 30, 0, 35, 0, 25, 0, 0, 0, 40],
@@ -165,6 +168,7 @@ const PurchasePlan = () => {
       {
         key: '4',
         partName: '外圈-SKF-001',
+        purchaseType: '自产',
         initialStock: 0,
         dailyPlans: [0, 15, 0, 20, 0, 10, 0, 0, 0, 25],
         dailyInputs: [0, 15, 0, 20, 0, 10, 0, 0, 0, 25],
@@ -173,6 +177,7 @@ const PurchasePlan = () => {
       {
         key: '5',
         partName: '滚动体-6205',
+        purchaseType: '外购',
         initialStock: 0,
         dailyPlans: [0, 40, 0, 45, 0, 35, 0, 0, 0, 50],
         dailyInputs: [0, 40, 0, 45, 0, 35, 0, 0, 0, 50],
@@ -181,6 +186,7 @@ const PurchasePlan = () => {
       {
         key: '6',
         partName: '保持架-6206',
+        purchaseType: '自产',
         initialStock: 0,
         dailyPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 24],
         dailyInputs: [0, 18, 0, 22, 0, 16, 0, 0, 0, 24],
@@ -189,6 +195,7 @@ const PurchasePlan = () => {
       {
         key: '7',
         partName: '密封件-通用型',
+        purchaseType: '外购',
         initialStock: 0,
         dailyPlans: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
         dailyInputs: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
@@ -255,12 +262,22 @@ const PurchasePlan = () => {
     }
   };
 
-  // 处理原材料变更
+  // 处理原材料名称变更
   const handlePartNameChange = (record, value) => {
     const newData = [...partsDataSource];
     const targetRecord = newData.find((item) => item.key === record.key);
     if (targetRecord) {
       targetRecord.partName = value;
+      setPartsDataSource(newData);
+    }
+  };
+
+  // 处理采购类型变更
+  const handlePurchaseTypeChange = (record, value) => {
+    const newData = [...partsDataSource];
+    const targetRecord = newData.find((item) => item.key === record.key);
+    if (targetRecord) {
+      targetRecord.purchaseType = value;
       setPartsDataSource(newData);
     }
   };
@@ -271,6 +288,7 @@ const PurchasePlan = () => {
     const newRow = {
       key: newKey,
       partName: '',
+      purchaseType: '外购',
       initialStock: 0,
       dailyPlans: new Array(dateColumns.length).fill(0),
       dailyInputs: new Array(dateColumns.length).fill(0),
@@ -378,6 +396,26 @@ const PurchasePlan = () => {
         ),
       },
       {
+        title: '采购类型',
+        dataIndex: 'purchaseType',
+        key: 'purchaseType',
+        width: 100,
+        fixed: 'left',
+        render: (value, record) => (
+          <Select
+            size='small'
+            value={value}
+            onChange={(selectedValue) =>
+              handlePurchaseTypeChange(record, selectedValue)
+            }
+            style={{ width: '100%' }}
+          >
+            <Option value='外购'>外购</Option>
+            <Option value='自产'>自产</Option>
+          </Select>
+        ),
+      },
+      {
         title: '当前库存',
         dataIndex: 'initialStock',
         key: 'initialStock',
@@ -451,7 +489,7 @@ const PurchasePlan = () => {
 
   // 导出功能
   const handleExport = () => {
-    // 导出产品采购计划
+    // 导出成品采购计划
     const productExportData = productDataSource.map((row) => {
       const rowData = {
         型号: row.spec,
@@ -483,7 +521,7 @@ const PurchasePlan = () => {
     const wb = XLSX.utils.book_new();
 
     const productWs = XLSX.utils.json_to_sheet(productExportData);
-    XLSX.utils.book_append_sheet(wb, productWs, '产品采购计划');
+    XLSX.utils.book_append_sheet(wb, productWs, '成品采购计划');
 
     const partsWs = XLSX.utils.json_to_sheet(partsExportData);
     XLSX.utils.book_append_sheet(wb, partsWs, '原材料采购计划');
@@ -497,7 +535,7 @@ const PurchasePlan = () => {
     <div>
       <div className='page-header'>
         <h1>采购计划</h1>
-        <p>包含产品采购计划和原材料采购计划，按旬（10天）维度进行采购安排</p>
+        <p>包含成品采购计划和原材料采购计划，按旬（10天）维度进行采购安排</p>
       </div>
 
       {/* 筛选区域 */}
@@ -526,7 +564,7 @@ const PurchasePlan = () => {
         </Form>
       </Card>
 
-      {/* 产品采购计划表格 */}
+      {/* 成品采购计划表格 */}
       <Card className='table-card'>
         <div
           className='table-header'
@@ -537,7 +575,7 @@ const PurchasePlan = () => {
           }}
         >
           <div>
-            <h3>产品采购计划</h3>
+            <h3>成品采购计划</h3>
             <p>产品的采购计划安排</p>
           </div>
           <Space>
@@ -571,7 +609,7 @@ const PurchasePlan = () => {
           bordered
           size='small'
           summary={(pageData) => {
-            // 计算产品采购计划合计数据
+            // 计算成品采购计划合计数据
             const totalDailyPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
