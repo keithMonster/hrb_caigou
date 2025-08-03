@@ -62,4 +62,6 @@
 - @ant-design/pro-components
 - Vite
 
-
+## 设计要求
+- 严格遵循Ant Design的设计规范
+- 保持易用、简洁、高效
