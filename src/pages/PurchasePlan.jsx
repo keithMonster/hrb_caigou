@@ -860,6 +860,12 @@ const PurchasePlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={1}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={2}
                   className='text-right' 
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -868,7 +874,7 @@ const PurchasePlan = () => {
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`parts_summary_${index}`}
-                    index={index + 2}
+                    index={index + 3}
                   >
                     <div
                       style={{
@@ -882,7 +888,7 @@ const PurchasePlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 2}
+                  index={dateColumns.length + 3}
                   className='text-right'
                   style={{
                     fontWeight: 'bold',
