@@ -14,8 +14,6 @@ import {
 import {
   SaveOutlined,
   DownloadOutlined,
-  SearchOutlined,
-  ReloadOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
@@ -368,15 +366,7 @@ const ProductionPlan = () => {
     return columns;
   };
 
-  // 筛选功能
-  const handleFilter = () => {
-    message.success('筛选功能已执行');
-  };
 
-  const handleReset = () => {
-    filterForm.resetFields();
-    message.info('筛选条件已重置');
-  };
 
   // 保存功能
   const handleSave = () => {
@@ -422,8 +412,7 @@ const ProductionPlan = () => {
       <Card className='filter-card' size='small'>
           <Form 
             form={filterForm} 
-            layout='inline' 
-            onFinish={handleFilter}
+            layout='inline'
             initialValues={{ xunPeriod: '2025-08-上旬' }}
           >
           <Form.Item label='计划旬期' name='xunPeriod'>
@@ -455,20 +444,7 @@ const ProductionPlan = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button
-                type='primary'
-                htmlType='submit'
-                icon={<SearchOutlined />}
-              >
-                查询
-              </Button>
-              <Button onClick={handleReset} icon={<ReloadOutlined />}>
-                重置
-              </Button>
-            </Space>
-          </Form.Item>
+
         </Form>
       </Card>
 
