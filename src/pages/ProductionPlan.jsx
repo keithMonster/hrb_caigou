@@ -102,6 +102,7 @@ const ProductionPlan = () => {
         model: '6205',
         factory: '电机',
         productionLine: '1',
+        type: 'A类',
         initialStock: 100,
         // 预计数据：只有8.2、8.4、8.6、8.10这四天有数据
         expectedPlans: [0, 25, 0, 18, 0, 32, 0, 0, 0, 15],
@@ -113,6 +114,7 @@ const ProductionPlan = () => {
         model: '6206',
         factory: '铁路',
         productionLine: '3',
+        type: 'B类',
         initialStock: 0,
         expectedPlans: [0, 12, 0, 20, 0, 8, 0, 0, 0, 25],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -122,6 +124,7 @@ const ProductionPlan = () => {
         model: '6207',
         factory: '精密',
         productionLine: '5',
+        type: 'A类',
         initialStock: 0,
         expectedPlans: [0, 35, 0, 28, 0, 42, 0, 0, 0, 20],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -131,6 +134,7 @@ const ProductionPlan = () => {
         model: 'SKF-001',
         factory: '黄海',
         productionLine: '7',
+        type: 'B类',
         initialStock: 0,
         expectedPlans: [0, 8, 0, 15, 0, 12, 0, 0, 0, 10],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -140,6 +144,7 @@ const ProductionPlan = () => {
         model: 'NSK-002',
         factory: '电机',
         productionLine: '2',
+        type: 'A类',
         initialStock: 0,
         expectedPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 12],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -220,6 +225,15 @@ const ProductionPlan = () => {
         key: 'model',
         width: 120,
         fixed: 'left',
+      },
+      {
+        title: '类型',
+        dataIndex: 'type',
+        key: 'type',
+        width: 80,
+        fixed: 'left',
+        align: 'center',
+        render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
       },
       {
         title: '往期结转',
@@ -316,31 +330,7 @@ const ProductionPlan = () => {
       },
     });
 
-    // 添加期末库存列
-    columns.push({
-      title: '计划入库',
-      dataIndex: 'finalStock',
-      key: 'finalStock',
-      width: 100,
-      align: 'right',
-      fixed: 'right',
-      render: (_, record) => {
-        const expectedTotal = record.expectedPlans.reduce(
-          (sum, val) => sum + (val || 0),
-          0
-        );
-        const planTotal = record.dailyInputs.reduce(
-          (sum, val) => sum + (val || 0),
-          0
-        );
-        const finalStock = record.initialStock + planTotal - expectedTotal;
-        return (
-          <span style={{ fontWeight: 500, color: '#1890ff' }}>
-            {finalStock}
-          </span>
-        );
-      },
-    });
+
 
     return columns;
   };
@@ -357,6 +347,7 @@ const ProductionPlan = () => {
     const exportData = dataSource.map((row) => {
       const rowData = {
         型号: row.model,
+        类型: row.type,
         往期结转: row.initialStock,
       };
 
@@ -365,7 +356,6 @@ const ProductionPlan = () => {
       });
 
       rowData['旬总计'] = row.totalPlan;
-      rowData['计划入存'] = row.finalStock;
 
       return rowData;
     });
@@ -512,8 +502,7 @@ const ProductionPlan = () => {
               (sum, val) => sum + val,
               0
             );
-            const totalFinalStock =
-              totalInitialStock + totalInput - totalExpected;
+
 
             return (
               <Table.Summary.Row
@@ -527,6 +516,12 @@ const ProductionPlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={1}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={2}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -535,7 +530,7 @@ const ProductionPlan = () => {
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`summary_${index}`}
-                    index={index + 2}
+                    index={index + 3}
                     style={{ textAlign: 'right' }}
                   >
                     <div className='cell-content'>
@@ -552,13 +547,13 @@ const ProductionPlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 2}
+                  index={dateColumns.length + 3}
                   style={{ fontWeight: 'bold', textAlign: 'center' }}
                 >
                   -
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
+                  index={dateColumns.length + 4}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -569,17 +564,7 @@ const ProductionPlan = () => {
                     <div style={{ color: '#1890ff' }}>{totalInput}</div>
                   </div>
                 </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={dateColumns.length + 4}
-                  className='text-right'
-                  style={{
-                    fontWeight: 'bold',
-                    color: '#1890ff',
-                    textAlign: 'right',
-                  }}
-                >
-                  {totalFinalStock}
-                </Table.Summary.Cell>
+
               </Table.Summary.Row>
             );
           }}
