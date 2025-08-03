@@ -5,9 +5,17 @@ import {
   FileTextOutlined,
   SettingOutlined,
   ShoppingCartOutlined,
+  ContainerOutlined,
+  InboxOutlined,
+  CheckCircleOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons'
 import ProductionPlan from './pages/ProductionPlan'
 import PurchasePlan from './pages/PurchasePlan'
+import PurchaseContract from './pages/PurchaseContract'
+import Arrival from './pages/Arrival'
+import QualityInspection from './pages/QualityInspection'
+import Warehousing from './pages/Warehousing'
 
 const { Sider, Content } = Layout
 
@@ -34,6 +42,33 @@ function App() {
         },
       ],
     },
+    {
+      key: 'professional-oem',
+      icon: <ContainerOutlined />,
+      label: '专业OEM',
+      children: [
+        {
+          key: '/purchase-contract',
+          icon: <ContainerOutlined />,
+          label: '采购合同',
+        },
+        {
+          key: '/arrival',
+          icon: <InboxOutlined />,
+          label: '到货',
+        },
+        {
+          key: '/quality-inspection',
+          icon: <CheckCircleOutlined />,
+          label: '质量验收',
+        },
+        {
+          key: '/warehousing',
+          icon: <DatabaseOutlined />,
+          label: '入库',
+        },
+      ],
+    },
   ]
 
   const handleMenuClick = ({ key }) => {
@@ -46,10 +81,19 @@ function App() {
     const path = location.pathname
     if (path === '/' || path === '/production') return ['/production']
     if (path === '/purchase') return ['/purchase']
+    if (path === '/purchase-contract') return ['/purchase-contract']
+    if (path === '/arrival') return ['/arrival']
+    if (path === '/quality-inspection') return ['/quality-inspection']
+    if (path === '/warehousing') return ['/warehousing']
     return ['/production']
   }
 
   const getOpenKeys = () => {
+    const path = location.pathname
+    if (path.startsWith('/purchase-contract') || path.startsWith('/arrival') || 
+        path.startsWith('/quality-inspection') || path.startsWith('/warehousing')) {
+      return ['professional-oem']
+    }
     return ['requirements']
   }
 
@@ -94,6 +138,10 @@ function App() {
             <Route path="/" element={<ProductionPlan />} />
             <Route path="/production" element={<ProductionPlan />} />
             <Route path="/purchase" element={<PurchasePlan />} />
+            <Route path="/purchase-contract" element={<PurchaseContract />} />
+            <Route path="/arrival" element={<Arrival />} />
+            <Route path="/quality-inspection" element={<QualityInspection />} />
+            <Route path="/warehousing" element={<Warehousing />} />
           </Routes>
         </Content>
       </Layout>

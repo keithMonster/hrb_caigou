@@ -570,7 +570,6 @@ const PurchasePlan = () => {
     <div>
       <div className='page-header'>
         <h1>采购需求</h1>
-        <p>包含成品采购需求和原材料采购需求，按旬（10天）维度进行采购安排</p>
       </div>
 
       {/* 筛选区域 */}
@@ -604,18 +603,10 @@ const PurchasePlan = () => {
       </Card>
 
       {/* 成品采购需求表格 */}
-      <Card className='table-card'>
-        <div
-          className='table-header'
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}
-        >
-          <div>
-            <h3>成品采购需求</h3>
-          </div>
+      <Card 
+        className='table-card'
+        title="成品采购需求"
+        extra={
           <Space>
             <Button
               type='default'
@@ -628,7 +619,8 @@ const PurchasePlan = () => {
               保存计划
             </Button>
           </Space>
-        </div>
+        }
+      >
         <Table
           ref={productTableRef}
           dataSource={productDataSource}
@@ -717,18 +709,10 @@ const PurchasePlan = () => {
       <Divider />
 
       {/* 原材料采购需求表格 */}
-      <Card className='table-card'>
-        <div
-          className='table-header'
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}
-        >
-          <div>
-            <h3>原材料采购需求</h3>
-          </div>
+      <Card 
+        className='table-card'
+        title="原材料采购需求"
+        extra={
           <Space>
             <Button
               type='default'
@@ -748,7 +732,8 @@ const PurchasePlan = () => {
               保存计划
             </Button>
           </Space>
-        </div>
+        }
+      >
 
         {/* 分类筛选器 */}
         <div

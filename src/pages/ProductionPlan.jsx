@@ -374,7 +374,6 @@ const ProductionPlan = () => {
     <div>
       <div className='page-header'>
         <h1>生产计划</h1>
-        <p>用于生产部门排期计划，按旬（10天）维度进行计划安排</p>
       </div>
 
       {/* 筛选区域 */}
@@ -418,19 +417,10 @@ const ProductionPlan = () => {
       </Card>
 
       {/* 生产计划表格 */}
-      <Card className='table-card'>
-        <div
-          className='table-header'
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: 16,
-          }}
-        >
-          <div>
-            <h3>生产计划</h3>
-          </div>
+      <Card 
+        className='table-card'
+        title="生产计划"
+        extra={
           <Space>
             <Button
               type='default'
@@ -443,7 +433,8 @@ const ProductionPlan = () => {
               保存计划
             </Button>
           </Space>
-        </div>
+        }
+      >
 
         {/* 分厂筛选器 */}
         <div
