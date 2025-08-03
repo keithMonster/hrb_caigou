@@ -62,9 +62,9 @@ const PurchasePlan = () => {
     '保持架-6205',
     '保持架-6206',
     '保持架-6207',
-    '润滑脂-通用型',
-    '润滑脂-高温型',
-    '润滑脂-低温型',
+    '密封件-通用型',
+    '密封件-高温型',
+    '密封件-低温型',
   ];
 
   // 原材料分类选项
@@ -74,7 +74,7 @@ const PurchasePlan = () => {
     '外圈',
     '滚动体',
     '保持架',
-    '润滑脂',
+    '密封件',
   ];
 
   // 筛选逻辑函数
@@ -188,7 +188,7 @@ const PurchasePlan = () => {
       },
       {
         key: '7',
-        partName: '润滑脂-通用型',
+        partName: '密封件-通用型',
         initialStock: 0,
         dailyPlans: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
         dailyInputs: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
@@ -302,16 +302,17 @@ const PurchasePlan = () => {
           <div className='cell-content'>
             <div className='plan-value'>{record.dailyPlans[index] || 0}</div>
             <InputNumber
-              size='small'
-              min={0}
-              precision={0}
-              value={record.dailyInputs[index]}
-              onChange={(value) =>
-                handleProductDailyChange(record, index, value)
-              }
-              className='daily-input'
-              controls={false}
-            />
+            size='small'
+            min={0}
+            precision={0}
+            value={record.dailyInputs[index] || undefined}
+            onChange={(value) =>
+              handleProductDailyChange(record, index, value)
+            }
+            className='daily-input'
+            controls={false}
+            placeholder=''
+          />
           </div>
         ),
       });
@@ -399,11 +400,12 @@ const PurchasePlan = () => {
             size='small'
             min={0}
             precision={0}
-            value={record.dailyInputs[index]}
+            value={record.dailyInputs[index] || undefined}
             onChange={(value) => handlePartsDailyChange(record, index, value)}
             className='daily-input'
             controls={false}
             style={{ width: '100%' }}
+            placeholder=''
           />
         ),
       });

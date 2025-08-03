@@ -152,10 +152,11 @@ const ProductionPlan = () => {
               size='small'
               min={0}
               precision={0}
-              value={record.dailyInputs[index]}
+              value={record.dailyInputs[index] || undefined}
               onChange={(value) => handleDailyChange(record, index, value)}
               className='daily-input'
               controls={false}
+              placeholder=''
             />
           </div>
         ),
@@ -186,10 +187,11 @@ const ProductionPlan = () => {
               size='small'
               min={0}
               precision={0}
-              value={planTotal}
+              value={planTotal || undefined}
               onChange={(value) => handleTotalChange(record, value)}
               className='total-input'
               controls={false}
+              placeholder=''
             />
           </div>
         );
