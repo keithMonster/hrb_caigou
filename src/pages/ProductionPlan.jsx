@@ -339,7 +339,7 @@ const ProductionPlan = () => {
 
     // 添加期末库存列
     columns.push({
-      title: '计划库存',
+      title: '计划入库',
       dataIndex: 'finalStock',
       key: 'finalStock',
       width: 100,
@@ -386,7 +386,7 @@ const ProductionPlan = () => {
       });
 
       rowData['旬总计'] = row.totalPlan;
-      rowData['计划库存'] = row.finalStock;
+      rowData['计划入存'] = row.finalStock;
 
       return rowData;
     });
