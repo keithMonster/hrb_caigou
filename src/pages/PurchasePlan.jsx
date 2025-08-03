@@ -158,7 +158,7 @@ const PurchasePlan = () => {
       },
       {
         key: '3',
-        partName: '外圈-6205',
+        partName: '外圈-6207',
         purchaseType: '外购',
         initialStock: 80,
         dailyPlans: [0, 30, 0, 35, 0, 25, 0, 0, 0, 40],
