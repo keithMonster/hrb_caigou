@@ -374,7 +374,7 @@ const ProductionPlan = () => {
               placeholder={['开始日期', '结束日期']}
             />
           </Form.Item>
-          <Form.Item label='产品型号' name='model'>
+          <Form.Item label='成品型号' name='model'>
             <Select placeholder='请选择型号' allowClear style={{ width: 150 }}>
               <Option value=''>全部</Option>
               {modelOptions.map((model) => (
@@ -414,7 +414,7 @@ const ProductionPlan = () => {
         >
           <div>
             <h3>生产计划</h3>
-            <p>产品的生产计划安排</p>
+            <p>成品的生产计划安排</p>
           </div>
           <Space>
             <Button

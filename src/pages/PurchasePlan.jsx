@@ -93,7 +93,7 @@ const PurchasePlan = () => {
     setFilteredPartsDataSource(filtered);
   };
 
-  // 初始化产品采购模拟数据
+  // 初始化成品采购模拟数据
   const initProductMockData = () => {
     const mockData = [
       {
@@ -242,7 +242,7 @@ const PurchasePlan = () => {
     filterPartsByCategory(newCategories);
   };
 
-  // 处理产品每日计划变更
+  // 处理成品每日计划变更
   const handleProductDailyChange = (record, index, value) => {
     const newData = [...productDataSource];
     const targetRecord = newData.find((item) => item.key === record.key);
@@ -297,7 +297,7 @@ const PurchasePlan = () => {
     setPartsDataSource([...partsDataSource, newRow]);
   };
 
-  // 生成产品表格列配置
+  // 生成成品表格列配置
   const generateProductColumns = () => {
     const columns = [
       {
@@ -576,7 +576,7 @@ const PurchasePlan = () => {
         >
           <div>
             <h3>成品采购计划</h3>
-            <p>产品的采购计划安排</p>
+            <p>成品的采购计划安排</p>
           </div>
           <Space>
             <Button
