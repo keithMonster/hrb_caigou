@@ -12,6 +12,9 @@ import {
   Modal,
   Drawer,
   Tag,
+  Select,
+  Row,
+  Col,
 } from 'antd';
 import {
   PlusOutlined,
@@ -23,8 +26,10 @@ import dayjs from 'dayjs';
 
 const PurchaseContract = () => {
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -77,6 +82,44 @@ const PurchaseContract = () => {
   React.useEffect(() => {
     initMockData();
   }, []);
+
+  React.useEffect(() => {
+    setFilteredDataSource(dataSource);
+  }, [dataSource]);
+
+  // 筛选功能
+  const handleFilter = () => {
+    const values = filterForm.getFieldsValue();
+    let filtered = dataSource;
+
+    if (values.contractNo) {
+      filtered = filtered.filter(item => 
+        item.contractNo.toLowerCase().includes(values.contractNo.toLowerCase())
+      );
+    }
+
+    if (values.supplier) {
+      filtered = filtered.filter(item => 
+        item.supplier.toLowerCase().includes(values.supplier.toLowerCase())
+      );
+    }
+
+    if (values.executionStatus) {
+      filtered = filtered.filter(item => {
+        const isCompleted = item.warehouseQuantity === item.purchaseQuantity;
+        const status = isCompleted ? 'completed' : 'pending';
+        return status === values.executionStatus;
+      });
+    }
+
+    setFilteredDataSource(filtered);
+  };
+
+  // 重置筛选
+  const handleReset = () => {
+    filterForm.resetFields();
+    setFilteredDataSource(dataSource);
+  };
 
   // 显示新增/编辑模态框
   const showModal = (record = null) => {
@@ -283,6 +326,34 @@ const PurchaseContract = () => {
       ),
     },
     {
+      title: '验收状态',
+      key: 'inspectionStatus',
+      width: 100,
+      align: 'center',
+      render: (_, record) => {
+        const isCompleted = record.inspectionQuantity === record.arrivalQuantity;
+        return (
+          <Tag color={isCompleted ? 'green' : 'orange'}>
+            {isCompleted ? '已完成' : '未完成'}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: '执行状态',
+      key: 'executionStatus',
+      width: 100,
+      align: 'center',
+      render: (_, record) => {
+        const isCompleted = record.warehouseQuantity === record.purchaseQuantity;
+        return (
+          <Tag color={isCompleted ? 'green' : 'orange'}>
+            {isCompleted ? '已完成' : '未完成'}
+          </Tag>
+        );
+      },
+    },
+    {
       title: '操作',
       key: 'action',
       width: 120,
@@ -339,16 +410,7 @@ const PurchaseContract = () => {
         key: 'inspector',
       });
     } else if (drawerTitle.includes('合格记录')) {
-      baseColumns.push({
-        title: '质量等级',
-        dataIndex: 'qualityLevel',
-        key: 'qualityLevel',
-        render: (value) => (
-          <Tag color={value === '优' ? 'green' : value === '良' ? 'blue' : 'orange'}>
-            {value}
-          </Tag>
-        ),
-      });
+      // 合格记录不需要额外列
     } else if (drawerTitle.includes('入库记录')) {
       baseColumns.push({
         title: '仓库',
@@ -366,6 +428,44 @@ const PurchaseContract = () => {
         <h1>采购合同</h1>
       </div>
 
+      {/* 筛选区域 */}
+      <Card className="filter-card" style={{ marginBottom: 16 }}>
+        <Form form={filterForm} layout="inline">
+          <Row gutter={16} style={{ width: '100%' }}>
+            <Col span={6}>
+              <Form.Item label="合同编号" name="contractNo">
+                <Input placeholder="请输入合同编号" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="供应商" name="supplier">
+                <Input placeholder="请输入供应商" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="执行状态" name="executionStatus">
+                <Select placeholder="请选择执行状态" allowClear>
+                  <Select.Option value="completed">已完成</Select.Option>
+                  <Select.Option value="pending">未完成</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" onClick={handleFilter}>
+                    查询
+                  </Button>
+                  <Button onClick={handleReset}>
+                    重置
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+
       <Card 
         className="table-card"
         title="合同列表"
@@ -381,7 +481,7 @@ const PurchaseContract = () => {
       >
 
         <Table
-          dataSource={dataSource}
+          dataSource={filteredDataSource}
           columns={columns}
           loading={loading}
           scroll={{ x: 1200 }}

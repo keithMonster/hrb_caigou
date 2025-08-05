@@ -13,6 +13,8 @@ import {
   Modal,
   Drawer,
   Tag,
+  Row,
+  Col,
 } from 'antd';
 import {
   PlusOutlined,
@@ -25,8 +27,10 @@ const { Option } = Select;
 
 const Arrival = () => {
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -94,6 +98,38 @@ const Arrival = () => {
   React.useEffect(() => {
     initMockData();
   }, []);
+
+  React.useEffect(() => {
+    setFilteredDataSource(dataSource);
+  }, [dataSource]);
+
+  // 筛选功能
+  const handleFilter = () => {
+    const values = filterForm.getFieldsValue();
+    let filtered = dataSource;
+
+    if (values.contractNo) {
+      filtered = filtered.filter(item => 
+        item.contractNo.toLowerCase().includes(values.contractNo.toLowerCase())
+      );
+    }
+
+    if (values.inspectionStatus) {
+      filtered = filtered.filter(item => {
+        const isCompleted = item.inspectionQuantity === item.arrivalQuantity;
+        const status = isCompleted ? 'completed' : 'pending';
+        return status === values.inspectionStatus;
+      });
+    }
+
+    setFilteredDataSource(filtered);
+  };
+
+  // 重置筛选
+  const handleReset = () => {
+    filterForm.resetFields();
+    setFilteredDataSource(dataSource);
+  };
 
   // 根据合同编号获取供应商和型号信息
   const getContractInfo = (contractNo) => {
@@ -294,6 +330,20 @@ const Arrival = () => {
       ),
     },
     {
+      title: '验收状态',
+      key: 'inspectionStatus',
+      width: 100,
+      align: 'center',
+      render: (_, record) => {
+        const isCompleted = record.inspectionQuantity === record.arrivalQuantity;
+        return (
+          <Tag color={isCompleted ? 'green' : 'orange'}>
+            {isCompleted ? '已完成' : '未完成'}
+          </Tag>
+        );
+      },
+    },
+    {
       title: '操作',
       key: 'action',
       width: 120,
@@ -358,16 +408,6 @@ const Arrival = () => {
     } else if (drawerTitle.includes('合格记录')) {
       baseColumns.push(
         {
-          title: '质量等级',
-          dataIndex: 'qualityLevel',
-          key: 'qualityLevel',
-          render: (value) => (
-            <Tag color={value === '优' ? 'green' : value === '良' ? 'blue' : 'orange'}>
-              {value}
-            </Tag>
-          ),
-        },
-        {
           title: '验收员',
           dataIndex: 'inspector',
           key: 'inspector',
@@ -397,6 +437,39 @@ const Arrival = () => {
         <h1>到货</h1>
       </div>
 
+      {/* 筛选区域 */}
+      <Card className="filter-card" style={{ marginBottom: 16 }}>
+        <Form form={filterForm} layout="inline">
+          <Row gutter={16} style={{ width: '100%' }}>
+            <Col span={8}>
+              <Form.Item label="合同编号" name="contractNo">
+                <Input placeholder="请输入合同编号" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="验收状态" name="inspectionStatus">
+                <Select placeholder="请选择验收状态" allowClear>
+                  <Option value="completed">已完成</Option>
+                  <Option value="pending">未完成</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" onClick={handleFilter}>
+                    查询
+                  </Button>
+                  <Button onClick={handleReset}>
+                    重置
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+
       <Card 
         className="table-card"
         title="到货记录"
@@ -412,7 +485,7 @@ const Arrival = () => {
       >
 
         <Table
-          dataSource={dataSource}
+          dataSource={filteredDataSource}
           columns={columns}
           loading={loading}
           scroll={{ x: 1200 }}

@@ -10,6 +10,8 @@ import {
   message,
   Table,
   Pagination,
+  Drawer,
+  Tag,
 } from 'antd';
 import {
   SaveOutlined,
@@ -28,6 +30,9 @@ const ProductionPlan = () => {
   const [dataSource, setDataSource] = useState([]);
   const [selectedXun, setSelectedXun] = useState('2025-08-上旬');
   const [selectedFactory, setSelectedFactory] = useState('全部');
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerData, setDrawerData] = useState([]);
+  const [drawerTitle, setDrawerTitle] = useState('');
   const tableRef = useRef();
 
   // 生成旬期选项
@@ -182,6 +187,43 @@ const ProductionPlan = () => {
     }
   };
 
+  // 处理需求点击，显示抽屉
+  const handleDemandClick = (record, dateIndex) => {
+    // 模拟抽屉数据
+    const mockDrawerData = [
+      {
+        key: '1',
+        quantity: 15,
+        type: 'A类',
+        requirement: '高精度要求，表面光洁度Ra≤0.8'
+      },
+      {
+        key: '2', 
+        quantity: 10,
+        type: 'A类',
+        requirement: '耐高温要求，工作温度≤150°C'
+      },
+      {
+        key: '3',
+        quantity: record.expectedPlans[dateIndex] - 25,
+        type: 'B类',
+        requirement: '-'
+      }
+    ].filter(item => item.quantity > 0);
+    
+    const date = dateColumns[dateIndex];
+    setDrawerTitle(`${record.model} - ${date.format('MM月DD日')} 需求详情`);
+    setDrawerData(mockDrawerData);
+    setDrawerVisible(true);
+  };
+
+  // 关闭抽屉
+  const handleDrawerClose = () => {
+    setDrawerVisible(false);
+    setDrawerData([]);
+    setDrawerTitle('');
+  };
+
 
 
   // 处理生产线变更
@@ -227,15 +269,6 @@ const ProductionPlan = () => {
         fixed: 'left',
       },
       {
-        title: '类型',
-        dataIndex: 'type',
-        key: 'type',
-        width: 80,
-        fixed: 'left',
-        align: 'center',
-        render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
-      },
-      {
         title: '往期结转',
         dataIndex: 'initialStock',
         key: 'initialStock',
@@ -255,7 +288,21 @@ const ProductionPlan = () => {
         align: 'right',
         render: (_, record) => (
           <div className='cell-content'>
-            <div className='plan-value'>{record.expectedPlans[index] || 0}</div>
+            <div 
+              className='plan-value'
+              style={{
+                color: record.expectedPlans[index] > 0 ? '#ff4d4f' : '#000',
+                cursor: record.expectedPlans[index] > 0 ? 'pointer' : 'default',
+                fontWeight: record.expectedPlans[index] > 0 ? 'bold' : 'normal'
+              }}
+              onClick={() => {
+                if (record.expectedPlans[index] > 0) {
+                  handleDemandClick(record, index);
+                }
+              }}
+            >
+              {record.expectedPlans[index] || 0}
+            </div>
             <InputNumber
               size='small'
               min={0}
@@ -586,6 +633,52 @@ const ProductionPlan = () => {
           />
         </div>
       </Card>
+
+      {/* 需求详情抽屉 */}
+      <Drawer
+        title={drawerTitle}
+        placement="right"
+        onClose={handleDrawerClose}
+        open={drawerVisible}
+        width={600}
+      >
+        <Table
+          dataSource={drawerData}
+          pagination={false}
+          size="small"
+          bordered
+        >
+          <Table.Column
+            title="数量"
+            dataIndex="quantity"
+            key="quantity"
+            width={100}
+            align="right"
+          />
+          <Table.Column
+            title="类型"
+            dataIndex="type"
+            key="type"
+            width={100}
+            align="center"
+            render={(value) => (
+              <Tag color={value === 'A类' ? 'blue' : 'green'}>
+                {value}
+              </Tag>
+            )}
+          />
+          <Table.Column
+            title="要求"
+            dataIndex="requirement"
+            key="requirement"
+            render={(value) => (
+              <span style={{ color: value === '-' ? '#999' : '#000' }}>
+                {value}
+              </span>
+            )}
+          />
+        </Table>
+      </Drawer>
     </div>
   );
 };

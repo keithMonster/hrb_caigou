@@ -10,6 +10,10 @@ import {
   Drawer,
   Tag,
   Form,
+  Input,
+  Select,
+  Row,
+  Col,
 } from 'antd';
 import {
   SaveOutlined,
@@ -19,8 +23,10 @@ import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 
 const QualityInspection = () => {
+  const [filterForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState('');
   const [drawerData, setDrawerData] = useState([]);
@@ -83,6 +89,38 @@ const QualityInspection = () => {
   React.useEffect(() => {
     initMockData();
   }, []);
+
+  React.useEffect(() => {
+    setFilteredDataSource(dataSource);
+  }, [dataSource]);
+
+  // 筛选功能
+  const handleFilter = () => {
+    const values = filterForm.getFieldsValue();
+    let filtered = dataSource;
+
+    if (values.contractNo) {
+      filtered = filtered.filter(item => 
+        item.contractNo.toLowerCase().includes(values.contractNo.toLowerCase())
+      );
+    }
+
+    if (values.status) {
+      filtered = filtered.filter(item => {
+        const isCompleted = item.qualifiedQuantity > 0 && item.inspectionDate;
+        const status = isCompleted ? 'completed' : 'pending';
+        return status === values.status;
+      });
+    }
+
+    setFilteredDataSource(filtered);
+  };
+
+  // 重置筛选
+  const handleReset = () => {
+    filterForm.resetFields();
+    setFilteredDataSource(dataSource);
+  };
 
   // 处理验收日期变更
   const handleInspectionDateChange = (record, date) => {
@@ -300,6 +338,39 @@ const QualityInspection = () => {
         <h1>质量验收</h1>
       </div>
 
+      {/* 筛选区域 */}
+      <Card className="filter-card" style={{ marginBottom: 16 }}>
+        <Form form={filterForm} layout="inline">
+          <Row gutter={16} style={{ width: '100%' }}>
+            <Col span={8}>
+              <Form.Item label="合同编号" name="contractNo">
+                <Input placeholder="请输入合同编号" allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="状态" name="status">
+                <Select placeholder="请选择状态" allowClear>
+                  <Select.Option value="completed">已完成</Select.Option>
+                  <Select.Option value="pending">未完成</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item>
+                <Space>
+                  <Button type="primary" onClick={handleFilter}>
+                    查询
+                  </Button>
+                  <Button onClick={handleReset}>
+                    重置
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+
       <Card 
         className="table-card"
         title="质量验收记录"
@@ -324,7 +395,7 @@ const QualityInspection = () => {
       >
 
         <Table
-          dataSource={dataSource}
+          dataSource={filteredDataSource}
           columns={columns}
           loading={loading}
           scroll={{ x: 1200 }}
