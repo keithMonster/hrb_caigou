@@ -30,7 +30,7 @@ const PurchasePlan = () => {
   const [partsDataSource, setPartsDataSource] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(['全部']);
   const [filteredPartsDataSource, setFilteredPartsDataSource] = useState([]);
-  const [selectedXun, setSelectedXun] = useState('2025-08-上旬');
+  const [selectedXun, setSelectedXun] = useState('2025-09-中旬');
   const productTableRef = useRef();
   const partsTableRef = useRef();
 
@@ -71,8 +71,8 @@ const PurchasePlan = () => {
   // 根据选中的旬期生成日期列（10天）
   const generateDateColumns = (selectedXun) => {
     if (!selectedXun) {
-      // 默认显示2025年8月上旬
-      const startDate = dayjs('2025-08-01');
+      // 默认显示2025年9月中旬
+      const startDate = dayjs('2025-09-11');
       const dates = [];
       for (let i = 0; i < 10; i++) {
         dates.push(startDate.add(i, 'day'));
@@ -577,7 +577,7 @@ const PurchasePlan = () => {
           <Form 
             form={filterForm} 
             layout='inline'
-            initialValues={{ xunPeriod: '2025-08-上旬' }}
+            initialValues={{ xunPeriod: '2025-09-中旬' }}
           >
           <Form.Item label='计划旬期' name='xunPeriod'>
             <Select

@@ -192,36 +192,6 @@ const ProductionPlan = () => {
     }
   };
 
-  // 处理需求点击，显示抽屉
-  const handleDemandClick = (record, dateIndex) => {
-    // 模拟抽屉数据
-    const mockDrawerData = [
-      {
-        key: '1',
-        quantity: 15,
-        type: 'A类',
-        requirement: '高精度要求，表面光洁度Ra≤0.8'
-      },
-      {
-        key: '2', 
-        quantity: 10,
-        type: 'A类',
-        requirement: '耐高温要求，工作温度≤150°C'
-      },
-      {
-        key: '3',
-        quantity: record.expectedPlans[dateIndex] - 25,
-        type: 'B类',
-        requirement: '-'
-      }
-    ].filter(item => item.quantity > 0);
-    
-    const date = dateColumns[dateIndex];
-    setDrawerTitle(`${record.model} - ${date.format('MM月DD日')} 需求详情`);
-    setDrawerData(mockDrawerData);
-    setDrawerVisible(true);
-  };
-
   // 关闭抽屉
   const handleDrawerClose = () => {
     setDrawerVisible(false);
@@ -310,11 +280,6 @@ const ProductionPlan = () => {
               style={{
                 cursor: record.expectedPlans[index] > 0 ? 'pointer' : 'default',
                 fontWeight: record.expectedPlans[index] > 0 ? 'bold' : 'normal'
-              }}
-              onClick={() => {
-                if (record.expectedPlans[index] > 0) {
-                  handleDemandClick(record, index);
-                }
               }}
             >
               {record.expectedPlans[index] || '-'}
@@ -577,12 +542,6 @@ const ProductionPlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={2}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={3}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -591,7 +550,7 @@ const ProductionPlan = () => {
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`summary_${index}`}
-                    index={index + 4}
+                    index={index + 3}
                     style={{ textAlign: 'right' }}
                   >
                     <div className='cell-content'>
@@ -608,13 +567,13 @@ const ProductionPlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 4}
+                  index={dateColumns.length + 3}
                   style={{ fontWeight: 'bold', textAlign: 'center' }}
                 >
                   -
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 5}
+                  index={dateColumns.length + 4}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
