@@ -30,6 +30,7 @@ const ProductionPlan = () => {
   const [dataSource, setDataSource] = useState([]);
   const [selectedXun, setSelectedXun] = useState('2025-08-上旬');
   const [selectedFactory, setSelectedFactory] = useState('全部');
+  const [selectedQualityRequirement, setSelectedQualityRequirement] = useState('全部');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerData, setDrawerData] = useState([]);
   const [drawerTitle, setDrawerTitle] = useState('');
@@ -128,7 +129,7 @@ const ProductionPlan = () => {
       },
       {
         key: '3',
-        model: '6207',
+        model: '6206',
         qualityRequirement: '耐高温要求，工作温度≤150°C',
         factory: '精密',
         productionLine: '5',
@@ -214,6 +215,32 @@ const ProductionPlan = () => {
   // 处理分厂筛选变化
   const handleFactoryFilterChange = (factory) => {
     setSelectedFactory(factory);
+  };
+
+  // 处理质量要求筛选变化
+  const handleQualityRequirementChange = (value) => {
+    setSelectedQualityRequirement(value || '全部');
+  };
+
+  // 获取筛选后的数据
+  const getFilteredDataSource = () => {
+    let filtered = [...dataSource];
+    
+    // 按分厂筛选
+    if (selectedFactory !== '全部') {
+      filtered = filtered.filter(item => item.factory === selectedFactory);
+    }
+    
+    // 按质量要求筛选
+    if (selectedQualityRequirement !== '全部') {
+      if (selectedQualityRequirement === '有') {
+        filtered = filtered.filter(item => item.qualityRequirement);
+      } else if (selectedQualityRequirement === '无') {
+        filtered = filtered.filter(item => !item.qualityRequirement);
+      }
+    }
+    
+    return filtered;
   };
 
   // 处理总计变更
@@ -441,6 +468,22 @@ const ProductionPlan = () => {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item label='质量要求' name='qualityRequirement'>
+            <Select 
+              placeholder='请选择质量要求' 
+              allowClear 
+              style={{ width: 120 }}
+              value={selectedQualityRequirement}
+              onChange={(value) => {
+                handleQualityRequirementChange(value);
+                filterForm.setFieldsValue({ qualityRequirement: value });
+              }}
+            >
+              <Option value='全部'>全部</Option>
+              <Option value='有'>有</Option>
+              <Option value='无'>无</Option>
+            </Select>
+          </Form.Item>
 
         </Form>
       </Card>
@@ -489,7 +532,7 @@ const ProductionPlan = () => {
 
         <Table
           ref={tableRef}
-          dataSource={dataSource}
+          dataSource={getFilteredDataSource()}
           columns={generateColumns()}
           loading={loading}
           scroll={{ x: 1200 }}
