@@ -68,6 +68,10 @@ const PurchasePlan = () => {
         expectedPurchase: Array(dateColumns.length).fill(0).map((_, index) => 
           [1, 3, 5, 9].includes(index) ? [50, 30, 40, 25][Math.floor(Math.random() * 4)] : 0
         ),
+        // 均价：根据日期列数量生成数据
+        averagePrice: Array(dateColumns.length).fill(0).map((_, index) => 
+          [1, 3, 5, 9].includes(index) ? [888, 920, 850, 900][Math.floor(Math.random() * 4)] : 0
+        ),
       },
       {
         key: '2',
@@ -75,6 +79,9 @@ const PurchasePlan = () => {
         qualityRequirement: null,
         expectedPurchase: Array(dateColumns.length).fill(0).map((_, index) => 
           [1, 3, 5, 9].includes(index) ? [20, 35, 15, 30][Math.floor(Math.random() * 4)] : 0
+        ),
+        averagePrice: Array(dateColumns.length).fill(0).map((_, index) => 
+          [1, 3, 5, 9].includes(index) ? [750, 780, 720, 800][Math.floor(Math.random() * 4)] : 0
         ),
       },
       {
@@ -84,6 +91,9 @@ const PurchasePlan = () => {
         expectedPurchase: Array(dateColumns.length).fill(0).map((_, index) => 
           [1, 3, 5, 9].includes(index) ? [60, 45, 55, 40][Math.floor(Math.random() * 4)] : 0
         ),
+        averagePrice: Array(dateColumns.length).fill(0).map((_, index) => 
+          [1, 3, 5, 9].includes(index) ? [950, 980, 920, 1000][Math.floor(Math.random() * 4)] : 0
+        ),
       },
       {
         key: '4',
@@ -92,6 +102,9 @@ const PurchasePlan = () => {
         expectedPurchase: Array(dateColumns.length).fill(0).map((_, index) => 
           [1, 3, 5, 9].includes(index) ? [15, 25, 20, 18][Math.floor(Math.random() * 4)] : 0
         ),
+        averagePrice: Array(dateColumns.length).fill(0).map((_, index) => 
+          [1, 3, 5, 9].includes(index) ? [1200, 1250, 1180, 1300][Math.floor(Math.random() * 4)] : 0
+        ),
       },
       {
         key: '5',
@@ -99,6 +112,9 @@ const PurchasePlan = () => {
         qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
         expectedPurchase: Array(dateColumns.length).fill(0).map((_, index) => 
           [1, 3, 5, 9].includes(index) ? [35, 40, 28, 22][Math.floor(Math.random() * 4)] : 0
+        ),
+        averagePrice: Array(dateColumns.length).fill(0).map((_, index) => 
+          [1, 3, 5, 9].includes(index) ? [1100, 1150, 1080, 1200][Math.floor(Math.random() * 4)] : 0
         ),
       },
     ];
@@ -173,23 +189,43 @@ const PurchasePlan = () => {
       columns.push({
         title: date.format('MM/DD'),
         key: `day_${index}`,
-        width: 90,
-        align: 'right',
-        render: (_, record) => (
-          <div className='cell-content'>
-            <div 
-              className='plan-value'
-              style={{
-                cursor: record.expectedPurchase[index] > 0 ? 'pointer' : 'default',
-                fontWeight: record.expectedPurchase[index] > 0 ? 'bold' : 'normal',
-                textAlign: 'right',
-                padding: '4px 8px'
-              }}
-            >
-              {record.expectedPurchase[index] || '-'}
+        width: 110,
+        align: 'center',
+        render: (_, record) => {
+          const quantity = record.expectedPurchase[index];
+          const price = record.averagePrice[index];
+          const hasData = quantity > 0;
+          
+          return (
+            <div className='cell-content' style={{ textAlign: 'center' }}>
+              <div 
+                className='plan-value'
+                style={{
+                  cursor: hasData ? 'pointer' : 'default',
+                  fontWeight: hasData ? 'bold' : 'normal',
+                  fontSize: '13px',
+                  lineHeight: '1.2',
+                  marginBottom: hasData ? '2px' : '0'
+                }}
+              >
+                {quantity || '-'}
+              </div>
+              {hasData && (
+                 <div 
+                   className='price-value'
+                   style={{
+                     fontSize: '11px',
+                     color: '#666',
+                     lineHeight: '1.2',
+                     textAlign: 'right'
+                   }}
+                 >
+                   ￥{price}
+                 </div>
+               )}
             </div>
-          </div>
-        ),
+          );
+        },
       });
     });
 
@@ -198,19 +234,35 @@ const PurchasePlan = () => {
       title: '汇总',
       dataIndex: 'total',
       key: 'total',
-      width: 80,
-      align: 'right',
+      width: 100,
+      align: 'center',
       fixed: 'right',
       render: (_, record) => {
         const expectedTotal = record.expectedPurchase.reduce(
           (sum, val) => sum + (val || 0),
           0
         );
+        const avgPrice = record.averagePrice.filter((price, index) => record.expectedPurchase[index] > 0);
+        const averageOfPrices = avgPrice.length > 0 ? Math.round(avgPrice.reduce((sum, price) => sum + price, 0) / avgPrice.length) : 0;
+        
         return (
-          <div className='cell-content'>
-            <div className='plan-value total-value' style={{ textAlign: 'right', padding: '4px 8px', fontWeight: 'bold' }}>
+          <div className='cell-content' style={{ textAlign: 'center' }}>
+            <div className='plan-value total-value' style={{ fontWeight: 'bold', fontSize: '13px', lineHeight: '1.2', marginBottom: expectedTotal > 0 ? '2px' : '0' }}>
               {expectedTotal}
             </div>
+            {expectedTotal > 0 && (
+              <div 
+                className='price-value'
+                style={{
+                  fontSize: '11px',
+                  color: '#666',
+                  lineHeight: '1.2',
+                  textAlign: 'right'
+                }}
+              >
+                ￥{averageOfPrices}
+              </div>
+            )}
           </div>
         );
       },
@@ -230,10 +282,16 @@ const PurchasePlan = () => {
       };
 
       dateColumns.forEach((date, index) => {
-        rowData[date.format('MM/DD')] = row.expectedPurchase[index];
+        const quantity = row.expectedPurchase[index];
+        const price = row.averagePrice[index];
+        rowData[`${date.format('MM/DD')}_数量`] = quantity || 0;
+        rowData[`${date.format('MM/DD')}_均价`] = quantity > 0 ? `￥${price}` : '-';
       });
 
-      rowData['旬总计'] = row.expectedPurchase.reduce((sum, val) => sum + (val || 0), 0);
+      rowData['总数量'] = row.expectedPurchase.reduce((sum, val) => sum + (val || 0), 0);
+      const avgPrice = row.averagePrice.filter((price, index) => row.expectedPurchase[index] > 0);
+      const averageOfPrices = avgPrice.length > 0 ? Math.round(avgPrice.reduce((sum, price) => sum + price, 0) / avgPrice.length) : 0;
+      rowData['平均价格'] = averageOfPrices > 0 ? `￥${averageOfPrices}` : '-';
 
       return rowData;
     });
@@ -337,67 +395,6 @@ const PurchasePlan = () => {
           pagination={false}
           bordered
           size='small'
-          summary={(pageData) => {
-            // 计算合计数据
-            const totalExpectedPurchase = new Array(dateColumns.length).fill(0);
-
-            pageData.forEach((record) => {
-              record.expectedPurchase.forEach((val, index) => {
-                totalExpectedPurchase[index] += val || 0;
-              });
-            });
-
-            const totalExpected = totalExpectedPurchase.reduce(
-              (sum, val) => sum + val,
-              0
-            );
-
-            return (
-              <Table.Summary.Row
-                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
-              >
-                <Table.Summary.Cell
-                  index={0}
-                  style={{ fontWeight: 'bold', color: '#1890ff' }}
-                >
-                  合计
-                </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={1}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                {dateColumns.map((_, index) => (
-                  <Table.Summary.Cell
-                    key={`summary_${index}`}
-                    index={index + 2}
-                    style={{ textAlign: 'right' }}
-                  >
-                    <div className='cell-content'>
-                      <div
-                        className='plan-value'
-                        style={{ fontWeight: 'bold', textAlign: 'right', padding: '4px 8px' }}
-                      >
-                        {totalExpectedPurchase[index]}
-                      </div>
-                    </div>
-                  </Table.Summary.Cell>
-                ))}
-                <Table.Summary.Cell
-                  index={dateColumns.length + 2}
-                  className='text-right'
-                  style={{ fontWeight: 'bold', textAlign: 'right' }}
-                >
-                  <div className='cell-content'>
-                    <div className='plan-value total-value' style={{ textAlign: 'right', padding: '4px 8px', fontWeight: 'bold' }}>
-                      {totalExpected}
-                    </div>
-                  </div>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            );
-          }}
         />
         <div
           style={{

@@ -399,39 +399,6 @@ const Warehousing = () => {
           }}
           bordered
           size="small"
-          summary={(pageData) => {
-            const totalQualified = pageData.reduce(
-              (sum, record) => sum + (record.qualifiedQuantity || 0),
-              0
-            );
-            const totalWarehouse = pageData.reduce(
-              (sum, record) => sum + (record.warehouseQuantity || 0),
-              0
-            );
-            const overallRate = totalQualified > 0 ? ((totalWarehouse / totalQualified) * 100).toFixed(1) : '0.0';
-
-            return (
-              <Table.Summary.Row style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}>
-                <Table.Summary.Cell index={0} style={{ fontWeight: 'bold', color: '#1890ff' }}>
-                  合计
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={1}>-</Table.Summary.Cell>
-                <Table.Summary.Cell index={2}>-</Table.Summary.Cell>
-                <Table.Summary.Cell index={3} style={{ textAlign: 'right', fontWeight: 'bold', color: '#52c41a' }}>
-                  {totalQualified}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={4}>-</Table.Summary.Cell>
-                <Table.Summary.Cell index={5} style={{ textAlign: 'right', fontWeight: 'bold', color: '#1890ff' }}>
-                  {totalWarehouse}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={6}>-</Table.Summary.Cell>
-                <Table.Summary.Cell index={7}>-</Table.Summary.Cell>
-                <Table.Summary.Cell index={8} style={{ textAlign: 'center', fontWeight: 'bold', color: '#1890ff' }}>
-                  {overallRate}%
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            );
-          }}
         />
       </Card>
     </div>
