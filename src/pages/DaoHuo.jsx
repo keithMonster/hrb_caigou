@@ -40,8 +40,11 @@ const Arrival = () => {
   // 合同选项（实际应该从采购合同页面获取）
   const contractOptions = [
     { value: 'HT2025001', label: 'HT2025001 - 北京精密轴承有限公司 - 6205-2RS' },
-    { value: 'HT2025002', label: 'HT2025002 - 上海轴承制造厂 - 6206-ZZ' },
-    { value: 'HT2025003', label: 'HT2025003 - SKF轴承代理商 - 6310' },
+    { value: 'HT2025002', label: 'HT2025001 - 北京精密轴承有限公司 - 6206-ZZ' },
+    { value: 'HT2025003', label: 'HT2025002 - 上海轴承制造厂 - 6206-ZZ' },
+    { value: 'HT2025004', label: 'HT2025002 - 上海轴承制造厂 - 6207-2RS' },
+    { value: 'HT2025005', label: 'HT2025002 - 上海轴承制造厂 - 6208-ZZ' },
+    { value: 'HT2025006', label: 'HT2025006 - 哈尔滨轴承制造有限公司 - 6312-2RZ' },
   ];
 
   // 初始化模拟数据
@@ -141,6 +144,9 @@ const Arrival = () => {
       'HT2025001': { supplier: '北京精密轴承有限公司', model: '6205-2RS' },
       'HT2025002': { supplier: '上海轴承制造厂', model: '6206-ZZ' },
       'HT2025003': { supplier: 'SKF轴承代理商', model: '6310' },
+      'HT2025004': { supplier: '天津轴承集团', model: '6309-2RS' },
+      'HT2025005': { supplier: '洛阳轴承研究所', model: '6311-ZZ' },
+      'HT2025006': { supplier: '哈尔滨轴承制造有限公司', model: '6312-2RZ' },
     };
     return contractMap[contractNo] || { supplier: '', model: '' };
   };
@@ -161,11 +167,8 @@ const Arrival = () => {
 
   // 处理合同编号变化
   const handleContractChange = (contractNo) => {
-    const contractInfo = getContractInfo(contractNo);
-    form.setFieldsValue({
-      supplier: contractInfo.supplier,
-      model: contractInfo.model,
-    });
+    // 合同编号变化时的处理逻辑（如果需要的话）
+    // 由于已移除供应商和型号字段，这里暂时不需要额外处理
   };
 
   // 处理表单提交
@@ -531,12 +534,12 @@ const Arrival = () => {
           style={{ marginTop: 16 }}
         >
           <Form.Item
-            label="合同编号"
+            label="采购合同"
             name="contractNo"
-            rules={[{ required: true, message: '请选择合同编号' }]}
+            rules={[{ required: true, message: '请选择采购合同' }]}
           >
             <Select 
-              placeholder="请选择合同编号" 
+              placeholder="请选择采购合同" 
               onChange={handleContractChange}
               showSearch
               filterOption={(input, option) =>
@@ -552,37 +555,11 @@ const Arrival = () => {
           </Form.Item>
           
           <Form.Item
-            label="供应商"
-            name="supplier"
-          >
-            <Input placeholder="自动填充" disabled />
-          </Form.Item>
-          
-          <Form.Item
-            label="型号"
-            name="model"
-          >
-            <Input placeholder="自动填充" disabled />
-          </Form.Item>
-          
-          <Form.Item
             label="到货日期"
             name="arrivalDate"
             rules={[{ required: true, message: '请选择到货日期' }]}
           >
             <DatePicker style={{ width: '100%' }} placeholder="请选择到货日期" />
-          </Form.Item>
-          
-          <Form.Item
-            label="采购数量"
-            name="purchaseQuantity"
-            rules={[{ required: true, message: '请输入采购数量' }]}
-          >
-            <InputNumber 
-              min={1} 
-              style={{ width: '100%' }} 
-              placeholder="请输入采购数量" 
-            />
           </Form.Item>
           
           <Form.Item

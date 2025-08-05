@@ -240,8 +240,8 @@ const PurchasePlan = () => {
 
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '采购计划');
-    XLSX.writeFile(wb, `采购计划_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, '采购需求');
+    XLSX.writeFile(wb, `采购需求_${dayjs().format('YYYY-MM-DD')}.xlsx`);
 
     message.success('导出成功');
   };
@@ -251,7 +251,7 @@ const PurchasePlan = () => {
   return (
     <div>
       <div className='page-header'>
-        <h1>采购计划</h1>
+        <h1>采购需求</h1>
       </div>
 
       {/* 筛选区域 */}
@@ -312,10 +312,10 @@ const PurchasePlan = () => {
         </Form>
       </Card>
 
-      {/* 采购计划表格 */}
+      {/* 采购需求表格 */}
       <Card 
         className='table-card'
-        title="采购计划"
+        title="采购需求"
         extra={
           <Space>
             <Button

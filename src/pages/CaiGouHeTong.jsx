@@ -109,6 +109,51 @@ const PurchaseContract = () => {
           }
         ]
       },
+      {
+        contractNo: 'HT2025004',
+        contractDate: '2025-01-30',
+        supplier: '天津轴承集团',
+        models: [
+          {
+            model: '6309-2RS',
+            purchaseQuantity: 600,
+            arrivalQuantity: 400,
+            inspectionQuantity: 380,
+            qualifiedQuantity: 370,
+            warehouseQuantity: 370,
+          }
+        ]
+      },
+      {
+        contractNo: 'HT2025005',
+        contractDate: '2025-02-05',
+        supplier: '洛阳轴承研究所',
+        models: [
+          {
+            model: '6311-ZZ',
+            purchaseQuantity: 400,
+            arrivalQuantity: 200,
+            inspectionQuantity: 180,
+            qualifiedQuantity: 175,
+            warehouseQuantity: 175,
+          }
+        ]
+      },
+      {
+        contractNo: 'HT2025006',
+        contractDate: '2025-02-10',
+        supplier: '哈尔滨轴承制造有限公司',
+        models: [
+          {
+            model: '6312-2RZ',
+            purchaseQuantity: 350,
+            arrivalQuantity: 150,
+            inspectionQuantity: 140,
+            qualifiedQuantity: 135,
+            warehouseQuantity: 135,
+          }
+        ]
+      },
     ];
     
     // 将数据展开为每个型号一行
@@ -443,7 +488,7 @@ const PurchaseContract = () => {
       ),
     },
     {
-      title: '执行状态',
+      title: '状态',
       key: 'executionStatus',
       width: 100,
       align: 'center',
@@ -557,14 +602,21 @@ const PurchaseContract = () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item label="执行状态" name="executionStatus">
-                <Select placeholder="请选择执行状态" allowClear>
+              <Form.Item label="交货日期" name="contractDate">
+                <DatePicker placeholder="请选择交货日期" style={{ width: '100%' }} allowClear />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="状态" name="executionStatus">
+                <Select placeholder="请选择状态" allowClear>
                   <Select.Option value="completed">已完成</Select.Option>
                   <Select.Option value="pending">未完成</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={6}>
+          </Row>
+          <Row gutter={16} style={{ width: '100%', marginTop: 16 }}>
+            <Col span={24}>
               <Form.Item>
                 <Space>
                   <Button type="primary" onClick={handleFilter}>
