@@ -193,22 +193,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: '234424BM',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: '7006C',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '6.35',
+            unitConsumption: 10,
             dailyQuantities: [0, 10, 0, 12, 0, 15, 0, 0, 0, 18]
           },
           保持架: {
             spec: '6004',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: '6004-RZ',
+            unitConsumption: 2,
             dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
           }
         }
@@ -225,22 +230,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: '234424BM-HT',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: '7006C-HT',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '6.35',
+            unitConsumption: 14,
             dailyQuantities: [0, 14, 0, 16, 0, 11, 0, 0, 0, 20]
           },
           保持架: {
             spec: '6004-HT',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: '6004-RZ-HT',
+            unitConsumption: 2,
             dailyQuantities: [0, 2, 0, 2, 0, 1, 0, 0, 0, 2]
           }
         }
@@ -257,22 +267,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: '234424BM',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: '7006C',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '6.35',
+            unitConsumption: 9,
             dailyQuantities: [0, 9, 0, 13, 0, 8, 0, 0, 0, 17]
           },
           保持架: {
             spec: '6004',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: '6004-ZZ',
+            unitConsumption: 2,
             dailyQuantities: [0, 2, 0, 1, 0, 0, 0, 0, 0, 2]
           }
         }
@@ -289,22 +304,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: '234425BM',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: '7007C',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '7.0',
+            unitConsumption: 12,
             dailyQuantities: [0, 12, 0, 19, 0, 15, 0, 0, 0, 8]
           },
           保持架: {
             spec: '6005',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: '6005-RS',
+            unitConsumption: 2,
             dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 0]
           }
         }
@@ -321,22 +341,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: 'SKF-234426BM',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: 'SKF-7008C',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '8.0',
+            unitConsumption: 16,
             dailyQuantities: [0, 16, 0, 11, 0, 14, 0, 0, 0, 20]
           },
           保持架: {
             spec: 'SKF-6006',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: 'SKF-6006-RZ',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 2, 0, 0, 0, 0, 0, 2]
           }
         }
@@ -353,22 +378,27 @@ const PurchasePlan = () => {
         materials: {
           外圈: {
             spec: 'NSK-234427BM',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           内圈: {
             spec: 'NSK-7009C',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           滚动体: {
             spec: '9.0',
+            unitConsumption: 18,
             dailyQuantities: [0, 18, 0, 13, 0, 10, 0, 0, 0, 15]
           },
           保持架: {
             spec: 'NSK-6007',
+            unitConsumption: 1,
             dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
           },
           密封件: {
             spec: 'NSK-6007-RZ',
+            unitConsumption: 2,
             dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
           }
         }
@@ -490,6 +520,17 @@ const PurchasePlan = () => {
     const targetRecord = newData.find((item) => item.key === record.key);
     if (targetRecord) {
       targetRecord.dailyInputs[index] = value || 0;
+      
+      // 自动重新计算所有物料的日期数量
+      Object.keys(targetRecord.materials).forEach(materialType => {
+        const material = targetRecord.materials[materialType];
+        if (material && material.unitConsumption) {
+          material.dailyQuantities = targetRecord.dailyInputs.map(
+            (productQuantity) => (productQuantity || 0) * (material.unitConsumption || 0)
+          );
+        }
+      });
+      
       setProductDataSource(newData);
     }
   };
@@ -500,6 +541,20 @@ const PurchasePlan = () => {
     const targetRecord = newData.find((item) => item.key === productKey);
     if (targetRecord && targetRecord.materials[materialType]) {
       targetRecord.materials[materialType].spec = newSpec;
+      setProductDataSource(newData);
+    }
+  };
+
+  // 处理物料单耗变更
+  const handleMaterialUnitConsumptionChange = (productKey, materialType, newUnitConsumption) => {
+    const newData = [...productDataSource];
+    const targetRecord = newData.find((item) => item.key === productKey);
+    if (targetRecord && targetRecord.materials[materialType]) {
+      targetRecord.materials[materialType].unitConsumption = newUnitConsumption || 0;
+      // 重新计算所有日期的数量：单耗 * 对应日期的成品数量
+      targetRecord.materials[materialType].dailyQuantities = targetRecord.dailyInputs.map(
+        (productQuantity) => (productQuantity || 0) * (newUnitConsumption || 0)
+      );
       setProductDataSource(newData);
     }
   };
@@ -565,12 +620,13 @@ const PurchasePlan = () => {
     
     return (
       <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
-        <h4 style={{ marginBottom: '16px', color: '#1890ff' }}>物料详情 - {record.spec}</h4>
+        <h4 style={{ marginBottom: '0', color: '#1890ff' }}></h4>
         <Table
           dataSource={materialTypes.map(type => ({
             key: type,
             materialType: type,
             spec: record.materials[type]?.spec || '',
+            unitConsumption: record.materials[type]?.unitConsumption || 0,
             dailyQuantities: record.materials[type]?.dailyQuantities || new Array(dateColumns.length).fill(0)
           }))}
           columns={[
@@ -597,23 +653,42 @@ const PurchasePlan = () => {
                 />
               ),
             },
+            {
+              title: '单耗',
+              dataIndex: 'unitConsumption',
+              key: 'unitConsumption',
+              width: 80,
+              fixed: 'left',
+              align: 'right',
+              render: (value, materialRecord) => (
+                <InputNumber
+                  size="small"
+                  min={0}
+                  precision={2}
+                  value={value}
+                  onChange={(newValue) => handleMaterialUnitConsumptionChange(record.key, materialRecord.materialType, newValue)}
+                  placeholder="单耗"
+                  style={{ width: '100%' }}
+                  controls={false}
+                />
+              ),
+            },
             ...dateColumns.map((date, index) => ({
               title: date.format('MM/DD'),
               key: `material_day_${index}`,
               width: 90,
               align: 'right',
-              render: (_, materialRecord) => (
-                <InputNumber
-                  size="small"
-                  min={0}
-                  precision={0}
-                  value={materialRecord.dailyQuantities[index] || undefined}
-                  onChange={(value) => handleMaterialQuantityChange(record.key, materialRecord.materialType, index, value)}
-                  className="daily-input"
-                  controls={false}
-                  style={{ width: '100%' }}
-                />
-              ),
+              render: (_, materialRecord) => {
+                // 计算数量：单耗 * 对应日期的成品数量
+                const productQuantity = record.dailyInputs[index] || 0;
+                const unitConsumption = materialRecord.unitConsumption || 0;
+                const calculatedQuantity = productQuantity * unitConsumption;
+                return (
+                  <span style={{ fontWeight: 500, color: '#000' }}>
+                    {calculatedQuantity}
+                  </span>
+                );
+              },
             })),
             {
               title: '汇总',
@@ -621,8 +696,11 @@ const PurchasePlan = () => {
               width: 80,
               align: 'right',
               render: (_, materialRecord) => {
-                const total = materialRecord.dailyQuantities.reduce((sum, val) => sum + (val || 0), 0);
-                return <span style={{ fontWeight: 500 }}>{total}</span>;
+                // 计算汇总：单耗 * 成品总数量
+                const unitConsumption = materialRecord.unitConsumption || 0;
+                const totalProductQuantity = record.dailyInputs.reduce((sum, val) => sum + (val || 0), 0);
+                const total = unitConsumption * totalProductQuantity;
+                return <span style={{ fontWeight: 500, color: '#1890ff' }}>{total}</span>;
               },
             }
           ]}
