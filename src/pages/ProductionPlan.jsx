@@ -105,7 +105,7 @@ const ProductionPlan = () => {
       {
         key: '1',
         model: '6205',
-        qualityRequirement: '高精度要求，表面光洁度Ra≤0.8',
+        qualityRequirement: null,
         factory: '电机',
         productionLine: '1',
         type: 'A类',
