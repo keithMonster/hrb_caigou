@@ -33,6 +33,7 @@ const PurchasePlan = () => {
   const [selectedXun, setSelectedXun] = useState('2025-09-中旬');
   const [selectedFactory, setSelectedFactory] = useState('全部');
   const [selectedQualityRequirement, setSelectedQualityRequirement] = useState('全部');
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const productTableRef = useRef();
   const partsTableRef = useRef();
 
@@ -100,7 +101,7 @@ const PurchasePlan = () => {
 
   const dateColumns = generateDateColumns(selectedXun);
 
-  // 原材料选项
+  // 物料选项
   const partNameOptions = [
     '内圈-6205',
     '内圈-6206',
@@ -120,7 +121,7 @@ const PurchasePlan = () => {
     '密封件-低温型',
   ];
 
-  // 原材料分类选项
+  // 物料分类选项
   const categoryOptions = [
     '全部',
     '内圈',
@@ -189,6 +190,28 @@ const PurchasePlan = () => {
         dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
         totalPlan: 170,
         dec31Demand: 180,
+        materials: {
+          外圈: {
+            spec: '234424BM',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: '7006C',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '6.35',
+            dailyQuantities: [0, 10, 0, 12, 0, 15, 0, 0, 0, 18]
+          },
+          保持架: {
+            spec: '6004',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: '6004-RZ',
+            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
+          }
+        }
       },
       {
         key: '2',
@@ -199,6 +222,28 @@ const PurchasePlan = () => {
         dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
         totalPlan: 170,
         dec31Demand: 160,
+        materials: {
+          外圈: {
+            spec: '234424BM-HT',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: '7006C-HT',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '6.35',
+            dailyQuantities: [0, 14, 0, 16, 0, 11, 0, 0, 0, 20]
+          },
+          保持架: {
+            spec: '6004-HT',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: '6004-RZ-HT',
+            dailyQuantities: [0, 2, 0, 2, 0, 1, 0, 0, 0, 2]
+          }
+        }
       },
       {
         key: '3',
@@ -209,6 +254,28 @@ const PurchasePlan = () => {
         dailyInputs: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
         totalPlan: 110,
         dec31Demand: 0,
+        materials: {
+          外圈: {
+            spec: '234424BM',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: '7006C',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '6.35',
+            dailyQuantities: [0, 9, 0, 13, 0, 8, 0, 0, 0, 17]
+          },
+          保持架: {
+            spec: '6004',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: '6004-ZZ',
+            dailyQuantities: [0, 2, 0, 1, 0, 0, 0, 0, 0, 2]
+          }
+        }
       },
       {
         key: '4',
@@ -219,6 +286,28 @@ const PurchasePlan = () => {
         dailyInputs: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
         totalPlan: 130,
         dec31Demand: 0,
+        materials: {
+          外圈: {
+            spec: '234425BM',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: '7007C',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '7.0',
+            dailyQuantities: [0, 12, 0, 19, 0, 15, 0, 0, 0, 8]
+          },
+          保持架: {
+            spec: '6005',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: '6005-RS',
+            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 0]
+          }
+        }
       },
       {
         key: '5',
@@ -229,6 +318,28 @@ const PurchasePlan = () => {
         dailyInputs: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
         totalPlan: 90,
         dec31Demand: 0,
+        materials: {
+          外圈: {
+            spec: 'SKF-234426BM',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: 'SKF-7008C',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '8.0',
+            dailyQuantities: [0, 16, 0, 11, 0, 14, 0, 0, 0, 20]
+          },
+          保持架: {
+            spec: 'SKF-6006',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: 'SKF-6006-RZ',
+            dailyQuantities: [0, 1, 0, 2, 0, 0, 0, 0, 0, 2]
+          }
+        }
       },
       {
         key: '6',
@@ -239,12 +350,34 @@ const PurchasePlan = () => {
         dailyInputs: [0, 35, 0, 28, 0, 22, 0, 0, 0, 25],
         totalPlan: 110,
         dec31Demand: 0,
+        materials: {
+          外圈: {
+            spec: 'NSK-234427BM',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          内圈: {
+            spec: 'NSK-7009C',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          滚动体: {
+            spec: '9.0',
+            dailyQuantities: [0, 18, 0, 13, 0, 10, 0, 0, 0, 15]
+          },
+          保持架: {
+            spec: 'NSK-6007',
+            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+          },
+          密封件: {
+            spec: 'NSK-6007-RZ',
+            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
+          }
+        }
       }
     ];
     setProductDataSource(mockData);
   };
 
-  // 初始化原材料采购模拟数据
+  // 初始化物料采购模拟数据
   const initPartsMockData = () => {
     const mockData = [
       {
@@ -361,7 +494,27 @@ const PurchasePlan = () => {
     }
   };
 
-  // 处理原材料每日计划变更
+  // 处理物料规格变更
+  const handleMaterialSpecChange = (productKey, materialType, newSpec) => {
+    const newData = [...productDataSource];
+    const targetRecord = newData.find((item) => item.key === productKey);
+    if (targetRecord && targetRecord.materials[materialType]) {
+      targetRecord.materials[materialType].spec = newSpec;
+      setProductDataSource(newData);
+    }
+  };
+
+  // 处理物料数量变更
+  const handleMaterialQuantityChange = (productKey, materialType, dayIndex, value) => {
+    const newData = [...productDataSource];
+    const targetRecord = newData.find((item) => item.key === productKey);
+    if (targetRecord && targetRecord.materials[materialType]) {
+      targetRecord.materials[materialType].dailyQuantities[dayIndex] = value || 0;
+      setProductDataSource(newData);
+    }
+  };
+
+  // 处理物料每日计划变更
   const handlePartsDailyChange = (record, index, value) => {
     const newData = [...partsDataSource];
     const targetRecord = newData.find((item) => item.key === record.key);
@@ -371,7 +524,7 @@ const PurchasePlan = () => {
     }
   };
 
-  // 处理原材料名称变更
+  // 处理物料名称变更
   const handlePartNameChange = (record, value) => {
     const newData = [...partsDataSource];
     const targetRecord = newData.find((item) => item.key === record.key);
@@ -391,7 +544,7 @@ const PurchasePlan = () => {
     }
   };
 
-  // 新增原材料行
+  // 新增物料行
   const handleAddPartsRow = () => {
     const newKey = Date.now().toString();
     const newRow = {
@@ -404,6 +557,82 @@ const PurchasePlan = () => {
       totalPlan: 0,
     };
     setPartsDataSource([...partsDataSource, newRow]);
+  };
+
+  // 生成物料展开内容
+  const renderExpandedRow = (record) => {
+    const materialTypes = ['外圈', '内圈', '滚动体', '保持架', '密封件'];
+    
+    return (
+      <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
+        <h4 style={{ marginBottom: '16px', color: '#1890ff' }}>物料详情 - {record.spec}</h4>
+        <Table
+          dataSource={materialTypes.map(type => ({
+            key: type,
+            materialType: type,
+            spec: record.materials[type]?.spec || '',
+            dailyQuantities: record.materials[type]?.dailyQuantities || new Array(dateColumns.length).fill(0)
+          }))}
+          columns={[
+            {
+              title: '物料类型',
+              dataIndex: 'materialType',
+              key: 'materialType',
+              width: 100,
+              fixed: 'left',
+            },
+            {
+              title: '规格',
+              dataIndex: 'spec',
+              key: 'spec',
+              width: 120,
+              fixed: 'left',
+              render: (value, materialRecord) => (
+                <Input
+                  size="small"
+                  value={value}
+                  onChange={(e) => handleMaterialSpecChange(record.key, materialRecord.materialType, e.target.value)}
+                  placeholder="请输入规格"
+                  style={{ width: '100%' }}
+                />
+              ),
+            },
+            ...dateColumns.map((date, index) => ({
+              title: date.format('MM/DD'),
+              key: `material_day_${index}`,
+              width: 90,
+              align: 'right',
+              render: (_, materialRecord) => (
+                <InputNumber
+                  size="small"
+                  min={0}
+                  precision={0}
+                  value={materialRecord.dailyQuantities[index] || undefined}
+                  onChange={(value) => handleMaterialQuantityChange(record.key, materialRecord.materialType, index, value)}
+                  className="daily-input"
+                  controls={false}
+                  style={{ width: '100%' }}
+                />
+              ),
+            })),
+            {
+              title: '汇总',
+              key: 'material_total',
+              width: 80,
+              align: 'right',
+              render: (_, materialRecord) => {
+                const total = materialRecord.dailyQuantities.reduce((sum, val) => sum + (val || 0), 0);
+                return <span style={{ fontWeight: 500 }}>{total}</span>;
+              },
+            }
+          ]}
+          pagination={false}
+          size="small"
+          bordered
+          scroll={{ x: 800 }}
+        />
+      </div>
+    );
   };
 
   // 生成成品表格列配置
@@ -503,11 +732,11 @@ const PurchasePlan = () => {
     return columns;
   };
 
-  // 生成原材料表格列配置
+  // 生成物料表格列配置
   const generatePartsColumns = () => {
     const columns = [
       {
-        title: '原材料',
+        title: '物料',
         dataIndex: 'partName',
         key: 'partName',
         width: 150,
@@ -519,7 +748,7 @@ const PurchasePlan = () => {
             onChange={(selectedValue) =>
               handlePartNameChange(record, selectedValue)
             }
-            placeholder='请选择原材料'
+            placeholder='请选择物料'
             style={{ width: '100%' }}
             showSearch
             filterOption={(input, option) =>
@@ -626,10 +855,10 @@ const PurchasePlan = () => {
       return rowData;
     });
 
-    // 导出原材料物料准备计划
+    // 导出物料物料准备计划
     const partsExportData = partsDataSource.map((row) => {
       const rowData = {
-        原材料: row.partName,
+        物料: row.partName,
         当前库存: row.initialStock,
       };
 
@@ -647,7 +876,7 @@ const PurchasePlan = () => {
     XLSX.utils.book_append_sheet(wb, productWs, '物料准备计划');
 
     const partsWs = XLSX.utils.json_to_sheet(partsExportData);
-    XLSX.utils.book_append_sheet(wb, partsWs, '原材料物料准备计划');
+    XLSX.utils.book_append_sheet(wb, partsWs, '物料物料准备计划');
 
     XLSX.writeFile(wb, `物料准备计划_${dayjs().format('YYYY-MM-DD')}.xlsx`);
 
@@ -759,6 +988,28 @@ const PurchasePlan = () => {
           }}
           bordered
           size='small'
+          expandable={{
+            expandedRowRender: renderExpandedRow,
+            expandedRowKeys: expandedRowKeys,
+            onExpand: (expanded, record) => {
+              if (expanded) {
+                setExpandedRowKeys([...expandedRowKeys, record.key]);
+              } else {
+                setExpandedRowKeys(expandedRowKeys.filter(key => key !== record.key));
+              }
+            },
+            expandRowByClick: false,
+            expandIcon: ({ expanded, onExpand, record }) => (
+              <Button
+                type="text"
+                size="small"
+                onClick={e => onExpand(record, e)}
+                style={{ padding: '0 2px' ,color:'#188dfa'}}
+              >
+                {expanded ? '收起' : '展开'}
+              </Button>
+            ),
+          }}
           summary={() => {
             // 计算物料准备计划合计数据，使用筛选后的数据
             const filteredData = getFilteredProductDataSource();
@@ -795,12 +1046,18 @@ const PurchasePlan = () => {
               >
                 <Table.Summary.Cell
                   index={0}
+                  style={{ textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={1}
                   style={{ fontWeight: 'bold', color: '#1890ff' }}
                 >
                   合计
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={1}
+                  index={2}
                   style={{ fontWeight: 'bold', textAlign: 'center' }}
                 >
                   -
@@ -808,7 +1065,7 @@ const PurchasePlan = () => {
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`product_summary_${index}`}
-                    index={index + 2}
+                    index={index + 3}
                     style={{ textAlign: 'right' }}
                   >
                     <div className='cell-content'>
@@ -825,7 +1082,7 @@ const PurchasePlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 2}
+                  index={dateColumns.length + 3}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -835,7 +1092,7 @@ const PurchasePlan = () => {
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
+                  index={dateColumns.length + 4}
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
                   <div className='cell-content'>
@@ -853,10 +1110,10 @@ const PurchasePlan = () => {
 
       <Divider />
 
-      {/* 原材料物料准备计划表格 */}
+      {/* 物料物料准备计划表格 */}
       {/* <Card 
         className='table-card'
-        title="原材料物料准备计划"
+        title="物料物料准备计划"
         extra={
           <Space>
             <Button
