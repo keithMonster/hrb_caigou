@@ -105,6 +105,7 @@ const ProductionPlan = () => {
       {
         key: '1',
         model: '6205',
+        qualityRequirement: '高精度要求，表面光洁度Ra≤0.8',
         factory: '电机',
         productionLine: '1',
         type: 'A类',
@@ -117,6 +118,7 @@ const ProductionPlan = () => {
       {
         key: '2',
         model: '6206',
+        qualityRequirement: null,
         factory: '铁路',
         productionLine: '3',
         type: 'B类',
@@ -127,6 +129,7 @@ const ProductionPlan = () => {
       {
         key: '3',
         model: '6207',
+        qualityRequirement: '耐高温要求，工作温度≤150°C',
         factory: '精密',
         productionLine: '5',
         type: 'A类',
@@ -137,6 +140,7 @@ const ProductionPlan = () => {
       {
         key: '4',
         model: 'SKF-001',
+        qualityRequirement: null,
         factory: '黄海',
         productionLine: '7',
         type: 'B类',
@@ -147,6 +151,7 @@ const ProductionPlan = () => {
       {
         key: '5',
         model: 'NSK-002',
+        qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
         factory: '电机',
         productionLine: '2',
         type: 'A类',
@@ -269,6 +274,18 @@ const ProductionPlan = () => {
         fixed: 'left',
       },
       {
+        title: '质量要求',
+        dataIndex: 'qualityRequirement',
+        key: 'qualityRequirement',
+        width: 120,
+        fixed: 'left',
+        render: (value) => (
+          <span style={{ color: value ? '#ff4d4f' : '#999' }}>
+            {value || '-'}
+          </span>
+        ),
+      },
+      {
         title: '往期结转',
         dataIndex: 'initialStock',
         key: 'initialStock',
@@ -291,7 +308,6 @@ const ProductionPlan = () => {
             <div 
               className='plan-value'
               style={{
-                color: record.expectedPlans[index] > 30 ? '#ff4d4f' : '#000',
                 cursor: record.expectedPlans[index] > 0 ? 'pointer' : 'default',
                 fontWeight: record.expectedPlans[index] > 0 ? 'bold' : 'normal'
               }}
@@ -394,6 +410,7 @@ const ProductionPlan = () => {
     const exportData = dataSource.map((row) => {
       const rowData = {
         型号: row.model,
+        质量要求: row.qualityRequirement || '-',
         类型: row.type,
         往期结转: row.initialStock,
       };
@@ -560,6 +577,12 @@ const ProductionPlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={2}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={3}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
@@ -568,7 +591,7 @@ const ProductionPlan = () => {
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`summary_${index}`}
-                    index={index + 3}
+                    index={index + 4}
                     style={{ textAlign: 'right' }}
                   >
                     <div className='cell-content'>
@@ -585,13 +608,13 @@ const ProductionPlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
+                  index={dateColumns.length + 4}
                   style={{ fontWeight: 'bold', textAlign: 'center' }}
                 >
                   -
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 4}
+                  index={dateColumns.length + 5}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
