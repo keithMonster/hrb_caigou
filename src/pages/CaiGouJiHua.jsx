@@ -323,7 +323,7 @@ const PurchasePlan = () => {
               onClick={handleExport}
               icon={<DownloadOutlined />}
             >
-              导出
+              导出Excel
             </Button>
           </Space>
         }
