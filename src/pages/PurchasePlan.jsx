@@ -709,7 +709,7 @@ const PurchasePlan = () => {
       <Divider />
 
       {/* 原材料物料准备计划表格 */}
-      <Card 
+      {/* <Card 
         className='table-card'
         title="原材料物料准备计划"
         extra={
@@ -735,7 +735,6 @@ const PurchasePlan = () => {
         }
       >
 
-        {/* 分类筛选器 */}
         <div
           style={{
             marginBottom: 16,
@@ -781,7 +780,6 @@ const PurchasePlan = () => {
           bordered
           size='small'
           summary={(pageData) => {
-            // 计算原材料采购计划合计数据
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
             pageData.forEach((record) => {
@@ -842,7 +840,7 @@ const PurchasePlan = () => {
             );
           }}
         />
-      </Card>
+      </Card> */}
     </div>
   );
 };
