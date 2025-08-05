@@ -66,7 +66,7 @@ function App() {
         {
           key: '/quality-inspection',
           icon: <CheckCircleOutlined />,
-          label: '质量验收',
+          label: '原料进厂检验',
         },
         {
           key: '/warehousing',

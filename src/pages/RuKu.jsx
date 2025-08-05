@@ -36,7 +36,7 @@ const Warehousing = () => {
     { value: '仓库C', label: '仓库C - 临时仓库' },
   ];
 
-  // 初始化模拟数据（来自质量验收记录）
+  // 初始化模拟数据（来自原料进厂检验记录）
   const initMockData = () => {
     const mockData = [
       {

@@ -200,8 +200,8 @@ const Arrival = () => {
         };
         setDataSource([...dataSource, newRecord]);
         
-        // 自动生成质量验收记录（模拟）
-        message.success('到货记录添加成功，已自动生成质量验收记录');
+        // 自动生成原料进厂检验记录（模拟）
+        message.success('到货记录添加成功，已自动生成原料进厂检验记录');
       }
       setIsModalVisible(false);
       form.resetFields();

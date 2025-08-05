@@ -190,8 +190,8 @@ const QualityInspection = () => {
 
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '质量验收记录');
-    XLSX.writeFile(wb, `质量验收记录_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, '原料进厂检验记录');
+    XLSX.writeFile(wb, `原料进厂检验记录_${dayjs().format('YYYY-MM-DD')}.xlsx`);
 
     message.success('导出成功');
   };
@@ -335,7 +335,7 @@ const QualityInspection = () => {
   return (
     <div>
       <div className="page-header">
-        <h1>质量验收</h1>
+        <h1>原料进厂检验</h1>
       </div>
 
       {/* 筛选区域 */}
@@ -373,7 +373,7 @@ const QualityInspection = () => {
 
       <Card 
         className="table-card"
-        title="质量验收记录"
+        title="原料进厂检验记录"
         extra={
           <Space>
             <Button
