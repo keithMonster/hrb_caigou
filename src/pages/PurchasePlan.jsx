@@ -519,12 +519,12 @@ const PurchasePlan = () => {
 
   // 保存功能
   const handleSave = () => {
-    message.success('采购需求已保存');
+    message.success('物料准备计划已保存');
   };
 
   // 导出功能
   const handleExport = () => {
-    // 导出成品采购需求
+    // 导出物料准备计划
     const productExportData = productDataSource.map((row) => {
       const rowData = {
         型号: row.spec,
@@ -538,7 +538,7 @@ const PurchasePlan = () => {
       return rowData;
     });
 
-    // 导出原材料采购需求
+    // 导出原材料物料准备计划
     const partsExportData = partsDataSource.map((row) => {
       const rowData = {
         原材料: row.partName,
@@ -556,12 +556,12 @@ const PurchasePlan = () => {
     const wb = XLSX.utils.book_new();
 
     const productWs = XLSX.utils.json_to_sheet(productExportData);
-    XLSX.utils.book_append_sheet(wb, productWs, '成品采购需求');
+    XLSX.utils.book_append_sheet(wb, productWs, '物料准备计划');
 
     const partsWs = XLSX.utils.json_to_sheet(partsExportData);
-    XLSX.utils.book_append_sheet(wb, partsWs, '原材料采购需求');
+    XLSX.utils.book_append_sheet(wb, partsWs, '原材料物料准备计划');
 
-    XLSX.writeFile(wb, `采购需求_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    XLSX.writeFile(wb, `物料准备计划_${dayjs().format('YYYY-MM-DD')}.xlsx`);
 
     message.success('导出成功');
   };
@@ -569,7 +569,7 @@ const PurchasePlan = () => {
   return (
     <div>
       <div className='page-header'>
-        <h1>采购需求</h1>
+        <h1>物料准备计划</h1>
       </div>
 
       {/* 筛选区域 */}
@@ -602,10 +602,10 @@ const PurchasePlan = () => {
         </Form>
       </Card>
 
-      {/* 成品采购需求表格 */}
+      {/* 物料准备计划表格 */}
       <Card 
         className='table-card'
-        title="成品采购需求"
+        title="物料准备计划"
         extra={
           <Space>
             <Button
@@ -639,7 +639,7 @@ const PurchasePlan = () => {
           bordered
           size='small'
           summary={(pageData) => {
-            // 计算成品采购需求合计数据
+            // 计算物料准备计划合计数据
             const totalDailyPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
@@ -708,10 +708,10 @@ const PurchasePlan = () => {
 
       <Divider />
 
-      {/* 原材料采购需求表格 */}
+      {/* 原材料物料准备计划表格 */}
       <Card 
         className='table-card'
-        title="原材料采购需求"
+        title="原材料物料准备计划"
         extra={
           <Space>
             <Button

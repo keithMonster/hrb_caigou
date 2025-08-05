@@ -115,6 +115,8 @@ const ProductionPlan = () => {
         expectedPlans: [0, 25, 0, 18, 0, 32, 0, 0, 0, 15],
         // 用户输入的计划数据
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        // 10/31需求数量
+        oct31Demand: 150,
       },
       {
         key: '2',
@@ -126,6 +128,8 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 12, 0, 20, 0, 8, 0, 0, 0, 25],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        // 10/31需求数量
+        oct31Demand: 120,
       },
       {
         key: '3',
@@ -137,6 +141,8 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 35, 0, 28, 0, 42, 0, 0, 0, 20],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        // 10/31需求数量
+        oct31Demand: null,
       },
       {
         key: '4',
@@ -148,6 +154,8 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 8, 0, 15, 0, 12, 0, 0, 0, 10],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        // 10/31需求数量
+        oct31Demand: null,
       },
       {
         key: '5',
@@ -159,6 +167,8 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 12],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        // 10/31需求数量
+        oct31Demand: null,
       },
     ];
     setDataSource(mockData);
@@ -286,7 +296,7 @@ const ProductionPlan = () => {
         title: '往期结转',
         dataIndex: 'initialStock',
         key: 'initialStock',
-        width: 100,
+        width: 80,
         fixed: 'left',
         align: 'right',
         render: (value) => <span style={{ fontWeight: 500 }}>{value}</span>,
@@ -325,8 +335,6 @@ const ProductionPlan = () => {
         ),
       });
     });
-
-
 
     // 添加生产线列
     columns.push({
@@ -385,7 +393,23 @@ const ProductionPlan = () => {
       },
     });
 
-
+    // 添加10/31需求列
+    columns.push({
+      title: '10/31',
+      dataIndex: 'oct31Demand',
+      key: 'oct31Demand',
+      width: 80,
+      align: 'right',
+      fixed: 'right',
+      render: (value) => (
+        <div className='cell-content'>
+          <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+            {value || '-'}
+          </div>
+          <div style={{ height: '24px' }}></div>
+        </div>
+      ),
+    });
 
     return columns;
   };
@@ -565,6 +589,12 @@ const ProductionPlan = () => {
               (sum, val) => sum + val,
               0
             );
+            
+            // 计算10/31需求总量
+            const totalOct31Demand = pageData.reduce(
+              (sum, record) => sum + (record.oct31Demand || 0),
+              0
+            );
 
 
             return (
@@ -610,21 +640,32 @@ const ProductionPlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={dateColumns.length + 4}
-                  className='text-right'
-                  style={{ fontWeight: 'bold', textAlign: 'right' }}
-                >
+                   index={dateColumns.length + 3}
+                   style={{ fontWeight: 'bold', textAlign: 'center' }}
+                 >
+                   -
+                 </Table.Summary.Cell>
+                 <Table.Summary.Cell
+                   index={dateColumns.length + 4}
+                   className='text-right'
+                   style={{ fontWeight: 'bold', textAlign: 'right' }}
+                 >
                   <div className='cell-content'>
                     <div className='plan-value total-value'>
                       {totalExpected}
                     </div>
                     <div style={{ color: '#1890ff' }}>{totalInput}</div>
+                  </div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 5}
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
+                  <div className='cell-content'>
+                    <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+                      {totalOct31Demand}
+                    </div>
+                    <div style={{ height: '24px' }}></div>
                   </div>
                 </Table.Summary.Cell>
 
