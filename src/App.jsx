@@ -10,12 +10,12 @@ import {
   CheckCircleOutlined,
   DatabaseOutlined,
 } from '@ant-design/icons'
-import ProductionPlan from './pages/ProductionPlan'
-import PurchasePlan from './pages/PurchasePlan'
-import PurchaseContract from './pages/PurchaseContract'
-import Arrival from './pages/Arrival'
-import QualityInspection from './pages/QualityInspection'
-import Warehousing from './pages/Warehousing'
+import ProductionPlan from './pages/ShengChanJiHua'
+import PurchasePlan from './pages/WuLiaoZhunBeiJiHua'
+import PurchaseContract from './pages/CaiGouHeTong'
+import Arrival from './pages/DaoHuo'
+import QualityInspection from './pages/ZhiLiangYanShou'
+import Warehousing from './pages/RuKu'
 
 const { Sider, Content } = Layout
 
