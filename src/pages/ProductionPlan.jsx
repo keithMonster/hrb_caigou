@@ -291,7 +291,7 @@ const ProductionPlan = () => {
             <div 
               className='plan-value'
               style={{
-                color: record.expectedPlans[index] > 0 ? '#ff4d4f' : '#000',
+                color: record.expectedPlans[index] > 30 ? '#ff4d4f' : '#000',
                 cursor: record.expectedPlans[index] > 0 ? 'pointer' : 'default',
                 fontWeight: record.expectedPlans[index] > 0 ? 'bold' : 'normal'
               }}
@@ -301,7 +301,7 @@ const ProductionPlan = () => {
                 }
               }}
             >
-              {record.expectedPlans[index] || 0}
+              {record.expectedPlans[index] || '-'}
             </div>
             <InputNumber
               size='small'
