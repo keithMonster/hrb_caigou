@@ -115,7 +115,7 @@ const ProductionPlan = () => {
         expectedPlans: [0, 25, 0, 18, 0, 32, 0, 0, 0, 15],
         // 用户输入的计划数据
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        // 10/31需求数量
+        // 12/31需求数量
         oct31Demand: 150,
       },
       {
@@ -128,7 +128,7 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 12, 0, 20, 0, 8, 0, 0, 0, 25],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        // 10/31需求数量
+        // 12/31需求数量
         oct31Demand: 120,
       },
       {
@@ -141,7 +141,7 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 35, 0, 28, 0, 42, 0, 0, 0, 20],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        // 10/31需求数量
+        // 12/31需求数量
         oct31Demand: null,
       },
       {
@@ -154,7 +154,7 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 8, 0, 15, 0, 12, 0, 0, 0, 10],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        // 10/31需求数量
+        // 12/31需求数量
         oct31Demand: null,
       },
       {
@@ -167,7 +167,7 @@ const ProductionPlan = () => {
         initialStock: 0,
         expectedPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 12],
         dailyInputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        // 10/31需求数量
+        // 12/31需求数量
         oct31Demand: null,
       },
     ];
@@ -393,9 +393,9 @@ const ProductionPlan = () => {
       },
     });
 
-    // 添加10/31需求列
+    // 添加12/31需求列
     columns.push({
-      title: '10/31',
+      title: '12/31',
       dataIndex: 'oct31Demand',
       key: 'oct31Demand',
       width: 80,
@@ -461,7 +461,7 @@ const ProductionPlan = () => {
           <Form 
             form={filterForm} 
             layout='inline'
-            initialValues={{ xunPeriod: '2025-08-上旬' }}
+            initialValues={{ xunPeriod: '2025-08-上旬', factory: '全部' }}
           >
           <Form.Item label='计划旬期' name='xunPeriod'>
             <Select
@@ -508,6 +508,23 @@ const ProductionPlan = () => {
               <Option value='无'>无</Option>
             </Select>
           </Form.Item>
+          <Form.Item label='分厂' name='factory'>
+            <Space wrap>
+              {['全部', '电机', '铁路', '精密', '黄海'].map((factory) => (
+                <Button
+                  key={factory}
+                  type={selectedFactory === factory ? 'primary' : 'default'}
+                  onClick={() => {
+                    handleFactoryFilterChange(factory);
+                    filterForm.setFieldsValue({ factory: factory });
+                  }}
+                  size='small'
+                >
+                  {factory}
+                </Button>
+              ))}
+            </Space>
+          </Form.Item>
 
         </Form>
       </Card>
@@ -532,27 +549,7 @@ const ProductionPlan = () => {
         }
       >
 
-        {/* 分厂筛选器 */}
-        <div
-          style={{
-            marginBottom: 16,
-            padding: '12px 0',
-            borderBottom: '1px solid #f0f0f0',
-          }}
-        >
-          <Space wrap>
-             {['全部', '电机', '铁路', '精密', '黄海'].map((factory) => (
-               <Button
-                 key={factory}
-                 type={selectedFactory === factory ? 'primary' : 'default'}
-                 onClick={() => handleFactoryFilterChange(factory)}
-                 size='small'
-               >
-                 {factory}
-               </Button>
-             ))}
-           </Space>
-        </div>
+
 
         <Table
           ref={tableRef}
@@ -590,7 +587,7 @@ const ProductionPlan = () => {
               0
             );
             
-            // 计算10/31需求总量
+            // 计算12/31需求总量
             const totalOct31Demand = pageData.reduce(
               (sum, record) => sum + (record.oct31Demand || 0),
               0

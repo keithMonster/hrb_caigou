@@ -31,6 +31,8 @@ const PurchasePlan = () => {
   const [selectedCategories, setSelectedCategories] = useState(['全部']);
   const [filteredPartsDataSource, setFilteredPartsDataSource] = useState([]);
   const [selectedXun, setSelectedXun] = useState('2025-09-中旬');
+  const [selectedFactory, setSelectedFactory] = useState('全部');
+  const [selectedQualityRequirement, setSelectedQualityRequirement] = useState('全部');
   const productTableRef = useRef();
   const partsTableRef = useRef();
 
@@ -144,44 +146,100 @@ const PurchasePlan = () => {
     setFilteredPartsDataSource(filtered);
   };
 
+  // 处理分厂筛选变化
+  const handleFactoryFilterChange = (factory) => {
+    setSelectedFactory(factory);
+  };
+
+  // 处理质量要求筛选变化
+  const handleQualityRequirementChange = (value) => {
+    setSelectedQualityRequirement(value || '全部');
+  };
+
+  // 获取筛选后的成品数据
+  const getFilteredProductDataSource = () => {
+    let filtered = [...productDataSource];
+    
+    // 按分厂筛选
+    if (selectedFactory !== '全部') {
+      filtered = filtered.filter(item => item.factory === selectedFactory);
+    }
+    
+    // 按质量要求筛选
+    if (selectedQualityRequirement !== '全部') {
+      if (selectedQualityRequirement === '有') {
+        filtered = filtered.filter(item => item.qualityRequirement);
+      } else if (selectedQualityRequirement === '无') {
+        filtered = filtered.filter(item => !item.qualityRequirement);
+      }
+    }
+    
+    return filtered;
+  };
+
   // 初始化成品采购模拟数据
   const initProductMockData = () => {
     const mockData = [
       {
         key: '1',
-        spec: '6205-2RS',
+        spec: '6206',
+        qualityRequirement: null,
+        factory: '电机',
         dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
         dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
         totalPlan: 170,
+        dec31Demand: 180,
       },
       {
         key: '2',
-        spec: '6206-ZZ',
-        dailyPlans: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
-        dailyInputs: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
-        totalPlan: 110,
+        spec: '6206',
+        qualityRequirement: '耐高温要求，工作温度≤150°C',
+        factory: '铁路',
+        dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
+        dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
+        totalPlan: 170,
+        dec31Demand: 160,
       },
       {
         key: '3',
-        spec: '6207-RS',
-        dailyPlans: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
-        dailyInputs: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
-        totalPlan: 130,
+        spec: '6206-ZZ',
+        qualityRequirement: null,
+        factory: '精密',
+        dailyPlans: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
+        dailyInputs: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
+        totalPlan: 110,
+        dec31Demand: 0,
       },
       {
         key: '4',
-        spec: 'SKF-6208',
-        dailyPlans: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
-        dailyInputs: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
-        totalPlan: 90,
+        spec: '6207-RS',
+        qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
+        factory: '黄海',
+        dailyPlans: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
+        dailyInputs: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
+        totalPlan: 130,
+        dec31Demand: 0,
       },
       {
         key: '5',
+        spec: 'SKF-6208',
+        qualityRequirement: null,
+        factory: '电机',
+        dailyPlans: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
+        dailyInputs: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
+        totalPlan: 90,
+        dec31Demand: 0,
+      },
+      {
+        key: '6',
         spec: 'NSK-6209',
+        qualityRequirement: null,
+        factory: '铁路',
         dailyPlans: [0, 35, 0, 28, 0, 22, 0, 0, 0, 25],
         dailyInputs: [0, 35, 0, 28, 0, 22, 0, 0, 0, 25],
         totalPlan: 110,
-      },
+        dec31Demand: 0,
+      }
     ];
     setProductDataSource(mockData);
   };
@@ -358,6 +416,18 @@ const PurchasePlan = () => {
         width: 120,
         fixed: 'left',
       },
+      {
+        title: '质量要求',
+        dataIndex: 'qualityRequirement',
+        key: 'qualityRequirement',
+        width: 120,
+        fixed: 'left',
+        render: (value) => (
+          <span style={{ color: value ? '#ff4d4f' : '#999' }}>
+            {value || '-'}
+          </span>
+        ),
+      },
     ];
 
     // 添加日期列
@@ -410,6 +480,24 @@ const PurchasePlan = () => {
           </div>
         );
       },
+    });
+
+    // 添加12/31需求列
+    columns.push({
+      title: '12/31',
+      dataIndex: 'dec31Demand',
+      key: 'dec31Demand',
+      width: 80,
+      align: 'right',
+      fixed: 'right',
+      render: (value) => (
+        <div className='cell-content'>
+          <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+            {value || '-'}
+          </div>
+          <div style={{ height: '24px' }}></div>
+        </div>
+      ),
     });
 
     return columns;
@@ -577,7 +665,7 @@ const PurchasePlan = () => {
           <Form 
             form={filterForm} 
             layout='inline'
-            initialValues={{ xunPeriod: '2025-09-中旬' }}
+            initialValues={{ xunPeriod: '2025-09-中旬', factory: '全部', qualityRequirement: '全部' }}
           >
           <Form.Item label='计划旬期' name='xunPeriod'>
             <Select
@@ -597,6 +685,39 @@ const PurchasePlan = () => {
                 </Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item label='质量要求' name='qualityRequirement'>
+            <Select 
+              placeholder='请选择质量要求' 
+              allowClear 
+              style={{ width: 120 }}
+              value={selectedQualityRequirement}
+              onChange={(value) => {
+                handleQualityRequirementChange(value);
+                filterForm.setFieldsValue({ qualityRequirement: value });
+              }}
+            >
+              <Option value='全部'>全部</Option>
+              <Option value='有'>有</Option>
+              <Option value='无'>无</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label='分厂' name='factory'>
+            <Space wrap>
+              {['全部', '电机', '铁路', '精密', '黄海'].map((factory) => (
+                <Button
+                  key={factory}
+                  type={selectedFactory === factory ? 'primary' : 'default'}
+                  onClick={() => {
+                    handleFactoryFilterChange(factory);
+                    filterForm.setFieldsValue({ factory: factory });
+                  }}
+                  size='small'
+                >
+                  {factory}
+                </Button>
+              ))}
+            </Space>
           </Form.Item>
 
         </Form>
@@ -623,7 +744,7 @@ const PurchasePlan = () => {
       >
         <Table
           ref={productTableRef}
-          dataSource={productDataSource}
+          dataSource={getFilteredProductDataSource()}
           columns={generateProductColumns()}
           loading={loading}
           scroll={{ x: 1200 }}
@@ -638,12 +759,13 @@ const PurchasePlan = () => {
           }}
           bordered
           size='small'
-          summary={(pageData) => {
-            // 计算物料准备计划合计数据
+          summary={() => {
+            // 计算物料准备计划合计数据，使用筛选后的数据
+            const filteredData = getFilteredProductDataSource();
             const totalDailyPlans = new Array(dateColumns.length).fill(0);
             const totalDailyInputs = new Array(dateColumns.length).fill(0);
 
-            pageData.forEach((record) => {
+            filteredData.forEach((record) => {
               record.dailyPlans.forEach((val, index) => {
                 totalDailyPlans[index] += val || 0;
               });
@@ -660,6 +782,12 @@ const PurchasePlan = () => {
               (sum, val) => sum + val,
               0
             );
+            
+            // 计算12/31需求总量
+            const totalDec31Demand = filteredData.reduce(
+              (sum, record) => sum + (record.dec31Demand || 0),
+              0
+            );
 
             return (
               <Table.Summary.Row
@@ -671,10 +799,16 @@ const PurchasePlan = () => {
                 >
                   合计
                 </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={1}
+                  style={{ fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  -
+                </Table.Summary.Cell>
                 {dateColumns.map((_, index) => (
                   <Table.Summary.Cell
                     key={`product_summary_${index}`}
-                    index={index + 1}
+                    index={index + 2}
                     style={{ textAlign: 'right' }}
                   >
                     <div className='cell-content'>
@@ -691,13 +825,24 @@ const PurchasePlan = () => {
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 1}
+                  index={dateColumns.length + 2}
                   className='text-right'
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
                   <div className='cell-content'>
                     <div className='plan-value total-value'>{totalPlan}</div>
                     <div style={{ color: '#1890ff' }}>{totalInput}</div>
+                  </div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell
+                  index={dateColumns.length + 3}
+                  style={{ fontWeight: 'bold', textAlign: 'right' }}
+                >
+                  <div className='cell-content'>
+                    <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+                      {totalDec31Demand}
+                    </div>
+                    <div style={{ height: '24px' }}></div>
                   </div>
                 </Table.Summary.Cell>
               </Table.Summary.Row>
