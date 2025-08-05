@@ -41,7 +41,7 @@ const Arrival = () => {
   const contractOptions = [
     { value: 'HT2025001', label: 'HT2025001 - 北京精密轴承有限公司 - 6205-2RS' },
     { value: 'HT2025002', label: 'HT2025002 - 上海轴承制造厂 - 6206-ZZ' },
-    { value: 'HT2025003', label: 'HT2025003 - SKF轴承代理商 - SKF-6207' },
+    { value: 'HT2025003', label: 'HT2025003 - SKF轴承代理商 - 6310' },
   ];
 
   // 初始化模拟数据
@@ -87,7 +87,7 @@ const Arrival = () => {
         key: '4',
         contractNo: 'HT2025003',
         supplier: 'SKF轴承代理商',
-        model: 'SKF-6207',
+        model: '6310',
         arrivalDate: '2025-01-28',
         purchaseQuantity: 500,
         arrivalQuantity: 200,
@@ -140,7 +140,7 @@ const Arrival = () => {
     const contractMap = {
       'HT2025001': { supplier: '北京精密轴承有限公司', model: '6205-2RS' },
       'HT2025002': { supplier: '上海轴承制造厂', model: '6206-ZZ' },
-      'HT2025003': { supplier: 'SKF轴承代理商', model: 'SKF-6207' },
+      'HT2025003': { supplier: 'SKF轴承代理商', model: '6310' },
     };
     return contractMap[contractNo] || { supplier: '', model: '' };
   };

@@ -109,7 +109,7 @@ const PurchasePlan = () => {
     '外圈-6205',
     '外圈-6206',
     '外圈-6207',
-    '外圈-SKF-001',
+    '外圈-6315-2RZ',
     '滚动体-6205',
     '滚动体-6206',
     '滚动体-6207',
@@ -439,7 +439,7 @@ const PurchasePlan = () => {
       },
       {
         key: '4',
-        partName: '外圈-SKF-001',
+        partName: '外圈-6315-2RZ',
         purchaseType: '自产',
         initialStock: 0,
         dailyPlans: [0, 15, 0, 20, 0, 10, 0, 0, 0, 25],
@@ -1044,7 +1044,7 @@ const PurchasePlan = () => {
               导出Excel
             </Button>
             <Button type='primary' onClick={handleSave} icon={<SaveOutlined />}>
-              保存计划
+              保存
             </Button>
           </Space>
         }
@@ -1209,7 +1209,7 @@ const PurchasePlan = () => {
               导出Excel
             </Button>
             <Button type='primary' onClick={handleSave} icon={<SaveOutlined />}>
-              保存计划
+              保存
             </Button>
           </Space>
         }

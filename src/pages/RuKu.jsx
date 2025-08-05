@@ -76,7 +76,7 @@ const Warehousing = () => {
         key: '4',
         contractNo: 'HT2025003',
         supplier: 'SKF轴承代理商',
-        model: 'SKF-6207',
+        model: '6310',
         qualifiedQuantity: 185,
         warehouseDate: null,
         warehouseQuantity: 0,

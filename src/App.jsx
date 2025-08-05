@@ -13,6 +13,7 @@ import {
 import ProductionPlan from './pages/ShengChanJiHua'
 import PurchasePlan from './pages/WuLiaoZhunBeiJiHua'
 import PurchaseContract from './pages/CaiGouHeTong'
+import PurchasePlanPage from './pages/CaiGouJiHua'
 import Arrival from './pages/DaoHuo'
 import QualityInspection from './pages/ZhiLiangYanShou'
 import Warehousing from './pages/RuKu'
@@ -48,6 +49,11 @@ function App() {
       label: '专业OEM',
       children: [
         {
+          key: '/purchase-plan',
+          icon: <ShoppingCartOutlined />,
+          label: '采购计划',
+        },
+        {
           key: '/purchase-contract',
           icon: <ContainerOutlined />,
           label: '采购合同',
@@ -81,6 +87,7 @@ function App() {
     const path = location.pathname
     if (path === '/' || path === '/production') return ['/production']
     if (path === '/purchase') return ['/purchase']
+    if (path === '/purchase-plan') return ['/purchase-plan']
     if (path === '/purchase-contract') return ['/purchase-contract']
     if (path === '/arrival') return ['/arrival']
     if (path === '/quality-inspection') return ['/quality-inspection']
@@ -90,7 +97,7 @@ function App() {
 
   const getOpenKeys = () => {
     const path = location.pathname
-    if (path.startsWith('/purchase-contract') || path.startsWith('/arrival') || 
+    if (path.startsWith('/purchase-plan') || path.startsWith('/purchase-contract') || path.startsWith('/arrival') || 
         path.startsWith('/quality-inspection') || path.startsWith('/warehousing')) {
       return ['professional-oem']
     }
@@ -138,6 +145,7 @@ function App() {
             <Route path="/" element={<ProductionPlan />} />
             <Route path="/production" element={<ProductionPlan />} />
             <Route path="/purchase" element={<PurchasePlan />} />
+            <Route path="/purchase-plan" element={<PurchasePlanPage />} />
             <Route path="/purchase-contract" element={<PurchaseContract />} />
             <Route path="/arrival" element={<Arrival />} />
             <Route path="/quality-inspection" element={<QualityInspection />} />

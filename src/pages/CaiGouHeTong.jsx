@@ -21,6 +21,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  MinusCircleOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
@@ -38,44 +39,102 @@ const PurchaseContract = () => {
 
   // 初始化模拟数据
   const initMockData = () => {
-    const mockData = [
+    const contractData = [
       {
-        key: '1',
         contractNo: 'HT2025001',
         contractDate: '2025-01-15',
         supplier: '北京精密轴承有限公司',
-        model: '6205-2RS',
-        purchaseQuantity: 1000,
-        arrivalQuantity: 800,
-        inspectionQuantity: 750,
-        qualifiedQuantity: 720,
-        warehouseQuantity: 720,
+        models: [
+          {
+            model: '6205-2RS',
+            purchaseQuantity: 1000,
+            arrivalQuantity: 800,
+            inspectionQuantity: 750,
+            qualifiedQuantity: 720,
+            warehouseQuantity: 720,
+          },
+          {
+            model: '6206-ZZ',
+            purchaseQuantity: 500,
+            arrivalQuantity: 400,
+            inspectionQuantity: 380,
+            qualifiedQuantity: 360,
+            warehouseQuantity: 360,
+          }
+        ]
       },
       {
-        key: '2',
         contractNo: 'HT2025002',
         contractDate: '2025-01-20',
         supplier: '上海轴承制造厂',
-        model: '6206-ZZ',
-        purchaseQuantity: 800,
-        arrivalQuantity: 600,
-        inspectionQuantity: 580,
-        qualifiedQuantity: 560,
-        warehouseQuantity: 560,
+        models: [
+          {
+            model: '6206-ZZ',
+            purchaseQuantity: 800,
+            arrivalQuantity: 600,
+            inspectionQuantity: 580,
+            qualifiedQuantity: 560,
+            warehouseQuantity: 560,
+          },
+          {
+            model: '6207-2RS',
+            purchaseQuantity: 300,
+            arrivalQuantity: 250,
+            inspectionQuantity: 240,
+            qualifiedQuantity: 230,
+            warehouseQuantity: 230,
+          },
+          {
+            model: '6208-ZZ',
+            purchaseQuantity: 200,
+            arrivalQuantity: 150,
+            inspectionQuantity: 140,
+            qualifiedQuantity: 135,
+            warehouseQuantity: 135,
+          }
+        ]
       },
       {
-        key: '3',
         contractNo: 'HT2025003',
         contractDate: '2025-01-25',
         supplier: 'SKF轴承代理商',
-        model: 'SKF-6207',
-        purchaseQuantity: 500,
-        arrivalQuantity: 300,
-        inspectionQuantity: 280,
-        qualifiedQuantity: 270,
-        warehouseQuantity: 270,
+        models: [
+          {
+            model: '6310',
+            purchaseQuantity: 500,
+            arrivalQuantity: 300,
+            inspectionQuantity: 280,
+            qualifiedQuantity: 270,
+            warehouseQuantity: 270,
+          }
+        ]
       },
     ];
+    
+    // 将数据展开为每个型号一行
+    const mockData = [];
+    let keyCounter = 1;
+    
+    contractData.forEach(contract => {
+      contract.models.forEach((modelData, index) => {
+        mockData.push({
+          key: keyCounter.toString(),
+          contractNo: contract.contractNo,
+          contractDate: contract.contractDate,
+          supplier: contract.supplier,
+          model: modelData.model,
+          purchaseQuantity: modelData.purchaseQuantity,
+          arrivalQuantity: modelData.arrivalQuantity,
+          inspectionQuantity: modelData.inspectionQuantity,
+          qualifiedQuantity: modelData.qualifiedQuantity,
+          warehouseQuantity: modelData.warehouseQuantity,
+          isFirstRow: index === 0, // 标记是否为该合同的第一行
+          totalModels: contract.models.length, // 该合同总共有多少个型号
+        });
+        keyCounter++;
+      });
+    });
+    
     setDataSource(mockData);
   };
 
@@ -125,12 +184,22 @@ const PurchaseContract = () => {
   const showModal = (record = null) => {
     setEditingRecord(record);
     if (record) {
+      // 编辑时，将单个型号转换为数组格式
       form.setFieldsValue({
-        ...record,
+        contractNo: record.contractNo,
         contractDate: record.contractDate ? dayjs(record.contractDate) : null,
+        supplier: record.supplier,
+        models: [{
+          model: record.model,
+          purchaseQuantity: record.purchaseQuantity,
+        }],
       });
     } else {
+      // 新增时，设置默认的一个型号项
       form.resetFields();
+      form.setFieldsValue({
+        models: [{ model: '', purchaseQuantity: undefined }],
+      });
     }
     setIsModalVisible(true);
   };
@@ -145,25 +214,37 @@ const PurchaseContract = () => {
       };
 
       if (editingRecord) {
-        // 编辑
+        // 编辑 - 暂时保持原有逻辑，后续可以扩展为支持编辑多型号
         const newData = dataSource.map(item => 
           item.key === editingRecord.key 
-            ? { ...item, ...formattedValues }
+            ? { ...item, model: formattedValues.models[0]?.model, purchaseQuantity: formattedValues.models[0]?.purchaseQuantity }
             : item
         );
         setDataSource(newData);
         message.success('合同信息更新成功');
       } else {
-        // 新增
-        const newRecord = {
-          key: Date.now().toString(),
-          ...formattedValues,
-          arrivalQuantity: 0,
-          inspectionQuantity: 0,
-          qualifiedQuantity: 0,
-          warehouseQuantity: 0,
-        };
-        setDataSource([...dataSource, newRecord]);
+        // 新增 - 为每个型号创建一行数据
+        const newRecords = [];
+        let keyCounter = Date.now();
+        
+        formattedValues.models.forEach((modelData, index) => {
+          newRecords.push({
+            key: (keyCounter + index).toString(),
+            contractNo: formattedValues.contractNo,
+            contractDate: formattedValues.contractDate,
+            supplier: formattedValues.supplier,
+            model: modelData.model,
+            purchaseQuantity: modelData.purchaseQuantity,
+            arrivalQuantity: 0,
+            inspectionQuantity: 0,
+            qualifiedQuantity: 0,
+            warehouseQuantity: 0,
+            isFirstRow: index === 0,
+            totalModels: formattedValues.models.length,
+          });
+        });
+        
+        setDataSource([...dataSource, ...newRecords]);
         message.success('合同添加成功');
       }
       setIsModalVisible(false);
@@ -235,18 +316,54 @@ const PurchaseContract = () => {
       dataIndex: 'contractNo',
       key: 'contractNo',
       width: 120,
+      render: (value, record, index) => {
+        const obj = {
+          children: value,
+          props: {},
+        };
+        if (record.isFirstRow) {
+          obj.props.rowSpan = record.totalModels;
+        } else {
+          obj.props.rowSpan = 0;
+        }
+        return obj;
+      },
     },
     {
-      title: '合同日期',
+      title: '交货日期',
       dataIndex: 'contractDate',
       key: 'contractDate',
       width: 120,
+      render: (value, record, index) => {
+        const obj = {
+          children: value,
+          props: {},
+        };
+        if (record.isFirstRow) {
+          obj.props.rowSpan = record.totalModels;
+        } else {
+          obj.props.rowSpan = 0;
+        }
+        return obj;
+      },
     },
     {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
       width: 180,
+      render: (value, record, index) => {
+        const obj = {
+          children: value,
+          props: {},
+        };
+        if (record.isFirstRow) {
+          obj.props.rowSpan = record.totalModels;
+        } else {
+          obj.props.rowSpan = 0;
+        }
+        return obj;
+      },
     },
     {
       title: '型号',
@@ -326,20 +443,6 @@ const PurchaseContract = () => {
       ),
     },
     {
-      title: '验收状态',
-      key: 'inspectionStatus',
-      width: 100,
-      align: 'center',
-      render: (_, record) => {
-        const isCompleted = record.inspectionQuantity === record.arrivalQuantity;
-        return (
-          <Tag color={isCompleted ? 'green' : 'orange'}>
-            {isCompleted ? '已完成' : '未完成'}
-          </Tag>
-        );
-      },
-    },
-    {
       title: '执行状态',
       key: 'executionStatus',
       width: 100,
@@ -357,27 +460,38 @@ const PurchaseContract = () => {
       title: '操作',
       key: 'action',
       width: 120,
-      render: (_, record) => (
-        <Space size="small">
-          <Button 
-            type="link" 
-            icon={<EditOutlined />} 
-            onClick={() => showModal(record)}
-            size="small"
-          >
-            编辑
-          </Button>
-          <Button 
-            type="link" 
-            danger 
-            icon={<DeleteOutlined />} 
-            onClick={() => handleDelete(record)}
-            size="small"
-          >
-            删除
-          </Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        const obj = {
+          children: (
+            <Space size="small">
+              <Button 
+                type="link" 
+                icon={<EditOutlined />} 
+                onClick={() => showModal(record)}
+                size="small"
+              >
+                编辑
+              </Button>
+              <Button 
+                type="link" 
+                danger 
+                icon={<DeleteOutlined />} 
+                onClick={() => handleDelete(record)}
+                size="small"
+              >
+                删除
+              </Button>
+            </Space>
+          ),
+          props: {},
+        };
+        if (record.isFirstRow) {
+          obj.props.rowSpan = record.totalModels;
+        } else {
+          obj.props.rowSpan = 0;
+        }
+        return obj;
+      },
     },
   ];
 
@@ -524,11 +638,11 @@ const PurchaseContract = () => {
           </Form.Item>
           
           <Form.Item
-            label="合同日期"
+            label="交货日期"
             name="contractDate"
-            rules={[{ required: true, message: '请选择合同日期' }]}
+            rules={[{ required: true, message: '请选择交货日期' }]}
           >
-            <DatePicker style={{ width: '100%' }} placeholder="请选择合同日期" />
+            <DatePicker style={{ width: '100%' }} placeholder="请选择交货日期" />
           </Form.Item>
           
           <Form.Item
@@ -539,24 +653,61 @@ const PurchaseContract = () => {
             <Input placeholder="请输入供应商" />
           </Form.Item>
           
-          <Form.Item
-            label="型号"
-            name="model"
-            rules={[{ required: true, message: '请输入型号' }]}
-          >
-            <Input placeholder="请输入型号" />
-          </Form.Item>
-          
-          <Form.Item
-            label="采购数量"
-            name="purchaseQuantity"
-            rules={[{ required: true, message: '请输入采购数量' }]}
-          >
-            <InputNumber 
-              min={1} 
-              style={{ width: '100%' }} 
-              placeholder="请输入采购数量" 
-            />
+          <Form.Item label="型号及数量" required>
+            <Form.List
+              name="models"
+              rules={[
+                {
+                  validator: async (_, models) => {
+                    if (!models || models.length < 1) {
+                      return Promise.reject(new Error('至少添加一个型号'));
+                    }
+                  },
+                },
+              ]}
+            >
+              {(fields, { add, remove }, { errors }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'model']}
+                        rules={[{ required: true, message: '请选择型号' }]}
+                        style={{ marginBottom: 0, flex: 1 }}
+                      >
+                        <Select placeholder="请选择型号" style={{ width: 200 }}>
+                          <Select.Option value="6206">6206</Select.Option>
+                          <Select.Option value="6206-ZZ">6206-ZZ</Select.Option>
+                          <Select.Option value="6315-2RZ">6315-2RZ</Select.Option>
+                          <Select.Option value="6311-2Z">6311-2Z</Select.Option>
+                          <Select.Option value="6309">6309</Select.Option>
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'purchaseQuantity']}
+                        rules={[{ required: true, message: '请输入数量' }]}
+                        style={{ marginBottom: 0 }}
+                      >
+                        <InputNumber
+                          min={1}
+                          placeholder="数量"
+                          style={{ width: 120 }}
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item style={{ marginBottom: 0 }}>
+                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      添加型号
+                    </Button>
+                    <Form.ErrorList errors={errors} />
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
           </Form.Item>
         </Form>
       </Modal>

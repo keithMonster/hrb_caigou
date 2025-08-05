@@ -74,7 +74,7 @@ const QualityInspection = () => {
         key: '4',
         contractNo: 'HT2025003',
         supplier: 'SKF轴承代理商',
-        model: 'SKF-6207',
+        model: '6310',
         arrivalDate: '2025-01-28',
         arrivalQuantity: 200,
         inspectionDate: null,

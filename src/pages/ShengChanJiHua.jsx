@@ -146,7 +146,7 @@ const ProductionPlan = () => {
       },
       {
         key: '4',
-        model: 'SKF-001',
+        model: '6315-2RZ',
         qualityRequirement: null,
         factory: '黄海',
         productionLine: '7',
@@ -159,7 +159,7 @@ const ProductionPlan = () => {
       },
       {
         key: '5',
-        model: 'NSK-002',
+        model: '6311-2Z',
         qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
         factory: '电机',
         productionLine: '2',
@@ -448,7 +448,7 @@ const ProductionPlan = () => {
     message.success('导出成功');
   };
 
-  const modelOptions = ['6205', '6206', '6207', '6208', 'SKF-001', 'NSK-002'];
+  const modelOptions = ['6205', '6206', '6207', '6208', '6315-2RZ', '6311-2Z'];
 
   return (
     <div>
@@ -543,7 +543,7 @@ const ProductionPlan = () => {
               导出Excel
             </Button>
             <Button type='primary' onClick={handleSave} icon={<SaveOutlined />}>
-              保存计划
+              保存
             </Button>
           </Space>
         }
