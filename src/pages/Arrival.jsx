@@ -53,6 +53,7 @@ const Arrival = () => {
         supplier: '北京精密轴承有限公司',
         model: '6205-2RS',
         arrivalDate: '2025-01-20',
+        purchaseQuantity: 1000,
         arrivalQuantity: 300,
         inspectionQuantity: 280,
         qualifiedQuantity: 270,
@@ -64,6 +65,7 @@ const Arrival = () => {
         supplier: '北京精密轴承有限公司',
         model: '6205-2RS',
         arrivalDate: '2025-01-25',
+        purchaseQuantity: 1000,
         arrivalQuantity: 500,
         inspectionQuantity: 470,
         qualifiedQuantity: 450,
@@ -75,6 +77,7 @@ const Arrival = () => {
         supplier: '上海轴承制造厂',
         model: '6206-ZZ',
         arrivalDate: '2025-01-22',
+        purchaseQuantity: 800,
         arrivalQuantity: 400,
         inspectionQuantity: 380,
         qualifiedQuantity: 360,
@@ -86,6 +89,7 @@ const Arrival = () => {
         supplier: 'SKF轴承代理商',
         model: 'SKF-6207',
         arrivalDate: '2025-01-28',
+        purchaseQuantity: 500,
         arrivalQuantity: 200,
         inspectionQuantity: 190,
         qualifiedQuantity: 185,
@@ -275,6 +279,13 @@ const Arrival = () => {
       width: 120,
     },
     {
+      title: '采购数量',
+      dataIndex: 'purchaseQuantity',
+      key: 'purchaseQuantity',
+      width: 100,
+      align: 'right',
+    },
+    {
       title: '到货数量',
       dataIndex: 'arrivalQuantity',
       key: 'arrivalQuantity',
@@ -330,7 +341,7 @@ const Arrival = () => {
       ),
     },
     {
-      title: '验收状态',
+      title: '状态',
       key: 'inspectionStatus',
       width: 100,
       align: 'center',
@@ -560,6 +571,18 @@ const Arrival = () => {
             rules={[{ required: true, message: '请选择到货日期' }]}
           >
             <DatePicker style={{ width: '100%' }} placeholder="请选择到货日期" />
+          </Form.Item>
+          
+          <Form.Item
+            label="采购数量"
+            name="purchaseQuantity"
+            rules={[{ required: true, message: '请输入采购数量' }]}
+          >
+            <InputNumber 
+              min={1} 
+              style={{ width: '100%' }} 
+              placeholder="请输入采购数量" 
+            />
           </Form.Item>
           
           <Form.Item
