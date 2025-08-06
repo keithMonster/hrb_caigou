@@ -17,6 +17,10 @@ import PurchasePlanPage from './pages/CaiGouJiHua'
 import Arrival from './pages/DaoHuo'
 import QualityInspection from './pages/ZhiLiangYanShou'
 import Warehousing from './pages/RuKu'
+import MaterialArrivalRequirement from './pages/WuLiaoDaoHuoXuQiu'
+import RecentArrivalPlan from './pages/JinQiDaoHuoJiHua'
+import MaterialPreparationRequirement from './pages/WuLiaoZhunBeiXuQiu'
+import RawMaterialPurchaseContract from './pages/YuanLiaoCaiGouHeTong'
 
 const { Sider, Content } = Layout
 
@@ -41,6 +45,11 @@ function App() {
           icon: <ShoppingCartOutlined />,
           label: '物料准备计划',
         },
+        {
+          key: '/material-arrival-requirement',
+          icon: <InboxOutlined />,
+          label: '物料到货需求',
+        },
       ],
     },
     {
@@ -63,6 +72,28 @@ function App() {
         //   icon: <CheckCircleOutlined />,
         //   label: '原料进厂检验',
         // },
+      ],
+    },
+    {
+      key: 'raw-material-purchase',
+      icon: <ShoppingCartOutlined />,
+      label: '原料采购',
+      children: [
+        {
+          key: '/material-preparation-requirement',
+          icon: <FileTextOutlined />,
+          label: '物料准备需求',
+        },
+        {
+          key: '/raw-material-purchase-contract',
+          icon: <ContainerOutlined />,
+          label: '原料采购合同',
+        },
+        {
+          key: '/recent-arrival-plan',
+          icon: <InboxOutlined />,
+          label: '近期计划到货',
+        },
       ],
     },
     {
@@ -94,8 +125,12 @@ function App() {
     const path = location.pathname
     if (path === '/' || path === '/production') return ['/production']
     if (path === '/purchase') return ['/purchase']
+    if (path === '/material-arrival-requirement') return ['/material-arrival-requirement']
     if (path === '/purchase-plan') return ['/purchase-plan']
     if (path === '/purchase-contract') return ['/purchase-contract']
+    if (path === '/material-preparation-requirement') return ['/material-preparation-requirement']
+    if (path === '/raw-material-purchase-contract') return ['/raw-material-purchase-contract']
+    if (path === '/recent-arrival-plan') return ['/recent-arrival-plan']
     if (path === '/arrival') return ['/arrival']
     if (path === '/quality-inspection') return ['/quality-inspection']
     if (path === '/warehousing') return ['/warehousing']
@@ -106,6 +141,9 @@ function App() {
     const path = location.pathname
     if (path.startsWith('/purchase-plan') || path.startsWith('/purchase-contract') || path.startsWith('/quality-inspection')) {
       return ['professional-oem']
+    }
+    if (path.startsWith('/material-preparation-requirement') || path.startsWith('/raw-material-purchase-contract') || path.startsWith('/recent-arrival-plan')) {
+      return ['raw-material-purchase']
     }
     if (path.startsWith('/arrival') || path.startsWith('/warehousing')) {
       return ['warehouse-management']
@@ -154,8 +192,12 @@ function App() {
             <Route path="/" element={<ProductionPlan />} />
             <Route path="/production" element={<ProductionPlan />} />
             <Route path="/purchase" element={<PurchasePlan />} />
+            <Route path="/material-arrival-requirement" element={<MaterialArrivalRequirement />} />
             <Route path="/purchase-plan" element={<PurchasePlanPage />} />
             <Route path="/purchase-contract" element={<PurchaseContract />} />
+            <Route path="/material-preparation-requirement" element={<MaterialPreparationRequirement />} />
+            <Route path="/raw-material-purchase-contract" element={<RawMaterialPurchaseContract />} />
+            <Route path="/recent-arrival-plan" element={<RecentArrivalPlan />} />
             <Route path="/arrival" element={<Arrival />} />
             <Route path="/quality-inspection" element={<QualityInspection />} />
             <Route path="/warehousing" element={<Warehousing />} />
