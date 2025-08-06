@@ -18,6 +18,8 @@ import {
   SaveOutlined,
   DownloadOutlined,
   SyncOutlined,
+  PlusOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
@@ -48,6 +50,22 @@ const OrderWarehousingMatch = () => {
         allocatedQuantity: 280,
         remainingQuantity: 220,
         editable: true,
+        orders: [
+          {
+            key: 'order_1_1',
+            orderNo: 'DD2025001',
+            customerName: '北京汽车制造厂',
+            allocatedQuantity: 150,
+            deliveryDate: '2025-02-01',
+          },
+          {
+            key: 'order_1_2',
+            orderNo: 'DD2025002',
+            customerName: '上海机械公司',
+            allocatedQuantity: 130,
+            deliveryDate: '2025-02-05',
+          },
+        ],
       },
       {
         key: '2',
@@ -58,6 +76,22 @@ const OrderWarehousingMatch = () => {
         allocatedQuantity: 600,
         remainingQuantity: 200,
         editable: true,
+        orders: [
+          {
+            key: 'order_2_1',
+            orderNo: 'DD2025003',
+            customerName: '天津重工集团',
+            allocatedQuantity: 300,
+            deliveryDate: '2025-01-30',
+          },
+          {
+            key: 'order_2_2',
+            orderNo: 'DD2025004',
+            customerName: '广州电机厂',
+            allocatedQuantity: 300,
+            deliveryDate: '2025-02-10',
+          },
+        ],
       },
       {
         key: '3',
@@ -68,6 +102,7 @@ const OrderWarehousingMatch = () => {
         allocatedQuantity: 0,
         remainingQuantity: 300,
         editable: true,
+        orders: [],
       },
       {
         key: '4',
@@ -78,6 +113,15 @@ const OrderWarehousingMatch = () => {
         allocatedQuantity: 450,
         remainingQuantity: 0,
         editable: true,
+        orders: [
+          {
+            key: 'order_4_1',
+            orderNo: 'DD2025005',
+            customerName: '深圳精密机械',
+            allocatedQuantity: 450,
+            deliveryDate: '2025-01-28',
+          },
+        ],
       },
       {
         key: '5',
@@ -88,6 +132,15 @@ const OrderWarehousingMatch = () => {
         allocatedQuantity: 150,
         remainingQuantity: 450,
         editable: true,
+        orders: [
+          {
+            key: 'order_5_1',
+            orderNo: 'DD2025006',
+            customerName: '杭州轴承公司',
+            allocatedQuantity: 150,
+            deliveryDate: '2025-02-15',
+          },
+        ],
       },
     ];
     setDataSource(mockData);
@@ -157,6 +210,102 @@ const OrderWarehousingMatch = () => {
     }
   };
 
+  // 添加订单
+  const handleAddOrder = (recordKey) => {
+    setDataSource((prevData) =>
+      prevData.map((item) => {
+        if (item.key === recordKey) {
+          const newOrderKey = `order_${recordKey}_${item.orders.length + 1}`;
+          const newOrder = {
+            key: newOrderKey,
+            orderNo: `DD2025${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`,
+            customerName: '',
+            allocatedQuantity: 0,
+            deliveryDate: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+          };
+          return {
+            ...item,
+            orders: [...item.orders, newOrder],
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  // 删除订单
+  const handleDeleteOrder = (recordKey, orderKey) => {
+    setDataSource((prevData) =>
+      prevData.map((item) => {
+        if (item.key === recordKey) {
+          const deletedOrder = item.orders.find(order => order.key === orderKey);
+          const newOrders = item.orders.filter((order) => order.key !== orderKey);
+          const newAllocatedQuantity = item.allocatedQuantity - (deletedOrder?.allocatedQuantity || 0);
+          const newRemainingQuantity = item.warehouseQuantity - newAllocatedQuantity;
+          return {
+            ...item,
+            orders: newOrders,
+            allocatedQuantity: newAllocatedQuantity,
+            remainingQuantity: newRemainingQuantity,
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  // 处理订单分配数量变化
+  const handleOrderAllocatedQuantityChange = (recordKey, orderKey, value) => {
+    setDataSource((prevData) =>
+      prevData.map((item) => {
+        if (item.key === recordKey) {
+          const newOrders = item.orders.map((order) => {
+            if (order.key === orderKey) {
+              return {
+                ...order,
+                allocatedQuantity: value || 0,
+              };
+            }
+            return order;
+          });
+          const newAllocatedQuantity = newOrders.reduce((sum, order) => sum + (order.allocatedQuantity || 0), 0);
+          const newRemainingQuantity = item.warehouseQuantity - newAllocatedQuantity;
+          return {
+            ...item,
+            orders: newOrders,
+            allocatedQuantity: newAllocatedQuantity,
+            remainingQuantity: newRemainingQuantity,
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  // 处理订单其他字段变化
+  const handleOrderFieldChange = (recordKey, orderKey, field, value) => {
+    setDataSource((prevData) =>
+      prevData.map((item) => {
+        if (item.key === recordKey) {
+          const newOrders = item.orders.map((order) => {
+            if (order.key === orderKey) {
+              return {
+                ...order,
+                [field]: value,
+              };
+            }
+            return order;
+          });
+          return {
+            ...item,
+            orders: newOrders,
+          };
+        }
+        return item;
+      })
+    );
+  };
+
   // 保存数据
   const handleSave = () => {
     setLoading(true);
@@ -192,13 +341,22 @@ const OrderWarehousingMatch = () => {
     // 模拟自动匹配操作
     setTimeout(() => {
       const newData = dataSource.map(item => {
-        if (item.remainingQuantity > 0) {
-          // 简单的自动匹配逻辑：分配50%的剩余数量
-          const autoAllocate = Math.floor(item.remainingQuantity * 0.5);
+        if (item.remainingQuantity > 0 && (!item.orders || item.orders.length === 0)) {
+          // 为没有订单的记录自动创建一个订单
+          const autoAllocated = Math.min(item.remainingQuantity, Math.floor(Math.random() * 100) + 50);
+          const newOrder = {
+             key: `order_${item.key}_auto`,
+             orderNo: `DD2025${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`,
+             customerName: '自动匹配客户',
+             allocatedQuantity: autoAllocated,
+             deliveryDate: dayjs().add(7, 'day').format('YYYY-MM-DD'),
+           };
+          
           return {
             ...item,
-            allocatedQuantity: item.allocatedQuantity + autoAllocate,
-            remainingQuantity: item.remainingQuantity - autoAllocate,
+            orders: [newOrder],
+            allocatedQuantity: autoAllocated,
+            remainingQuantity: item.warehouseQuantity - autoAllocated,
           };
         }
         return item;
@@ -207,6 +365,114 @@ const OrderWarehousingMatch = () => {
       setLoading(false);
       message.success('自动匹配完成');
     }, 1500);
+  };
+
+  // 渲染展开行（订单详情）
+  const renderExpandedRow = (record) => {
+    return (
+      <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
+        <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontWeight: 'bold', fontSize: '14px' }}>订单分配详情</span>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => handleAddOrder(record.key)}
+            icon={<PlusOutlined />}
+          >
+            新增订单
+          </Button>
+        </div>
+        
+        {record.orders && record.orders.length > 0 ? (
+          <Table
+            dataSource={record.orders}
+            pagination={false}
+            size="small"
+            rowKey="key"
+            columns={[
+              {
+                title: '订单编号',
+                dataIndex: 'orderNo',
+                key: 'orderNo',
+                width: 120,
+                render: (text, orderRecord) => (
+                  <Input
+                    value={text}
+                    onChange={(e) => handleOrderFieldChange(record.key, orderRecord.key, 'orderNo', e.target.value)}
+                    size="small"
+                    placeholder="请输入订单编号"
+                  />
+                ),
+              },
+              {
+                title: '客户名称',
+                dataIndex: 'customerName',
+                key: 'customerName',
+                width: 150,
+                render: (text, orderRecord) => (
+                  <Input
+                    value={text}
+                    onChange={(e) => handleOrderFieldChange(record.key, orderRecord.key, 'customerName', e.target.value)}
+                    size="small"
+                    placeholder="请输入客户名称"
+                  />
+                ),
+              },
+              {
+                title: '分配数量',
+                dataIndex: 'allocatedQuantity',
+                key: 'allocatedQuantity',
+                width: 100,
+                render: (text, orderRecord) => (
+                  <InputNumber
+                    value={text}
+                    onChange={(value) => handleOrderAllocatedQuantityChange(record.key, orderRecord.key, value)}
+                    min={0}
+                    max={record.warehouseQuantity}
+                    size="small"
+                    style={{ width: '100%' }}
+                  />
+                ),
+              },
+              {
+                 title: '计划入库日期',
+                 dataIndex: 'deliveryDate',
+                 key: 'deliveryDate',
+                 width: 120,
+                 render: (text, orderRecord) => (
+                   <DatePicker
+                     value={text ? dayjs(text) : null}
+                     onChange={(date) => handleOrderFieldChange(record.key, orderRecord.key, 'deliveryDate', date ? date.format('YYYY-MM-DD') : '')}
+                     format="YYYY-MM-DD"
+                     size="small"
+                   />
+                 ),
+               },
+              {
+                title: '操作',
+                key: 'action',
+                width: 80,
+                render: (_, orderRecord) => (
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    onClick={() => handleDeleteOrder(record.key, orderRecord.key)}
+                    icon={<DeleteOutlined />}
+                  >
+                    删除
+                  </Button>
+                ),
+              },
+            ]}
+          />
+        ) : (
+          <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+            暂无订单，点击"新增订单"按钮添加订单
+          </div>
+        )}
+      </div>
+    );
   };
 
   const columns = [
@@ -249,17 +515,10 @@ const OrderWarehousingMatch = () => {
       key: 'allocatedQuantity',
       width: 120,
       align: 'right',
-      render: (value, record) => (
-        <InputNumber
-          size="small"
-          min={0}
-          max={record.warehouseQuantity}
-          value={value}
-          onChange={(val) => handleAllocatedQuantityChange(record, val)}
-          style={{ width: '100%' }}
-          placeholder="请输入已分配数量"
-          disabled={!record.editable}
-        />
+      render: (value) => (
+        <span style={{ fontWeight: 500, color: value > 0 ? '#52c41a' : '#999' }}>
+          {value || 0}
+        </span>
       ),
     },
     {
@@ -276,35 +535,15 @@ const OrderWarehousingMatch = () => {
       },
     },
     {
-      title: '分配状态',
-      key: 'status',
-      width: 100,
+      title: '订单数量',
+      key: 'orderCount',
+      width: 80,
       align: 'center',
-      render: (_, record) => {
-        if (record.allocatedQuantity === 0) {
-          return <Tag color="red">未分配</Tag>;
-        }
-        if (record.remainingQuantity === 0) {
-          return <Tag color="green">已完成</Tag>;
-        }
-        return <Tag color="orange">部分分配</Tag>;
-      },
-    },
-    {
-      title: '分配率',
-      key: 'allocationRate',
-      width: 100,
-      align: 'center',
-      render: (_, record) => {
-        if (record.warehouseQuantity === 0) return '0%';
-        const rate = ((record.allocatedQuantity / record.warehouseQuantity) * 100).toFixed(1);
-        const color = rate === '100.0' ? '#52c41a' : rate === '0.0' ? '#ff4d4f' : '#1890ff';
-        return (
-          <span style={{ color, fontWeight: 500 }}>
-            {rate}%
-          </span>
-        );
-      },
+      render: (_, record) => (
+        <span style={{ color: '#1890ff' }}>
+          {record.orders ? record.orders.length : 0}
+        </span>
+      ),
     },
   ];
 
@@ -414,35 +653,20 @@ const OrderWarehousingMatch = () => {
           }}
           bordered
           size="small"
-          summary={(pageData) => {
-            const totalWarehouse = pageData.reduce((sum, record) => sum + record.warehouseQuantity, 0);
-            const totalAllocated = pageData.reduce((sum, record) => sum + record.allocatedQuantity, 0);
-            const totalRemaining = pageData.reduce((sum, record) => sum + record.remainingQuantity, 0);
-            const overallRate = totalWarehouse > 0 ? ((totalAllocated / totalWarehouse) * 100).toFixed(1) : '0.0';
-            
-            return (
-              <Table.Summary.Row>
-                <Table.Summary.Cell index={0} colSpan={3}>
-                  <strong>合计</strong>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={1} align="right">
-                  <strong style={{ color: '#1890ff' }}>{totalWarehouse}</strong>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={2} align="right">
-                  <strong style={{ color: '#52c41a' }}>{totalAllocated}</strong>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={3} align="right">
-                  <strong style={{ color: '#fa8c16' }}>{totalRemaining}</strong>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={4} align="center">
-                  <Tag color={overallRate === '100.0' ? 'green' : 'orange'}>
-                    总体分配率: {overallRate}%
-                  </Tag>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={5}></Table.Summary.Cell>
-              </Table.Summary.Row>
-            );
-          }}
+          expandable={{
+          expandedRowRender: renderExpandedRow,
+          rowExpandable: (record) => true,
+          expandIcon: ({ expanded, onExpand, record }) => (
+            <Button
+              type="text"
+              size="small"
+              onClick={e => onExpand(record, e)}
+              style={{ padding: '0 2px', color: '#188dfa' }}
+            >
+              {expanded ? '收起' : '展开'}
+            </Button>
+          ),
+        }}
         />
       </Card>
     </div>
