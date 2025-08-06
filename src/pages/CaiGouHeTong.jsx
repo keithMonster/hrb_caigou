@@ -225,28 +225,41 @@ const PurchaseContract = () => {
     setFilteredDataSource(dataSource);
   };
 
-  // 显示新增/编辑模态框
-  const showModal = (record = null) => {
-    setEditingRecord(record);
-    if (record) {
-      // 编辑时，将单个型号转换为数组格式
-      form.setFieldsValue({
-        contractNo: record.contractNo,
-        contractDate: record.contractDate ? dayjs(record.contractDate) : null,
-        supplier: record.supplier,
-        models: [{
-          model: record.model,
-          purchaseQuantity: record.purchaseQuantity,
-        }],
-      });
-    } else {
-      // 新增时，设置默认的一个型号项
-      form.resetFields();
-      form.setFieldsValue({
-        models: [{ model: '', purchaseQuantity: undefined }],
-      });
+  // 编辑状态模态框相关状态
+  const [editStatusModalVisible, setEditStatusModalVisible] = useState(false);
+  const [editStatusForm] = Form.useForm();
+  const [editingStatusRecord, setEditingStatusRecord] = useState(null);
+
+  // 显示编辑状态模态框
+  const showEditStatusModal = (record) => {
+    setEditingStatusRecord(record);
+    const isCompleted = record.warehouseQuantity === record.purchaseQuantity;
+    editStatusForm.setFieldsValue({
+      status: isCompleted ? 'completed' : 'pending',
+    });
+    setEditStatusModalVisible(true);
+  };
+
+  // 保存状态编辑
+  const handleSaveStatus = async () => {
+    try {
+      const values = await editStatusForm.validateFields();
+      // 根据状态更新入库数量
+      const newWarehouseQuantity = values.status === 'completed' 
+        ? editingStatusRecord.purchaseQuantity 
+        : editingStatusRecord.warehouseQuantity;
+      
+      const newData = dataSource.map(item => 
+        item.key === editingStatusRecord.key 
+          ? { ...item, warehouseQuantity: newWarehouseQuantity }
+          : item
+      );
+      setDataSource(newData);
+      setEditStatusModalVisible(false);
+      message.success('状态更新成功');
+    } catch (error) {
+      console.error('表单验证失败:', error);
     }
-    setIsModalVisible(true);
   };
 
   // 处理表单提交
@@ -504,39 +517,17 @@ const PurchaseContract = () => {
     {
       title: '操作',
       key: 'action',
-      width: 120,
-      render: (_, record) => {
-        const obj = {
-          children: (
-            <Space size="small">
-              <Button 
-                type="link" 
-                icon={<EditOutlined />} 
-                onClick={() => showModal(record)}
-                size="small"
-              >
-                编辑
-              </Button>
-              <Button 
-                type="link" 
-                danger 
-                icon={<DeleteOutlined />} 
-                onClick={() => handleDelete(record)}
-                size="small"
-              >
-                删除
-              </Button>
-            </Space>
-          ),
-          props: {},
-        };
-        if (record.isFirstRow) {
-          obj.props.rowSpan = record.totalModels;
-        } else {
-          obj.props.rowSpan = 0;
-        }
-        return obj;
-      },
+      width: 80,
+      render: (_, record) => (
+        <Button 
+          type="link" 
+          icon={<EditOutlined />} 
+          onClick={() => showEditStatusModal(record)}
+          size="small"
+        >
+          编辑状态
+        </Button>
+      ),
     },
   ];
 
@@ -606,14 +597,6 @@ const PurchaseContract = () => {
                 <DatePicker placeholder="请选择交货日期" style={{ width: '100%' }} allowClear />
               </Form.Item>
             </Col>
-            <Col span={6}>
-              <Form.Item label="状态" name="executionStatus">
-                <Select placeholder="请选择状态" allowClear>
-                  <Select.Option value="completed">已完成</Select.Option>
-                  <Select.Option value="pending">未完成</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
           </Row>
           <Row gutter={16} style={{ width: '100%', marginTop: 16 }}>
             <Col span={24}>
@@ -635,15 +618,6 @@ const PurchaseContract = () => {
       <Card 
         className="table-card"
         title="合同列表"
-        extra={
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />} 
-            onClick={() => showModal()}
-          >
-            新增合同
-          </Button>
-        }
       >
 
         <Table
@@ -760,6 +734,37 @@ const PurchaseContract = () => {
                 </>
               )}
             </Form.List>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* 编辑状态模态框 */}
+      <Modal
+        title={`编辑型号状态 - ${editingStatusRecord?.model}`}
+        open={editStatusModalVisible}
+        onOk={handleSaveStatus}
+        onCancel={() => {
+          setEditStatusModalVisible(false);
+          editStatusForm.resetFields();
+        }}
+        width={400}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Form
+          form={editStatusForm}
+          layout="vertical"
+          style={{ marginTop: 16 }}
+        >
+          <Form.Item
+            label="状态"
+            name="status"
+            rules={[{ required: true, message: '请选择状态' }]}
+          >
+            <Select placeholder="请选择状态">
+              <Select.Option value="pending">未完成</Select.Option>
+              <Select.Option value="completed">已完成</Select.Option>
+            </Select>
           </Form.Item>
         </Form>
       </Modal>

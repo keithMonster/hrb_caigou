@@ -9,6 +9,7 @@ import {
   InboxOutlined,
   CheckCircleOutlined,
   DatabaseOutlined,
+  ReconciliationOutlined,
 } from '@ant-design/icons'
 import ProductionPlan from './pages/ShengChanJiHua'
 import PurchasePlan from './pages/WuLiaoZhunBeiJiHua'
@@ -21,6 +22,7 @@ import MaterialArrivalRequirement from './pages/WuLiaoDaoHuoXuQiu'
 import RecentArrivalPlan from './pages/JinQiDaoHuoJiHua'
 import MaterialPreparationRequirement from './pages/WuLiaoZhunBeiXuQiu'
 import RawMaterialPurchaseContract from './pages/YuanLiaoCaiGouHeTong'
+import OrderWarehousingMatch from './pages/DingDanRuKuPiPei'
 
 const { Sider, Content } = Layout
 
@@ -113,6 +115,18 @@ function App() {
         },
       ],
     },
+    {
+      key: 'order-processing',
+      icon: <ReconciliationOutlined />,
+      label: '订单处理',
+      children: [
+        {
+          key: '/order-warehousing-match',
+          icon: <ReconciliationOutlined />,
+          label: '订单入库匹配',
+        },
+      ],
+    },
   ]
 
   const handleMenuClick = ({ key }) => {
@@ -134,6 +148,7 @@ function App() {
     if (path === '/arrival') return ['/arrival']
     if (path === '/quality-inspection') return ['/quality-inspection']
     if (path === '/warehousing') return ['/warehousing']
+    if (path === '/order-warehousing-match') return ['/order-warehousing-match']
     return ['/production']
   }
 
@@ -147,6 +162,9 @@ function App() {
     }
     if (path.startsWith('/arrival') || path.startsWith('/warehousing')) {
       return ['warehouse-management']
+    }
+    if (path.startsWith('/order-warehousing-match')) {
+      return ['order-processing']
     }
     return ['requirements']
   }
@@ -201,6 +219,7 @@ function App() {
             <Route path="/arrival" element={<Arrival />} />
             <Route path="/quality-inspection" element={<QualityInspection />} />
             <Route path="/warehousing" element={<Warehousing />} />
+            <Route path="/order-warehousing-match" element={<OrderWarehousingMatch />} />
           </Routes>
         </Content>
       </Layout>
