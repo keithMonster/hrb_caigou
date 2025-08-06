@@ -28,15 +28,11 @@ const PurchasePlan = () => {
   const [filterForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [productDataSource, setProductDataSource] = useState([]);
-  const [partsDataSource, setPartsDataSource] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState(['全部']);
-  const [filteredPartsDataSource, setFilteredPartsDataSource] = useState([]);
   const [selectedDateRange, setSelectedDateRange] = useState([dayjs('2025-09-01'), dayjs('2025-09-30')]);
   const [selectedFactory, setSelectedFactory] = useState('全部');
   const [selectedQualityRequirement, setSelectedQualityRequirement] = useState('全部');
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const productTableRef = useRef();
-  const partsTableRef = useRef();
 
   // 根据选中的日期范围生成日期列
   const generateDateColumns = (dateRange) => {
@@ -67,51 +63,13 @@ const PurchasePlan = () => {
 
   const dateColumns = generateDateColumns(selectedDateRange);
 
-  // 物料选项
-  const partNameOptions = [
-    '内圈-6205',
-    '内圈-6206',
-    '内圈-6207',
-    '外圈-6205',
-    '外圈-6206',
-    '外圈-6207',
-    '外圈-6315-2RZ',
-    '滚动体-6205',
-    '滚动体-6206',
-    '滚动体-6207',
-    '保持架-6205',
-    '保持架-6206',
-    '保持架-6207',
-    '密封件-通用型',
-    '密封件-高温型',
-    '密封件-低温型',
-  ];
+  // 物料类型选项
+  const materialTypes = ['外圈', '内圈', '滚动体', '保持架', '密封件'];
+  
+  // 计划类型选项
+  const planTypes = ['外购', '自产'];
 
-  // 物料分类选项
-  const categoryOptions = [
-    '全部',
-    '内圈',
-    '外圈',
-    '滚动体',
-    '保持架',
-    '密封件',
-  ];
 
-  // 筛选逻辑函数
-  const filterPartsByCategory = (categories) => {
-    if (!categories || categories.length === 0 || categories.includes('全部')) {
-      setFilteredPartsDataSource(partsDataSource);
-      return;
-    }
-
-    const filtered = partsDataSource.filter((part) => {
-      return categories.some(
-        (category) => part.partName && part.partName.includes(category)
-      );
-    });
-
-    setFilteredPartsDataSource(filtered);
-  };
 
   // 处理分厂筛选变化
   const handleFactoryFilterChange = (factory) => {
@@ -152,544 +110,433 @@ const PurchasePlan = () => {
         spec: '6206',
         qualityRequirement: null,
         factory: '电机',
-        dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
-        dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
-        totalPlan: 170,
         dec31Demand: 180,
-        materials: {
-          外圈: {
-            spec: '234424BM',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: '7006C',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '6.35',
-            unitConsumption: 10,
-            dailyQuantities: [0, 10, 0, 12, 0, 15, 0, 0, 0, 18]
-          },
-          保持架: {
-            spec: '6004',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: '6004-RZ',
-            unitConsumption: 2,
-            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
+        planGroups: [
+          {
+            key: '1-1',
+            groupType: '外购',
+            dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
+            materials: {
+              外圈: {
+                spec: '234424BM',
+                unitConsumption: 1,
+                requirement: '表面粗糙度Ra≤0.8'
+              },
+              内圈: {
+                spec: '7006C',
+                unitConsumption: 1,
+                requirement: '硬度HRC58-62'
+              },
+              滚动体: {
+                spec: '6.35',
+                unitConsumption: 10,
+                requirement: '球度误差≤0.5μm'
+              },
+              保持架: {
+                spec: '6004',
+                unitConsumption: 1,
+                requirement: '材质：黄铜'
+              },
+              密封件: {
+                spec: '6004-RZ',
+                unitConsumption: 2,
+                requirement: '耐温-40~120℃'
+              }
+            }
           }
-        }
+        ]
       },
       {
         key: '2',
         spec: '6206',
         qualityRequirement: '耐高温要求，工作温度≤150°C',
-         qualityDocument: {
+        qualityDocument: {
           name: '耐高温技术要求.pdf',
           url: 'https://example.com/documents/high-temp-requirements.pdf'
         },
         factory: '铁路',
-        dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
-        dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
-        totalPlan: 170,
         dec31Demand: 160,
-        materials: {
-          外圈: {
-            spec: '234424BM-HT',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: '7006C-HT',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '6.35',
-            unitConsumption: 14,
-            dailyQuantities: [0, 14, 0, 16, 0, 11, 0, 0, 0, 20]
-          },
-          保持架: {
-            spec: '6004-HT',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: '6004-RZ-HT',
-            unitConsumption: 2,
-            dailyQuantities: [0, 2, 0, 2, 0, 1, 0, 0, 0, 2]
-          }
-        }
+        planGroups: [
+          {
+            key: '2-1',
+            groupType: '外购',
+            dailyPlans: [0, 30, 0, 25, 0, 20, 0, 0, 0, 25],
+            materials: {
+               外圈: {
+                 spec: '234424BM-HT',
+                 unitConsumption: 1,
+                 requirement: '耐高温材质'
+               },
+               内圈: {
+                 spec: '7006C-HT',
+                 unitConsumption: 1,
+                 requirement: '耐高温处理'
+               },
+               滚动体: {
+                 spec: '6.35',
+                 unitConsumption: 14,
+                 requirement: '高温稳定性'
+               },
+               保持架: {
+                 spec: '6004-HT',
+                 unitConsumption: 1,
+                 requirement: '耐高温材质'
+               },
+               密封件: {
+                 spec: '6004-RZ-HT',
+                 unitConsumption: 2,
+                 requirement: '耐高温密封'
+               }
+             }
+           },
+           {
+             key: '2-2',
+             groupType: '自产',
+             dailyPlans: [0, 20, 0, 20, 0, 15, 0, 0, 0, 15],
+             materials: {
+               外圈: {
+                 spec: '234424BM-HT-2',
+                 unitConsumption: 1,
+                 requirement: '自产耐高温'
+               },
+               内圈: {
+                 spec: '7006C-HT-2',
+                 unitConsumption: 1,
+                 requirement: '自产耐高温'
+               }
+             }
+           }
+         ]
       },
       {
         key: '3',
         spec: '6206-ZZ',
         qualityRequirement: null,
         factory: '精密',
-        dailyPlans: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
-        dailyInputs: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
-        totalPlan: 110,
-        dec31Demand: 0,
-        materials: {
-          外圈: {
-            spec: '234424BM',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: '7006C',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '6.35',
-            unitConsumption: 9,
-            dailyQuantities: [0, 9, 0, 13, 0, 8, 0, 0, 0, 17]
-          },
-          保持架: {
-            spec: '6004',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: '6004-ZZ',
-            unitConsumption: 2,
-            dailyQuantities: [0, 2, 0, 1, 0, 0, 0, 0, 0, 2]
+        dec31Demand: 110,
+        planGroups: [
+          {
+            key: '3-1',
+            groupType: '外购',
+            dailyPlans: [0, 30, 0, 25, 0, 20, 0, 0, 0, 35],
+            materials: {
+              外圈: {
+                spec: '234424BM',
+                unitConsumption: 1,
+                requirement: '精密加工'
+              },
+              内圈: {
+                spec: '7006C',
+                unitConsumption: 1,
+                requirement: '精密加工'
+              },
+              滚动体: {
+                spec: '6.35',
+                unitConsumption: 9,
+                requirement: '高精度'
+              }
+            }
           }
-        }
+        ]
       },
-      {
-        key: '4',
-        spec: '6207-RS',
-        qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
-        qualityDocument: {
-          name: '防腐蚀测试标准.pdf',
-          url: 'https://example.com/documents/corrosion-test-standard.pdf'
-        },
-        factory: '黄海',
-        dailyPlans: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
-        dailyInputs: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
-        totalPlan: 130,
-        dec31Demand: 0,
-        materials: {
-          外圈: {
-            spec: '234425BM',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: '7007C',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '7.0',
-            unitConsumption: 12,
-            dailyQuantities: [0, 12, 0, 19, 0, 15, 0, 0, 0, 8]
-          },
-          保持架: {
-            spec: '6005',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: '6005-RS',
-            unitConsumption: 2,
-            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 0]
-          }
-        }
-      },
-      {
-        key: '5',
-        spec: 'SKF-6208',
-        qualityRequirement: null,
-        factory: '电机',
-        dailyPlans: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
-        dailyInputs: [0, 25, 0, 20, 0, 15, 0, 0, 0, 30],
-        totalPlan: 90,
-        dec31Demand: 0,
-        materials: {
-          外圈: {
-            spec: 'SKF-234426BM',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: 'SKF-7008C',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '8.0',
-            unitConsumption: 16,
-            dailyQuantities: [0, 16, 0, 11, 0, 14, 0, 0, 0, 20]
-          },
-          保持架: {
-            spec: 'SKF-6006',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: 'SKF-6006-RZ',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 2, 0, 0, 0, 0, 0, 2]
-          }
-        }
-      },
-      {
-        key: '6',
-        spec: 'NSK-6209',
-        qualityRequirement: null,
-        factory: '铁路',
-        dailyPlans: [0, 35, 0, 28, 0, 22, 0, 0, 0, 25],
-        dailyInputs: [0, 35, 0, 28, 0, 22, 0, 0, 0, 25],
-        totalPlan: 110,
-        dec31Demand: 0,
-        materials: {
-          外圈: {
-            spec: 'NSK-234427BM',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          内圈: {
-            spec: 'NSK-7009C',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          滚动体: {
-            spec: '9.0',
-            unitConsumption: 18,
-            dailyQuantities: [0, 18, 0, 13, 0, 10, 0, 0, 0, 15]
-          },
-          保持架: {
-            spec: 'NSK-6007',
-            unitConsumption: 1,
-            dailyQuantities: [0, 1, 0, 1, 0, 1, 0, 0, 0, 1]
-          },
-          密封件: {
-            spec: 'NSK-6007-RZ',
-            unitConsumption: 2,
-            dailyQuantities: [0, 2, 0, 1, 0, 2, 0, 0, 0, 1]
-          }
-        }
-      }
+
     ];
     setProductDataSource(mockData);
   };
 
-  // 初始化物料采购模拟数据
-  const initPartsMockData = () => {
-    const mockData = [
-      {
-        key: '1',
-        partName: '内圈-6205',
-        purchaseType: '外购',
-        initialStock: 50,
-        dailyPlans: [0, 25, 0, 30, 0, 20, 0, 0, 0, 35],
-        dailyInputs: [0, 25, 0, 30, 0, 20, 0, 0, 0, 35],
-        totalPlan: 110,
-      },
-      {
-        key: '2',
-        partName: '内圈-6206',
-        purchaseType: '外购',
-        initialStock: 0,
-        dailyPlans: [0, 20, 0, 25, 0, 15, 0, 0, 0, 30],
-        dailyInputs: [0, 20, 0, 25, 0, 15, 0, 0, 0, 30],
-        totalPlan: 90,
-      },
-      {
-        key: '3',
-        partName: '外圈-6207',
-        purchaseType: '外购',
-        initialStock: 80,
-        dailyPlans: [0, 30, 0, 35, 0, 25, 0, 0, 0, 40],
-        dailyInputs: [0, 30, 0, 35, 0, 25, 0, 0, 0, 40],
-        totalPlan: 130,
-      },
-      {
-        key: '4',
-        partName: '外圈-6315-2RZ',
-        purchaseType: '自产',
-        initialStock: 0,
-        dailyPlans: [0, 15, 0, 20, 0, 10, 0, 0, 0, 25],
-        dailyInputs: [0, 15, 0, 20, 0, 10, 0, 0, 0, 25],
-        totalPlan: 70,
-      },
-      {
-        key: '5',
-        partName: '滚动体-6205',
-        purchaseType: '外购',
-        initialStock: 0,
-        dailyPlans: [0, 40, 0, 45, 0, 35, 0, 0, 0, 50],
-        dailyInputs: [0, 40, 0, 45, 0, 35, 0, 0, 0, 50],
-        totalPlan: 170,
-      },
-      {
-        key: '6',
-        partName: '保持架-6206',
-        purchaseType: '自产',
-        initialStock: 0,
-        dailyPlans: [0, 18, 0, 22, 0, 16, 0, 0, 0, 24],
-        dailyInputs: [0, 18, 0, 22, 0, 16, 0, 0, 0, 24],
-        totalPlan: 80,
-      },
-      {
-        key: '7',
-        partName: '密封件-通用型',
-        purchaseType: '外购',
-        initialStock: 0,
-        dailyPlans: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
-        dailyInputs: [0, 12, 0, 15, 0, 10, 0, 0, 0, 18],
-        totalPlan: 55,
-      },
-    ];
-
-    setPartsDataSource(mockData);
-  };
-
   React.useEffect(() => {
     initProductMockData();
-    initPartsMockData();
   }, []);
 
-  // 监听partsDataSource变化，更新筛选结果
-  React.useEffect(() => {
-    filterPartsByCategory(selectedCategories);
-  }, [partsDataSource, selectedCategories]);
 
-  // 处理分类筛选变化
-  const handleCategoryChange = (category) => {
-    let newCategories;
-    if (category === '全部') {
-      newCategories = ['全部'];
-    } else {
-      // 如果选择了其他分类，先移除"全部"
-      const filteredCategories = selectedCategories.filter(
-        (cat) => cat !== '全部'
-      );
-      if (filteredCategories.includes(category)) {
-        // 如果已选择，则取消选择
-        newCategories = filteredCategories.filter((cat) => cat !== category);
-        // 如果没有选择任何分类，默认选择"全部"
-        if (newCategories.length === 0) {
-          newCategories = ['全部'];
-        }
-      } else {
-        // 如果未选择，则添加选择
-        newCategories = [...filteredCategories, category];
-      }
-    }
-    setSelectedCategories(newCategories);
-    filterPartsByCategory(newCategories);
-  };
 
-  // 处理成品每日计划变更
-  const handleProductDailyChange = (record, index, value) => {
+  // 处理计划组每日计划变更
+  const handlePlanGroupDailyChange = (productKey, groupKey, index, value) => {
     const newData = [...productDataSource];
-    const targetRecord = newData.find((item) => item.key === record.key);
-    if (targetRecord) {
-      targetRecord.dailyInputs[index] = value || 0;
-      
-      // 自动重新计算所有物料的日期数量
-      Object.keys(targetRecord.materials).forEach(materialType => {
-        const material = targetRecord.materials[materialType];
-        if (material && material.unitConsumption) {
-          material.dailyQuantities = targetRecord.dailyInputs.map(
-            (productQuantity) => (productQuantity || 0) * (material.unitConsumption || 0)
-          );
-        }
-      });
-      
-      setProductDataSource(newData);
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const targetGroup = targetProduct.planGroups.find((group) => group.key === groupKey);
+      if (targetGroup) {
+        targetGroup.dailyPlans[index] = value || 0;
+        setProductDataSource(newData);
+      }
     }
   };
 
   // 处理物料规格变更
-  const handleMaterialSpecChange = (productKey, materialType, newSpec) => {
+  const handleMaterialSpecChange = (productKey, groupKey, materialType, newSpec) => {
     const newData = [...productDataSource];
-    const targetRecord = newData.find((item) => item.key === productKey);
-    if (targetRecord && targetRecord.materials[materialType]) {
-      targetRecord.materials[materialType].spec = newSpec;
-      setProductDataSource(newData);
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const targetGroup = targetProduct.planGroups.find((group) => group.key === groupKey);
+      if (targetGroup && targetGroup.materials[materialType]) {
+        targetGroup.materials[materialType].spec = newSpec;
+        setProductDataSource(newData);
+      }
     }
   };
 
   // 处理物料单耗变更
-  const handleMaterialUnitConsumptionChange = (productKey, materialType, newUnitConsumption) => {
+  const handleMaterialUnitConsumptionChange = (productKey, groupKey, materialType, newUnitConsumption) => {
     const newData = [...productDataSource];
-    const targetRecord = newData.find((item) => item.key === productKey);
-    if (targetRecord && targetRecord.materials[materialType]) {
-      targetRecord.materials[materialType].unitConsumption = newUnitConsumption || 0;
-      // 重新计算所有日期的数量：单耗 * 对应日期的成品数量
-      targetRecord.materials[materialType].dailyQuantities = targetRecord.dailyInputs.map(
-        (productQuantity) => (productQuantity || 0) * (newUnitConsumption || 0)
-      );
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const targetGroup = targetProduct.planGroups.find((group) => group.key === groupKey);
+      if (targetGroup && targetGroup.materials[materialType]) {
+        targetGroup.materials[materialType].unitConsumption = newUnitConsumption || 0;
+        setProductDataSource(newData);
+      }
+    }
+  };
+
+  // 处理物料要求变更
+  const handleMaterialRequirementChange = (productKey, groupKey, materialType, newRequirement) => {
+    const newData = [...productDataSource];
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const targetGroup = targetProduct.planGroups.find((group) => group.key === groupKey);
+      if (targetGroup && targetGroup.materials[materialType]) {
+        targetGroup.materials[materialType].requirement = newRequirement;
+        setProductDataSource(newData);
+      }
+    }
+  };
+
+  // 处理计划组类型变更
+  const handleGroupTypeChange = (productKey, groupKey, newType) => {
+    const newData = [...productDataSource];
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const targetGroup = targetProduct.planGroups.find((group) => group.key === groupKey);
+      if (targetGroup) {
+        targetGroup.groupType = newType;
+        setProductDataSource(newData);
+      }
+    }
+  };
+
+  // 新增计划组
+  const handleAddPlanGroup = (productKey) => {
+    const newData = [...productDataSource];
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct) {
+      const newGroupKey = `${productKey}-${Date.now()}`;
+      const newGroup = {
+        key: newGroupKey,
+        groupType: '外购',
+        dailyPlans: new Array(dateColumns.length).fill(0),
+        materials: {
+          外圈: { spec: '', unitConsumption: 0, requirement: '' },
+          内圈: { spec: '', unitConsumption: 0, requirement: '' },
+          滚动体: { spec: '', unitConsumption: 0, requirement: '' },
+          保持架: { spec: '', unitConsumption: 0, requirement: '' },
+          密封件: { spec: '', unitConsumption: 0, requirement: '' }
+        }
+      };
+      targetProduct.planGroups.push(newGroup);
       setProductDataSource(newData);
     }
   };
 
-  // 处理物料数量变更
-  const handleMaterialQuantityChange = (productKey, materialType, dayIndex, value) => {
+  // 删除计划组
+  const handleDeletePlanGroup = (productKey, groupKey) => {
     const newData = [...productDataSource];
-    const targetRecord = newData.find((item) => item.key === productKey);
-    if (targetRecord && targetRecord.materials[materialType]) {
-      targetRecord.materials[materialType].dailyQuantities[dayIndex] = value || 0;
+    const targetProduct = newData.find((item) => item.key === productKey);
+    if (targetProduct && targetProduct.planGroups.length > 1) {
+      targetProduct.planGroups = targetProduct.planGroups.filter((group) => group.key !== groupKey);
       setProductDataSource(newData);
     }
-  };
-
-  // 处理物料每日计划变更
-  const handlePartsDailyChange = (record, index, value) => {
-    const newData = [...partsDataSource];
-    const targetRecord = newData.find((item) => item.key === record.key);
-    if (targetRecord) {
-      targetRecord.dailyInputs[index] = value || 0;
-      setPartsDataSource(newData);
-    }
-  };
-
-  // 处理物料名称变更
-  const handlePartNameChange = (record, value) => {
-    const newData = [...partsDataSource];
-    const targetRecord = newData.find((item) => item.key === record.key);
-    if (targetRecord) {
-      targetRecord.partName = value;
-      setPartsDataSource(newData);
-    }
-  };
-
-  // 处理采购类型变更
-  const handlePurchaseTypeChange = (record, value) => {
-    const newData = [...partsDataSource];
-    const targetRecord = newData.find((item) => item.key === record.key);
-    if (targetRecord) {
-      targetRecord.purchaseType = value;
-      setPartsDataSource(newData);
-    }
-  };
-
-  // 新增物料行
-  const handleAddPartsRow = () => {
-    const newKey = Date.now().toString();
-    const newRow = {
-      key: newKey,
-      partName: '',
-      purchaseType: '外购',
-      initialStock: 0,
-      dailyPlans: new Array(dateColumns.length).fill(0),
-      dailyInputs: new Array(dateColumns.length).fill(0),
-      totalPlan: 0,
-    };
-    setPartsDataSource([...partsDataSource, newRow]);
   };
 
   // 生成物料展开内容
   const renderExpandedRow = (record) => {
-    const materialTypes = ['外圈', '内圈', '滚动体', '保持架', '密封件'];
-    
     return (
       <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
-        <h4 style={{ marginBottom: '0', color: '#1890ff' }}></h4>
-        <Table
-          dataSource={materialTypes.map(type => ({
-            key: type,
-            materialType: type,
-            spec: record.materials[type]?.spec || '',
-            unitConsumption: record.materials[type]?.unitConsumption || 0,
-            dailyQuantities: record.materials[type]?.dailyQuantities || new Array(dateColumns.length).fill(0)
-          }))}
-          columns={[
-            {
-              title: '物料类型',
-              dataIndex: 'materialType',
-              key: 'materialType',
-              width: 100,
-              fixed: 'left',
-            },
-            {
-              title: '规格',
-              dataIndex: 'spec',
-              key: 'spec',
-              width: 120,
-              fixed: 'left',
-              render: (value, materialRecord) => (
-                <Input
+        {record.planGroups.map((group, groupIndex) => (
+          <div key={group.key} style={{ marginBottom: groupIndex < record.planGroups.length - 1 ? '24px' : '0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
+              <h4 style={{ margin: '0', color: '#1890ff' }}>计划 {groupIndex + 1}</h4>
+              <Select
+                size="small"
+                value={group.groupType}
+                onChange={(value) => handleGroupTypeChange(record.key, group.key, value)}
+                style={{ width: 80 }}
+              >
+                {planTypes.map(type => (
+                  <Option key={type} value={type}>{type}</Option>
+                ))}
+              </Select>
+              <Button
+                type="text"
+                size="small"
+                onClick={() => handleAddPlanGroup(record.key)}
+                style={{ color: '#52c41a' }}
+              >
+                新增
+              </Button>
+              {record.planGroups.length > 1 && (
+                <Button
+                  type="text"
                   size="small"
-                  value={value}
-                  onChange={(e) => handleMaterialSpecChange(record.key, materialRecord.materialType, e.target.value)}
-                  placeholder="请输入规格"
-                  style={{ width: '100%' }}
-                />
-              ),
-            },
-            {
-              title: '单耗',
-              dataIndex: 'unitConsumption',
-              key: 'unitConsumption',
-              width: 80,
-              fixed: 'left',
-              align: 'right',
-              render: (value, materialRecord) => (
-                <InputNumber
-                  size="small"
-                  min={0}
-                  precision={0}
-                  value={value}
-                  onChange={(newValue) => handleMaterialUnitConsumptionChange(record.key, materialRecord.materialType, newValue)}
-                  placeholder="单耗"
-                  style={{ width: '100%' }}
-                  controls={false}
-                />
-              ),
-            },
-            ...dateColumns.map((date, index) => ({
-              title: date.format('MM/DD'),
-              key: `material_day_${index}`,
-              width: 90,
-              align: 'right',
-              render: (_, materialRecord) => {
-                // 计算数量：单耗 * 对应日期的成品数量
-                const productQuantity = record.dailyInputs[index] || 0;
-                const unitConsumption = materialRecord.unitConsumption || 0;
-                const calculatedQuantity = productQuantity * unitConsumption;
-                return (
-                  <span style={{ fontWeight: 500, color: '#000' }}>
-                    {calculatedQuantity}
-                  </span>
-                );
-              },
-            })),
-            {
-              title: '汇总',
-              key: 'material_total',
-              width: 80,
-              align: 'right',
-              render: (_, materialRecord) => {
-                // 计算汇总：单耗 * 成品总数量
-                const unitConsumption = materialRecord.unitConsumption || 0;
-                const totalProductQuantity = record.dailyInputs.reduce((sum, val) => sum + (val || 0), 0);
-                const total = unitConsumption * totalProductQuantity;
-                return <span style={{ fontWeight: 500, color: '#1890ff' }}>{total}</span>;
-              },
-            }
-          ]}
-          pagination={false}
-          size="small"
-          bordered
-          scroll={{ x: 800 }}
-        />
+                  onClick={() => handleDeletePlanGroup(record.key, group.key)}
+                  style={{ color: '#ff4d4f' }}
+                >
+                  删除
+                </Button>
+              )}
+            </div>
+            
+            {/* 计划数量行 */}
+            <div style={{ marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontWeight: 500, minWidth: '80px', flexShrink: 0 }}>计划数量:</span>
+                <div style={{ 
+                  flex: 1, 
+                  overflowX: 'auto', 
+                  display: 'flex', 
+                  gap: '8px',
+                  paddingBottom: '4px'
+                }}>
+                  {dateColumns.map((date, index) => (
+                    <div key={index} style={{ width: '90px', textAlign: 'center', flexShrink: 0 }}>
+                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>
+                        {date.format('MM/DD')}
+                      </div>
+                      <InputNumber
+                        size="small"
+                        min={0}
+                        precision={0}
+                        value={group.dailyPlans[index] || undefined}
+                        onChange={(value) => handlePlanGroupDailyChange(record.key, group.key, index, value)}
+                        style={{ width: '100%' }}
+                        controls={false}
+                        placeholder="0"
+                      />
+                    </div>
+                  ))}
+                  <div style={{ width: '80px', textAlign: 'center', flexShrink: 0 }}>
+                    <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>汇总</div>
+                    <span style={{ fontWeight: 500, color: '#1890ff' }}>
+                      {group.dailyPlans.reduce((sum, val) => sum + (val || 0), 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* 物料表格 */}
+            <Table
+              dataSource={materialTypes.map(type => ({
+                key: `${group.key}-${type}`,
+                materialType: type,
+                spec: group.materials[type]?.spec || '',
+                unitConsumption: group.materials[type]?.unitConsumption || 0,
+                requirement: group.materials[type]?.requirement || ''
+              }))}
+              columns={[
+                {
+                  title: '物料类型',
+                  dataIndex: 'materialType',
+                  key: 'materialType',
+                  width: 100,
+                  fixed: 'left',
+                },
+                {
+                  title: '规格',
+                  dataIndex: 'spec',
+                  key: 'spec',
+                  width: 120,
+                  fixed: 'left',
+                  render: (value, materialRecord) => (
+                    <Input
+                      size="small"
+                      value={value}
+                      onChange={(e) => handleMaterialSpecChange(record.key, group.key, materialRecord.materialType, e.target.value)}
+                      placeholder="请输入规格"
+                      style={{ width: '100%' }}
+                    />
+                  ),
+                },
+                {
+                  title: '单耗',
+                  dataIndex: 'unitConsumption',
+                  key: 'unitConsumption',
+                  width: 80,
+                  fixed: 'left',
+                  align: 'right',
+                  render: (value, materialRecord) => (
+                    <InputNumber
+                      size="small"
+                      min={0}
+                      value={value}
+                      onChange={(newValue) => handleMaterialUnitConsumptionChange(record.key, group.key, materialRecord.materialType, newValue)}
+                      placeholder="单耗"
+                      style={{ width: '100%' }}
+                      controls={false}
+                    />
+                  ),
+                },
+                {
+                  title: '要求',
+                  dataIndex: 'requirement',
+                  key: 'requirement',
+                  width: 150,
+                  fixed: 'left',
+                  render: (value, materialRecord) => (
+                    <Input
+                      size="small"
+                      value={value}
+                      onChange={(e) => handleMaterialRequirementChange(record.key, group.key, materialRecord.materialType, e.target.value)}
+                      placeholder="请输入要求"
+                      style={{ width: '100%' }}
+                    />
+                  ),
+                },
+                ...dateColumns.map((date, index) => ({
+                  title: date.format('MM/DD'),
+                  key: `material_day_${index}`,
+                  width: 90,
+                  align: 'right',
+                  render: (_, materialRecord) => {
+                    // 计算数量：单耗 * 对应日期的计划数量
+                    const planQuantity = group.dailyPlans[index] || 0;
+                    const unitConsumption = materialRecord.unitConsumption || 0;
+                    const calculatedQuantity = planQuantity * unitConsumption;
+                    return (
+                      <span style={{ fontWeight: 500, color: '#000' }}>
+                        {calculatedQuantity.toFixed(2)}
+                      </span>
+                    );
+                  },
+                })),
+                {
+                  title: '汇总',
+                  key: 'material_total',
+                  width: 80,
+                  align: 'right',
+                  render: (_, materialRecord) => {
+                    // 计算汇总：单耗 * 计划总数量
+                    const unitConsumption = materialRecord.unitConsumption || 0;
+                    const totalPlanQuantity = group.dailyPlans.reduce((sum, val) => sum + (val || 0), 0);
+                    const total = unitConsumption * totalPlanQuantity;
+                    return <span style={{ fontWeight: 500, color: '#1890ff' }}>{total.toFixed(2)}</span>;
+                  },
+                }
+              ]}
+              pagination={false}
+              size="small"
+              bordered
+              scroll={{ x: 1000 }}
+            />
+          </div>
+        ))}
       </div>
     );
   };
 
   // 生成成品表格列配置
   const generateProductColumns = () => {
-    const columns = [
+    const baseColumns = [
       {
         title: '型号',
         dataIndex: 'spec',
@@ -726,178 +573,49 @@ const PurchasePlan = () => {
       },
     ];
 
-    // 添加日期列
-    dateColumns.forEach((date, index) => {
-      columns.push({
-        title: date.format('MM/DD'),
-        key: `day_${index}`,
-        width: 90,
-        align: 'right',
-        render: (_, record) => (
-          <div className='cell-content'>
-            <div className='plan-value'>{record.dailyPlans[index] || 0}</div>
-            <InputNumber
-            size='small'
-            min={0}
-            precision={0}
-            value={record.dailyInputs[index] || undefined}
-            onChange={(value) =>
-              handleProductDailyChange(record, index, value)
-            }
-            className='daily-input'
-            controls={false}
-            placeholder=''
-          />
-          </div>
-        ),
-      });
-    });
-
-    // 添加汇总列
-    columns.push({
-      title: '汇总',
-      key: 'total',
-      width: 80,
+    // 添加日期列 - 只显示需求数量
+    const dateCols = generateDateColumns(selectedDateRange);
+    const dateColumns = dateCols.map((date, index) => ({
+      title: date.format('MM/DD'),
+      key: `day_${index}`,
+      width: 90,
       align: 'right',
-      fixed: 'right',
-      render: (_, record) => {
-        const planTotal = record.dailyPlans.reduce(
-          (sum, val) => sum + (val || 0),
-          0
-        );
-        const inputTotal = record.dailyInputs.reduce(
-          (sum, val) => sum + (val || 0),
-          0
-        );
-        return (
-          <div className='cell-content'>
-            <div className='plan-value total-value'>{planTotal}</div>
-            <div className='total-value'>{inputTotal}</div>
-          </div>
-        );
-      },
-    });
-
-    // 添加12/31需求列
-    columns.push({
-      title: '12/31',
-      dataIndex: 'dec31Demand',
-      key: 'dec31Demand',
-      width: 80,
-      align: 'right',
-      fixed: 'right',
-      render: (value) => (
-        <div className='cell-content'>
-          <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
-            {value || '-'}
-          </div>
-          <div style={{ height: '24px' }}></div>
-        </div>
+      render: () => (
+        <span style={{ fontWeight: 500, color: '#000' }}>100</span>
       ),
-    });
+    }));
 
-    return columns;
-  };
-
-  // 生成物料表格列配置
-  const generatePartsColumns = () => {
-    const columns = [
+    // 添加汇总列和12/31需求列
+    const summaryColumns = [
       {
-        title: '物料',
-        dataIndex: 'partName',
-        key: 'partName',
-        width: 150,
-        fixed: 'left',
-        render: (value, record) => (
-          <Select
-            size='small'
-            value={value}
-            onChange={(selectedValue) =>
-              handlePartNameChange(record, selectedValue)
-            }
-            placeholder='请选择物料'
-            style={{ width: '100%' }}
-            showSearch
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {partNameOptions.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            ))}
-          </Select>
+        title: '汇总',
+        key: 'total',
+        width: 80,
+        align: 'right',
+        fixed: 'right',
+        render: () => (
+          <span style={{ fontWeight: 500, color: '#1890ff' }}>1000</span>
         ),
       },
       {
-        title: '采购类型',
-        dataIndex: 'purchaseType',
-        key: 'purchaseType',
-        width: 100,
-        fixed: 'left',
-        render: (value, record) => (
-          <Select
-            size='small'
-            value={value}
-            onChange={(selectedValue) =>
-              handlePurchaseTypeChange(record, selectedValue)
-            }
-            style={{ width: '100%' }}
-          >
-            <Option value='外购'>外购</Option>
-            <Option value='自产'>自产</Option>
-          </Select>
+        title: '12/31',
+        dataIndex: 'dec31Demand',
+        key: 'dec31Demand',
+        width: 80,
+        align: 'right',
+        fixed: 'right',
+        render: (value) => (
+          <span style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+            {value || '-'}
+          </span>
         ),
-      },
-
+      }
     ];
 
-    // 添加日期列
-    dateColumns.forEach((date, index) => {
-      columns.push({
-        title: date.format('MM/DD'),
-        key: `day_${index}`,
-        width: 90,
-        align: 'right',
-        render: (_, record) => (
-          <InputNumber
-            size='small'
-            min={0}
-            precision={0}
-            value={record.dailyInputs[index] || undefined}
-            onChange={(value) => handlePartsDailyChange(record, index, value)}
-            className='daily-input'
-            controls={false}
-            style={{ width: '100%' }}
-            placeholder=''
-          />
-        ),
-      });
-    });
-
-    // 添加汇总列
-    columns.push({
-      title: '汇总',
-      key: 'total',
-      width: 80,
-      align: 'right',
-      fixed: 'right',
-      render: (_, record) => {
-        const inputTotal = record.dailyInputs.reduce(
-          (sum, val) => sum + (val || 0),
-          0
-        );
-        return (
-          <span style={{ fontWeight: 500 }} className='total-value'>
-            {inputTotal}
-          </span>
-        );
-      },
-    });
-
-    return columns;
+    return [...baseColumns, ...dateColumns, ...summaryColumns];
   };
+
+
 
 
 
@@ -1075,26 +793,7 @@ const PurchasePlan = () => {
           summary={() => {
             // 计算物料准备计划合计数据，使用筛选后的数据
             const filteredData = getFilteredProductDataSource();
-            const totalDailyPlans = new Array(dateColumns.length).fill(0);
-            const totalDailyInputs = new Array(dateColumns.length).fill(0);
-
-            filteredData.forEach((record) => {
-              record.dailyPlans.forEach((val, index) => {
-                totalDailyPlans[index] += val || 0;
-              });
-              record.dailyInputs.forEach((val, index) => {
-                totalDailyInputs[index] += val || 0;
-              });
-            });
-
-            const totalPlan = totalDailyPlans.reduce(
-              (sum, val) => sum + val,
-              0
-            );
-            const totalInput = totalDailyInputs.reduce(
-              (sum, val) => sum + val,
-              0
-            );
+            const dateCols = generateDateColumns(selectedDateRange);
             
             // 计算12/31需求总量
             const totalDec31Demand = filteredData.reduce(
@@ -1118,193 +817,34 @@ const PurchasePlan = () => {
                 >
                   合计
                 </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={2}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                {dateColumns.map((_, index) => (
+                {dateCols.map((_, index) => (
                   <Table.Summary.Cell
                     key={`product_summary_${index}`}
-                    index={index + 3}
+                    index={index + 2}
                     style={{ textAlign: 'right' }}
                   >
-                    <div className='cell-content'>
-                      <div
-                        className='plan-value'
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        {totalDailyPlans[index]}
-                      </div>
-                      <div style={{ fontWeight: 'bold', color: '#1890ff' }}>
-                        {totalDailyInputs[index]}
-                      </div>
-                    </div>
+                    <span style={{ fontWeight: 'bold', color: '#1890ff' }}>1000</span>
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
-                  index={dateColumns.length + 3}
-                  className='text-right'
+                  index={dateCols.length + 2}
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
-                  <div className='cell-content'>
-                    <div className='plan-value total-value'>{totalPlan}</div>
-                    <div style={{ color: '#1890ff' }}>{totalInput}</div>
-                  </div>
+                  <span style={{ fontWeight: 'bold', color: '#1890ff' }}>10000</span>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
-                  index={dateColumns.length + 4}
+                  index={dateCols.length + 3}
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
-                  <div className='cell-content'>
-                    <div className='plan-value' style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
-                      {totalDec31Demand}
-                    </div>
-                    <div style={{ height: '24px' }}></div>
-                  </div>
+                  <span style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+                    {totalDec31Demand}
+                  </span>
                 </Table.Summary.Cell>
               </Table.Summary.Row>
             );
           }}
         />
       </Card>
-
-      <Divider />
-
-      {/* 物料物料准备计划表格 */}
-      {/* <Card 
-        className='table-card'
-        title="物料物料准备计划"
-        extra={
-          <Space>
-            <Button
-              type='default'
-              onClick={handleAddPartsRow}
-              icon={<PlusOutlined />}
-            >
-              新增
-            </Button>
-            <Button
-              type='default'
-              onClick={handleExport}
-              icon={<DownloadOutlined />}
-            >
-              导出Excel
-            </Button>
-            <Button type='primary' onClick={handleSave} icon={<SaveOutlined />}>
-              保存
-            </Button>
-          </Space>
-        }
-      >
-
-        <div
-          style={{
-            marginBottom: 16,
-            padding: '12px 0',
-            borderBottom: '1px solid #f0f0f0',
-          }}
-        >
-          <Space wrap>
-            {categoryOptions.map((category) => (
-              <Button
-                key={category}
-                type={
-                  selectedCategories.includes(category) ? 'primary' : 'default'
-                }
-                onClick={() => handleCategoryChange(category)}
-                size='small'
-              >
-                {category}
-              </Button>
-            ))}
-          </Space>
-        </div>
-
-        <Table
-          ref={partsTableRef}
-          dataSource={
-            selectedCategories.includes('全部')
-              ? partsDataSource
-              : filteredPartsDataSource
-          }
-          columns={generatePartsColumns()}
-          loading={loading}
-          scroll={{ x: 1300 }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-            position: ['bottomRight'],
-            pageSizeOptions: ['5', '10', '20', '50'],
-          }}
-          bordered
-          size='small'
-          summary={(pageData) => {
-            const totalDailyInputs = new Array(dateColumns.length).fill(0);
-
-            pageData.forEach((record) => {
-              record.dailyInputs.forEach((val, index) => {
-                totalDailyInputs[index] += val || 0;
-              });
-            });
-
-            const totalInput = totalDailyInputs.reduce(
-              (sum, val) => sum + val,
-              0
-            );
-
-            return (
-              <Table.Summary.Row
-                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
-              >
-                <Table.Summary.Cell
-                  index={0}
-                  style={{ fontWeight: 'bold', color: '#1890ff' }}
-                >
-                  合计
-                </Table.Summary.Cell>
-                <Table.Summary.Cell
-                  index={1}
-                  style={{ fontWeight: 'bold', textAlign: 'center' }}
-                >
-                  -
-                </Table.Summary.Cell>
-                {dateColumns.map((_, index) => (
-                  <Table.Summary.Cell
-                    key={`parts_summary_${index}`}
-                    index={index + 2}
-                  >
-                    <div
-                      style={{
-                        fontWeight: 'bold',
-                        color: '#1890ff',
-                        textAlign: 'right',
-                      }}
-                    >
-                      {totalDailyInputs[index]}
-                    </div>
-                  </Table.Summary.Cell>
-                ))}
-                <Table.Summary.Cell
-                  index={dateColumns.length + 2}
-                  className='text-right'
-                  style={{
-                    fontWeight: 'bold',
-                    color: '#1890ff',
-                    textAlign: 'right',
-                  }}
-                >
-                  {totalInput}
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            );
-          }}
-        />
-      </Card> */}
     </div>
   );
 };
