@@ -16,6 +16,7 @@ import {
   SaveOutlined,
   DownloadOutlined,
   PlusOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
@@ -187,6 +188,10 @@ const PurchasePlan = () => {
         key: '2',
         spec: '6206',
         qualityRequirement: '耐高温要求，工作温度≤150°C',
+         qualityDocument: {
+          name: '耐高温技术要求.pdf',
+          url: 'https://example.com/documents/high-temp-requirements.pdf'
+        },
         factory: '铁路',
         dailyPlans: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
         dailyInputs: [0, 50, 0, 45, 0, 35, 0, 0, 0, 40],
@@ -261,6 +266,10 @@ const PurchasePlan = () => {
         key: '4',
         spec: '6207-RS',
         qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
+        qualityDocument: {
+          name: '防腐蚀测试标准.pdf',
+          url: 'https://example.com/documents/corrosion-test-standard.pdf'
+        },
         factory: '黄海',
         dailyPlans: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
         dailyInputs: [0, 40, 0, 35, 0, 30, 0, 0, 0, 25],
@@ -692,12 +701,27 @@ const PurchasePlan = () => {
         title: '质量要求',
         dataIndex: 'qualityRequirement',
         key: 'qualityRequirement',
-        width: 120,
+        width: 150,
         fixed: 'left',
-        render: (value) => (
-          <span style={{ color: value ? '#ff4d4f' : '#999' }}>
-            {value || '-'}
-          </span>
+        render: (value, record) => (
+          <div>
+            <div style={{ color: value ? '#ff4d4f' : '#999', marginBottom: '4px' }}>
+              {value || '-'}
+            </div>
+            {record.qualityDocument && (
+              <div>
+                <FileTextOutlined style={{ color: '#1890ff', marginRight: '4px' }} />
+                <a 
+                  href={record.qualityDocument.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ fontSize: '12px', color: '#1890ff' }}
+                >
+                  {record.qualityDocument.name}
+                </a>
+              </div>
+            )}
+          </div>
         ),
       },
     ];

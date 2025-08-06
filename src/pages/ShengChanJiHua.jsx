@@ -16,6 +16,7 @@ import {
 import {
   SaveOutlined,
   DownloadOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
@@ -100,6 +101,10 @@ const ProductionPlan = () => {
         key: '3',
         model: '6206',
         qualityRequirement: '耐高温要求，工作温度≤150°C',
+        qualityDocument: {
+          name: '耐高温技术要求.pdf',
+          url: 'https://example.com/documents/high-temp-requirements.pdf'
+        },
         factory: '精密',
         productionLine: '5',
         type: 'A类',
@@ -126,6 +131,10 @@ const ProductionPlan = () => {
         key: '5',
         model: '6311-2Z',
         qualityRequirement: '防腐蚀要求，盐雾试验≥240小时',
+        qualityDocument: {
+          name: '防腐蚀测试标准.pdf',
+          url: 'https://example.com/documents/corrosion-test-standard.pdf'
+        },
         factory: '电机',
         productionLine: '2',
         type: 'A类',
@@ -249,12 +258,27 @@ const ProductionPlan = () => {
         title: '质量要求',
         dataIndex: 'qualityRequirement',
         key: 'qualityRequirement',
-        width: 120,
+        width: 150,
         fixed: 'left',
-        render: (value) => (
-          <span style={{ color: value ? '#ff4d4f' : '#999' }}>
-            {value || '-'}
-          </span>
+        render: (value, record) => (
+          <div>
+            <div style={{ color: value ? '#ff4d4f' : '#999', marginBottom: '4px' }}>
+              {value || '-'}
+            </div>
+            {record.qualityDocument && (
+              <div>
+                <FileTextOutlined style={{ color: '#1890ff', marginRight: '4px' }} />
+                <a 
+                  href={record.qualityDocument.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ fontSize: '12px', color: '#1890ff' }}
+                >
+                  {record.qualityDocument.name}
+                </a>
+              </div>
+            )}
+          </div>
         ),
       },
       {
