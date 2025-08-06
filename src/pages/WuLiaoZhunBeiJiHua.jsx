@@ -664,7 +664,7 @@ const PurchasePlan = () => {
                 <InputNumber
                   size="small"
                   min={0}
-                  precision={2}
+                  precision={0}
                   value={value}
                   onChange={(newValue) => handleMaterialUnitConsumptionChange(record.key, materialRecord.materialType, newValue)}
                   placeholder="单耗"
