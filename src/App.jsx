@@ -29,7 +29,7 @@ function App() {
     {
       key: 'requirements',
       icon: <FileTextOutlined />,
-      label: '需求池',
+      label: '生产计划',
       children: [
         {
           key: '/production',

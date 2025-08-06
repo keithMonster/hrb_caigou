@@ -1,0 +1,23 @@
+.action-bar {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.action-bar-left {
+  justify-content: flex-start;
+}
+
+.action-bar-center {
+  justify-content: center;
+}
+
+.action-bar-right {
+  justify-content: flex-end;
+}
+
+.action-bar .ant-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

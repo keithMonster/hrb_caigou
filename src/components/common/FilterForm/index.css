@@ -1,0 +1,34 @@
+.filter-card {
+  margin-bottom: 16px;
+}
+
+.filter-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.filter-actions-left {
+  text-align: left;
+}
+
+.filter-actions-center {
+  text-align: center;
+}
+
+.filter-actions-right {
+  text-align: right;
+}
+
+.filter-card .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.filter-card .ant-form-item-label {
+  padding-bottom: 4px;
+}
+
+.filter-card .ant-form-item-label > label {
+  font-weight: 500;
+  color: #262626;
+}

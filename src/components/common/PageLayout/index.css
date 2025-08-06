@@ -1,0 +1,43 @@
+.page-layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.page-header-content {
+  flex: 1;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 8px;
+  margin: 0;
+}
+
+.page-header p {
+  color: #8c8c8c;
+  font-size: 14px;
+  margin: 0;
+  margin-top: 4px;
+}
+
+.page-header-extra {
+  flex-shrink: 0;
+}
+
+.page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
