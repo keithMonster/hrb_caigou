@@ -58,15 +58,22 @@ function App() {
           icon: <ContainerOutlined />,
           label: '采购合同',
         },
+        // {
+        //   key: '/quality-inspection',
+        //   icon: <CheckCircleOutlined />,
+        //   label: '原料进厂检验',
+        // },
+      ],
+    },
+    {
+      key: 'warehouse-management',
+      icon: <DatabaseOutlined />,
+      label: '库管',
+      children: [
         {
           key: '/arrival',
           icon: <InboxOutlined />,
           label: '到货',
-        },
-        {
-          key: '/quality-inspection',
-          icon: <CheckCircleOutlined />,
-          label: '原料进厂检验',
         },
         {
           key: '/warehousing',
@@ -97,9 +104,11 @@ function App() {
 
   const getOpenKeys = () => {
     const path = location.pathname
-    if (path.startsWith('/purchase-plan') || path.startsWith('/purchase-contract') || path.startsWith('/arrival') || 
-        path.startsWith('/quality-inspection') || path.startsWith('/warehousing')) {
+    if (path.startsWith('/purchase-plan') || path.startsWith('/purchase-contract') || path.startsWith('/quality-inspection')) {
       return ['professional-oem']
+    }
+    if (path.startsWith('/arrival') || path.startsWith('/warehousing')) {
+      return ['warehouse-management']
     }
     return ['requirements']
   }

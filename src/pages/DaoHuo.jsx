@@ -258,6 +258,25 @@ const Arrival = () => {
 
   const columns = [
     {
+      title: '型号',
+      dataIndex: 'model',
+      key: 'model',
+      width: 120,
+    },
+    {
+      title: '到货数量',
+      dataIndex: 'arrivalQuantity',
+      key: 'arrivalQuantity',
+      width: 80,
+      align: 'right',
+    },
+    {
+      title: '到货日期',
+      dataIndex: 'arrivalDate',
+      key: 'arrivalDate',
+      width: 120,
+    },
+    {
       title: '合同编号',
       dataIndex: 'contractNo',
       key: 'contractNo',
@@ -268,94 +287,6 @@ const Arrival = () => {
       dataIndex: 'supplier',
       key: 'supplier',
       width: 180,
-    },
-    {
-      title: '型号',
-      dataIndex: 'model',
-      key: 'model',
-      width: 120,
-    },
-    {
-      title: '到货日期',
-      dataIndex: 'arrivalDate',
-      key: 'arrivalDate',
-      width: 120,
-    },
-    {
-      title: '采购数量',
-      dataIndex: 'purchaseQuantity',
-      key: 'purchaseQuantity',
-      width: 100,
-      align: 'right',
-    },
-    {
-      title: '到货数量',
-      dataIndex: 'arrivalQuantity',
-      key: 'arrivalQuantity',
-      width: 100,
-      align: 'right',
-    },
-    {
-      title: '验收数量',
-      dataIndex: 'inspectionQuantity',
-      key: 'inspectionQuantity',
-      width: 100,
-      align: 'right',
-      render: (value, record) => (
-        <Button 
-          type="link" 
-          onClick={() => showDrawer('inspection', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
-        >
-          {value}
-        </Button>
-      ),
-    },
-    {
-      title: '合格数量',
-      dataIndex: 'qualifiedQuantity',
-      key: 'qualifiedQuantity',
-      width: 100,
-      align: 'right',
-      render: (value, record) => (
-        <Button 
-          type="link" 
-          onClick={() => showDrawer('qualified', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
-        >
-          {value}
-        </Button>
-      ),
-    },
-    {
-      title: '入库数量',
-      dataIndex: 'warehouseQuantity',
-      key: 'warehouseQuantity',
-      width: 100,
-      align: 'right',
-      render: (value, record) => (
-        <Button 
-          type="link" 
-          onClick={() => showDrawer('warehouse', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
-        >
-          {value}
-        </Button>
-      ),
-    },
-    {
-      title: '状态',
-      key: 'inspectionStatus',
-      width: 100,
-      align: 'center',
-      render: (_, record) => {
-        const isCompleted = record.inspectionQuantity === record.arrivalQuantity;
-        return (
-          <Tag color={isCompleted ? 'green' : 'orange'}>
-            {isCompleted ? '已完成' : '未完成'}
-          </Tag>
-        );
-      },
     },
     {
       title: '操作',
