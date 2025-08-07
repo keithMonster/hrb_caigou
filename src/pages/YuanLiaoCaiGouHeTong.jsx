@@ -13,6 +13,7 @@ import {
   Col,
   Tag,
   Modal,
+  InputNumber,
 } from 'antd';
 import {
   SearchOutlined,
@@ -30,6 +31,7 @@ const RawMaterialPurchaseContract = () => {
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // 初始化模拟数据
   const initMockData = () => {
@@ -45,6 +47,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 800,
             qualifiedQuantity: 750,
             warehouseQuantity: 750,
+            returnQuantity: 50,
             status: '未完成',
           },
           {
@@ -53,6 +56,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 800,
             qualifiedQuantity: 780,
             warehouseQuantity: 780,
+            returnQuantity: 20,
             status: '未完成',
           },
           {
@@ -61,6 +65,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 4000,
             qualifiedQuantity: 3950,
             warehouseQuantity: 3950,
+            returnQuantity: 50,
             status: '未完成',
           }
         ]
@@ -76,6 +81,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 800,
             qualifiedQuantity: 780,
             warehouseQuantity: 780,
+            returnQuantity: 20,
             status: '完成',
           },
           {
@@ -84,6 +90,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 800,
             qualifiedQuantity: 790,
             warehouseQuantity: 790,
+            returnQuantity: 10,
             status: '完成',
           }
         ]
@@ -99,6 +106,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 300,
             qualifiedQuantity: 300,
             warehouseQuantity: 300,
+            returnQuantity: 0,
             status: '未完成',
           },
           {
@@ -107,6 +115,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 200,
             qualifiedQuantity: 200,
             warehouseQuantity: 200,
+            returnQuantity: 0,
             status: '未完成',
           }
         ]
@@ -122,6 +131,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 1200,
             qualifiedQuantity: 1180,
             warehouseQuantity: 1180,
+            returnQuantity: 20,
             status: '完成',
           }
         ]
@@ -137,6 +147,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 300,
             qualifiedQuantity: 290,
             warehouseQuantity: 290,
+            returnQuantity: 10,
             status: '未完成',
           },
           {
@@ -145,6 +156,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 1500,
             qualifiedQuantity: 1480,
             warehouseQuantity: 1480,
+            returnQuantity: 20,
             status: '未完成',
           }
         ]
@@ -160,6 +172,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 600,
             qualifiedQuantity: 580,
             warehouseQuantity: 580,
+            returnQuantity: 20,
             status: '已关闭',
           },
           {
@@ -168,6 +181,7 @@ const RawMaterialPurchaseContract = () => {
             arrivalQuantity: 400,
             qualifiedQuantity: 390,
             warehouseQuantity: 390,
+            returnQuantity: 10,
             status: '已关闭',
           }
         ]
@@ -186,6 +200,7 @@ const RawMaterialPurchaseContract = () => {
         arrivalQuantity: spec.arrivalQuantity,
         qualifiedQuantity: spec.qualifiedQuantity,
         warehouseQuantity: spec.warehouseQuantity,
+        returnQuantity: spec.returnQuantity,
         status: spec.status,
         isFirstRow: index === 0,
         totalSpecs: contract.specifications.length
@@ -270,6 +285,43 @@ const RawMaterialPurchaseContract = () => {
     } catch (error) {
       console.error('表单验证失败:', error);
     }
+  };
+
+  // 处理退货数量编辑
+  const handleReturnQuantityChange = (value, record) => {
+    const newData = dataSource.map(item => 
+      item.key === record.key 
+        ? { ...item, returnQuantity: value || 0 }
+        : item
+    );
+    setDataSource(newData);
+    setFilteredDataSource(newData.filter(item => {
+      const values = filterForm.getFieldsValue();
+      let filtered = true;
+      
+      if (values.contractNo) {
+        filtered = filtered && item.contractNo.toLowerCase().includes(values.contractNo.toLowerCase());
+      }
+      if (values.supplier) {
+        filtered = filtered && item.supplier.toLowerCase().includes(values.supplier.toLowerCase());
+      }
+      if (values.status) {
+        filtered = filtered && item.status === values.status;
+      }
+      if (values.deliveryDate) {
+        const selectedDate = values.deliveryDate.format('YYYY-MM-DD');
+        filtered = filtered && item.deliveryDate === selectedDate;
+      }
+      
+      return filtered;
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  // 保存退货数量修改
+  const handleSaveReturnQuantity = () => {
+    setHasUnsavedChanges(false);
+    message.success('退货数量保存成功');
   };
 
   // 获取状态颜色
@@ -383,6 +435,23 @@ const RawMaterialPurchaseContract = () => {
       render: (value) => value?.toLocaleString(),
     },
     {
+      title: '退货数量',
+      dataIndex: 'returnQuantity',
+      key: 'returnQuantity',
+      width: 120,
+      align: 'right',
+      render: (value, record) => (
+        <InputNumber
+          value={value}
+          min={0}
+          max={record.arrivalQuantity}
+          onChange={(newValue) => handleReturnQuantityChange(newValue, record)}
+          style={{ width: '100%' }}
+          size="small"
+        />
+      ),
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
@@ -481,6 +550,13 @@ const RawMaterialPurchaseContract = () => {
                   >
                     导出
                   </Button>
+                  <Button 
+                    type="primary"
+                    onClick={handleSaveReturnQuantity}
+                    disabled={!hasUnsavedChanges}
+                  >
+                    保存
+                  </Button>
                 </Space>
               </Form.Item>
             </Col>
@@ -497,7 +573,7 @@ const RawMaterialPurchaseContract = () => {
           dataSource={filteredDataSource}
           columns={columns}
           loading={loading}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1320 }}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,

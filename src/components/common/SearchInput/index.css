@@ -1,0 +1,246 @@
+/* SearchInput 组件样式 */
+.search-input-container {
+  width: 100%;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-group {
+  width: 100%;
+  display: flex;
+}
+
+.enhanced-search-input {
+  flex: 1;
+}
+
+.search-autocomplete {
+  flex: 1;
+}
+
+.search-autocomplete .ant-select-selector {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* 筛选按钮样式 */
+.filter-button {
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filter-button.has-active-filters {
+  color: var(--ant-color-primary);
+  border-color: var(--ant-color-primary);
+  background-color: var(--ant-color-primary-bg);
+}
+
+.filter-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.filter-active-indicator {
+  color: var(--ant-color-primary);
+  font-weight: bold;
+}
+
+/* 活跃筛选器标签 */
+.active-filters {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.filter-tag {
+  margin: 0;
+  border-radius: 4px;
+  background-color: var(--ant-color-primary-bg);
+  border-color: var(--ant-color-primary-border);
+  color: var(--ant-color-primary);
+}
+
+/* 搜索历史样式 */
+.search-history {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid var(--ant-color-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+  font-size: 12px;
+  color: var(--ant-color-text-secondary);
+  background-color: var(--ant-color-fill-quaternary);
+}
+
+.clear-history-btn {
+  font-size: 12px;
+  height: auto;
+  padding: 0;
+  color: var(--ant-color-text-tertiary);
+}
+
+.clear-history-btn:hover {
+  color: var(--ant-color-primary);
+}
+
+.search-history-list {
+  padding: 4px 0;
+}
+
+.search-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-history-item:hover {
+  background-color: var(--ant-color-fill-tertiary);
+}
+
+.history-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--ant-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-history-btn {
+  font-size: 12px;
+  color: var(--ant-color-text-quaternary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 2px;
+  border-radius: 2px;
+}
+
+.search-history-item:hover .remove-history-btn {
+  opacity: 1;
+}
+
+.remove-history-btn:hover {
+  color: var(--ant-color-error);
+  background-color: var(--ant-color-error-bg);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .search-input-group {
+    flex-direction: column;
+  }
+  
+  .filter-button {
+    border-left: 1px solid var(--ant-color-border);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    margin-top: 8px;
+  }
+  
+  .enhanced-search-input .ant-input-group-wrapper .ant-input-wrapper .ant-input-group-addon:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+  
+  .search-autocomplete .ant-select-selector {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .search-history {
+    background: var(--ant-color-bg-elevated);
+    border-color: var(--ant-color-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .search-history-header {
+    background-color: var(--ant-color-fill-quaternary);
+    border-bottom-color: var(--ant-color-border-secondary);
+  }
+  
+  .search-history-item:hover {
+    background-color: var(--ant-color-fill-tertiary);
+  }
+}
+
+/* 自定义滚动条 */
+.search-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-history::-webkit-scrollbar-thumb {
+  background: var(--ant-color-border);
+  border-radius: 3px;
+}
+
+.search-history::-webkit-scrollbar-thumb:hover {
+  background: var(--ant-color-border-secondary);
+}
+
+/* 动画效果 */
+.search-history {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.active-filters {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

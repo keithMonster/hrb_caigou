@@ -1,7 +1,86 @@
+/* 导入样式系统 */
+@import './styles/variables.css';
+@import './styles/global.css';
+@import './styles/mixins.css';
+
+/* Ant Design 样式定制 */
+.ant-layout {
+  background: var(--background-color-light);
+}
+
+.ant-layout-sider {
+  background: var(--background-color) !important;
+}
+
+.ant-menu {
+  background: transparent;
+  border-right: none;
+}
+
+.ant-menu-item {
+  border-radius: var(--border-radius-md) !important;
+  margin: var(--spacing-xs) var(--spacing-sm) !important;
+}
+
+.ant-menu-item-selected {
+  background-color: var(--primary-color-light) !important;
+  color: var(--primary-color) !important;
+}
+
+.ant-menu-submenu-title {
+  border-radius: var(--border-radius-md) !important;
+  margin: var(--spacing-xs) var(--spacing-sm) !important;
+}
+
+.ant-card {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+}
+
+.ant-table {
+  border-radius: var(--border-radius-md);
+}
+
+.ant-table-thead > tr > th {
+  background-color: var(--background-color-lighter);
+  font-weight: var(--font-weight-medium);
+}
+
+.ant-btn {
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.ant-form-item-label > label {
+  font-weight: var(--font-weight-medium);
+  color: var(--label-color);
+}
+
+/* 自定义滚动条 */
 * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: var(--border-radius-sm);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-color-dark);
 }
 
 body {

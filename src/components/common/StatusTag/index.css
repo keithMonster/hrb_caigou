@@ -1,0 +1,125 @@
+/* StatusTag 组件样式 */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.status-tag-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.status-tag-text {
+  line-height: 1;
+}
+
+/* 尺寸变体 */
+.status-tag-small {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status-tag-small .status-tag-icon {
+  font-size: 10px;
+}
+
+.status-tag-default {
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.status-tag-large {
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.status-tag-large .status-tag-icon {
+  font-size: 14px;
+}
+
+/* 可点击状态 */
+.status-tag[role="button"],
+.status-tag.ant-tag-clickable {
+  cursor: pointer;
+}
+
+.status-tag[role="button"]:hover,
+.status-tag.ant-tag-clickable:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 业务类型特定样式 */
+.status-tag-order {
+  /* 订单状态特定样式 */
+}
+
+.status-tag-purchase {
+  /* 采购状态特定样式 */
+}
+
+.status-tag-quality {
+  /* 质检状态特定样式 */
+}
+
+.status-tag-warehouse {
+  /* 入库状态特定样式 */
+}
+
+.status-tag-contract {
+  /* 合同状态特定样式 */
+}
+
+.status-tag-shipping {
+  /* 运输状态特定样式 */
+}
+
+.status-tag-priority {
+  /* 优先级特定样式 */
+  font-weight: 600;
+}
+
+.status-tag-material {
+  /* 物料类型特定样式 */
+}
+
+.status-tag-production {
+  /* 生产来源特定样式 */
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .status-tag {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+  
+  .status-tag-icon {
+    font-size: 10px;
+  }
+  
+  .status-tag-large {
+    font-size: 14px;
+    padding: 4px 8px;
+  }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .status-tag {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  .status-tag[role="button"]:hover,
+  .status-tag.ant-tag-clickable:hover {
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  }
+}

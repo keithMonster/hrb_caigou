@@ -1,0 +1,321 @@
+/* Enhanced Table 样式 */
+.enhanced-table-container {
+  position: relative;
+  background: var(--color-bg-container);
+  border-radius: var(--border-radius-lg);
+  transition: all 0.3s ease;
+}
+
+.enhanced-table-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  border-radius: 0;
+  background: var(--color-bg-layout);
+  padding: var(--spacing-lg);
+}
+
+/* 表格头部 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-container);
+}
+
+.table-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.table-statistics {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* 工具栏 */
+.enhanced-table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-bg-container);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* 表格卡片 */
+.table-card {
+  border: none;
+  box-shadow: none;
+}
+
+.table-card .ant-card-body {
+  padding: 0;
+}
+
+/* 表格样式增强 */
+.enhanced-table-container .ant-table {
+  background: transparent;
+}
+
+.enhanced-table-container .ant-table-thead > tr > th {
+  background: var(--color-bg-container);
+  border-bottom: 2px solid var(--color-border);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  padding: var(--spacing-md) var(--spacing-sm);
+}
+
+.enhanced-table-container .ant-table-tbody > tr > td {
+  padding: var(--spacing-md) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-secondary);
+  transition: all 0.2s ease;
+}
+
+.enhanced-table-container .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-hover) !important;
+}
+
+.enhanced-table-container .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: var(--color-primary-bg) !important;
+}
+
+/* 分页样式 */
+.enhanced-table-container .ant-pagination {
+  margin: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+  text-align: right;
+}
+
+.enhanced-table-container .ant-pagination .ant-pagination-total-text {
+  color: var(--color-text-secondary);
+  margin-right: auto;
+}
+
+/* 空状态 */
+.enhanced-table-container .ant-empty {
+  padding: var(--spacing-xl) 0;
+}
+
+.enhanced-table-container .ant-empty-description {
+  color: var(--color-text-tertiary);
+}
+
+/* 加载状态 */
+.enhanced-table-container .ant-spin-container {
+  min-height: 200px;
+}
+
+/* 选择列样式 */
+.enhanced-table-container .ant-table-selection-column {
+  width: 48px;
+  text-align: center;
+}
+
+.enhanced-table-container .ant-checkbox-wrapper {
+  margin: 0;
+}
+
+/* 操作列样式 */
+.enhanced-table-container .table-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  justify-content: center;
+}
+
+.enhanced-table-container .table-actions .ant-btn {
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.enhanced-table-container .table-actions .ant-btn:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+/* 排序图标 */
+.enhanced-table-container .ant-table-column-sorter {
+  color: var(--color-text-tertiary);
+}
+
+.enhanced-table-container .ant-table-column-sorter.ant-table-column-sorter-up.active,
+.enhanced-table-container .ant-table-column-sorter.ant-table-column-sorter-down.active {
+  color: var(--color-primary);
+}
+
+/* 筛选图标 */
+.enhanced-table-container .ant-table-filter-trigger {
+  color: var(--color-text-tertiary);
+  transition: color 0.2s ease;
+}
+
+.enhanced-table-container .ant-table-filter-trigger:hover {
+  color: var(--color-primary);
+}
+
+.enhanced-table-container .ant-table-filter-trigger.active {
+  color: var(--color-primary);
+}
+
+/* 固定列阴影 */
+.enhanced-table-container .ant-table-ping-left .ant-table-cell-fix-left-last::after {
+  box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.06);
+}
+
+.enhanced-table-container .ant-table-ping-right .ant-table-cell-fix-right-first::after {
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.06);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .enhanced-table-toolbar {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+  
+  .toolbar-left,
+  .toolbar-right {
+    justify-content: center;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+  
+  .enhanced-table-container .ant-pagination {
+    text-align: center;
+  }
+  
+  .enhanced-table-container .ant-pagination .ant-pagination-total-text {
+    margin: 0 0 var(--spacing-sm) 0;
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .enhanced-table-container {
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .table-header,
+  .enhanced-table-toolbar {
+    padding: var(--spacing-sm);
+  }
+  
+  .enhanced-table-container .ant-table-thead > tr > th,
+  .enhanced-table-container .ant-table-tbody > tr > td {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    font-size: var(--font-size-sm);
+  }
+  
+  .toolbar-right .ant-space {
+    flex-wrap: wrap;
+  }
+}
+
+/* 深色主题适配 */
+[data-theme='dark'] .enhanced-table-container {
+  background: var(--color-bg-container);
+}
+
+[data-theme='dark'] .enhanced-table-container .ant-table-thead > tr > th {
+  background: var(--color-bg-elevated);
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme='dark'] .enhanced-table-container .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-hover) !important;
+}
+
+[data-theme='dark'] .enhanced-table-container .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: var(--color-primary-bg-hover) !important;
+}
+
+/* 打印样式 */
+@media print {
+  .enhanced-table-toolbar,
+  .enhanced-table-container .ant-pagination {
+    display: none !important;
+  }
+  
+  .enhanced-table-container {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  .enhanced-table-container .ant-table {
+    font-size: 12px;
+  }
+  
+  .enhanced-table-container .ant-table-thead > tr > th,
+  .enhanced-table-container .ant-table-tbody > tr > td {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+  }
+}
+
+/* 动画效果 */
+.enhanced-table-container .ant-table-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+.enhanced-table-container .table-actions .ant-btn {
+  transform: scale(1);
+  transition: all 0.2s ease;
+}
+
+.enhanced-table-container .table-actions .ant-btn:hover {
+  transform: scale(1.1);
+}
+
+/* 滚动条样式 */
+.enhanced-table-container .ant-table-body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.enhanced-table-container .ant-table-body::-webkit-scrollbar-track {
+  background: var(--color-bg-layout);
+  border-radius: 4px;
+}
+
+.enhanced-table-container .ant-table-body::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.enhanced-table-container .ant-table-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}

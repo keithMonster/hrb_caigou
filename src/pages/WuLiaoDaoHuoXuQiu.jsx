@@ -10,10 +10,9 @@ import {
   Drawer,
   Tag,
   message,
+  InputNumber,
 } from 'antd';
-import {
-  DownloadOutlined,
-} from '@ant-design/icons';
+import { DownloadOutlined, SaveOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 
@@ -24,7 +23,9 @@ const MaterialArrivalRequirement = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [selectedMaterialType, setSelectedMaterialType] = useState('全部');
-  const [selectedMaterialRequirement, setSelectedMaterialRequirement] = useState('全部');
+  const [isEditMode, setIsEditMode] = useState(true);
+  const [selectedMaterialRequirement, setSelectedMaterialRequirement] =
+    useState('全部');
   const [selectedMonth, setSelectedMonth] = useState(dayjs());
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerData, setDrawerData] = useState([]);
@@ -51,8 +52,35 @@ const MaterialArrivalRequirement = () => {
     '材质：黄铜',
   ];
 
+  // 生成当月的日期列表
+  const generateDatesForMonth = (month) => {
+    const startDate = month.startOf('month');
+    const endDate = month.endOf('month');
+    const dates = [];
+
+    for (
+      let date = startDate;
+      date.isBefore(endDate) || date.isSame(endDate);
+      date = date.add(1, 'day')
+    ) {
+      dates.push({
+        date: date.format('YYYY-MM-DD'),
+        day: date.date(),
+        period:
+          date.date() <= 10
+            ? 'firstTen'
+            : date.date() <= 20
+            ? 'middleTen'
+            : 'lastTen',
+      });
+    }
+
+    return dates;
+  };
+
   // 初始化模拟数据
   const initMockData = () => {
+    const dates = generateDatesForMonth(selectedMonth);
     const mockData = [
       {
         key: '1',
@@ -62,9 +90,13 @@ const MaterialArrivalRequirement = () => {
         attachments: ['技术要求.pdf', '检验标准.doc'],
         materialSource: '外购',
         materialRequirement: '表面粗糙度Ra≤0.8',
-        firstTen: { demand: 120, plan: 100 },
-        middleTen: { demand: 80, plan: 80 },
-        lastTen: { demand: 150, plan: 120 },
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: dateInfo.day === 1 ? 120 : 0, // 默认在每旬第一天填写数量
+            plan: dateInfo.day === 1 ? 100 : 0,
+          };
+          return acc;
+        }, {}),
       },
       {
         key: '2',
@@ -74,9 +106,13 @@ const MaterialArrivalRequirement = () => {
         attachments: ['质量标准.pdf'],
         materialSource: '自产',
         materialRequirement: '硬度HRC58-62',
-        firstTen: { demand: 200, plan: 180 },
-        middleTen: { demand: 160, plan: 160 },
-        lastTen: { demand: 100, plan: 80 },
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: dateInfo.day === 11 ? 160 : 0,
+            plan: dateInfo.day === 11 ? 160 : 0,
+          };
+          return acc;
+        }, {}),
       },
       {
         key: '3',
@@ -86,9 +122,13 @@ const MaterialArrivalRequirement = () => {
         attachments: ['材料证书.pdf', '测试报告.doc'],
         materialSource: '外购',
         materialRequirement: '耐温-40~120℃',
-        firstTen: { demand: 500, plan: 400 },
-        middleTen: { demand: 300, plan: 300 },
-        lastTen: { demand: 200, plan: 150 },
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: dateInfo.day === 21 ? 200 : 0,
+            plan: dateInfo.day === 21 ? 150 : 0,
+          };
+          return acc;
+        }, {}),
       },
       {
         key: '4',
@@ -98,9 +138,13 @@ const MaterialArrivalRequirement = () => {
         attachments: ['检测报告.pdf'],
         materialSource: '外购',
         materialRequirement: '球度误差≤0.5μm',
-        firstTen: { demand: 1000, plan: 950 },
-        middleTen: { demand: 800, plan: 750 },
-        lastTen: { demand: 1200, plan: 1100 },
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: [1, 11, 21].includes(dateInfo.day) ? 300 : 0,
+            plan: [1, 11, 21].includes(dateInfo.day) ? 280 : 0,
+          };
+          return acc;
+        }, {}),
       },
       {
         key: '5',
@@ -110,9 +154,13 @@ const MaterialArrivalRequirement = () => {
         attachments: ['材质证明.pdf', '尺寸检测表.xls'],
         materialSource: '自产',
         materialRequirement: '材质：黄铜',
-        firstTen: { demand: 300, plan: 280 },
-        middleTen: { demand: 250, plan: 250 },
-        lastTen: { demand: 200, plan: 180 },
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: [1, 11, 21].includes(dateInfo.day) ? 200 : 0,
+            plan: [1, 11, 21].includes(dateInfo.day) ? 180 : 0,
+          };
+          return acc;
+        }, {}),
       },
     ];
     setDataSource(mockData);
@@ -120,7 +168,7 @@ const MaterialArrivalRequirement = () => {
 
   React.useEffect(() => {
     initMockData();
-  }, []);
+  }, [selectedMonth]);
 
   // 处理物料类型筛选变化
   const handleMaterialTypeChange = (value) => {
@@ -135,23 +183,62 @@ const MaterialArrivalRequirement = () => {
   // 处理月份选择变化
   const handleMonthChange = (date) => {
     setSelectedMonth(date);
+    // 月份变化时会触发useEffect重新生成数据
   };
 
   // 获取筛选后的数据
   const getFilteredDataSource = () => {
     let filtered = [...dataSource];
-    
+
     // 按物料类型筛选
     if (selectedMaterialType !== '全部') {
-      filtered = filtered.filter(item => item.materialType === selectedMaterialType);
+      filtered = filtered.filter(
+        (item) => item.materialType === selectedMaterialType
+      );
     }
-    
+
     // 按物料要求筛选
     if (selectedMaterialRequirement !== '全部') {
-      filtered = filtered.filter(item => item.materialRequirement === selectedMaterialRequirement);
+      filtered = filtered.filter(
+        (item) => item.materialRequirement === selectedMaterialRequirement
+      );
     }
-    
+
     return filtered;
+  };
+
+  // 处理需求量变化
+  const handleDemandChange = (recordKey, date, value) => {
+    const updatedData = dataSource.map((item) => {
+      if (item.key === recordKey) {
+        return {
+          ...item,
+          dailyData: {
+            ...item.dailyData,
+            [date]: {
+              ...item.dailyData[date],
+              demand: value || 0,
+            },
+          },
+        };
+      }
+      return item;
+    });
+    setDataSource(updatedData);
+  };
+
+  // 保存数据或切换编辑模式
+  const handleSave = () => {
+    if (isEditMode) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        message.success('保存成功');
+        setIsEditMode(false);
+      }, 1000);
+    } else {
+      setIsEditMode(true);
+    }
   };
 
   // 处理计划数量点击
@@ -177,119 +264,193 @@ const MaterialArrivalRequirement = () => {
         status: '待确认',
       },
     ];
-    
+
     setDrawerData(planData);
-    setDrawerTitle(`${record.specification} - ${period === 'firstTen' ? '上旬' : period === 'middleTen' ? '中旬' : '下旬'}到货计划`);
+    setDrawerTitle(
+      `${record.specification} - ${
+        period === 'firstTen'
+          ? '上旬'
+          : period === 'middleTen'
+          ? '中旬'
+          : '下旬'
+      }到货计划`
+    );
     setDrawerVisible(true);
   };
 
-  // 渲染数量单元格
-  const renderQuantityCell = (record, period) => {
-    const data = record[period];
-    const periodName = period === 'firstTen' ? '上旬' : period === 'middleTen' ? '中旬' : '下旬';
-    
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ marginBottom: 4 }}>需求: {data.demand}</div>
-        <div>
-          计划: 
-          <Button 
-            type="link" 
-            size="small" 
-            style={{ padding: 0, height: 'auto', fontSize: '12px' }}
-            onClick={() => handlePlanClick(record, period)}
+  // 生成表格列定义
+  const generateColumns = () => {
+    const dates = generateDatesForMonth(selectedMonth);
+
+    // 基础固定列
+    const fixedColumns = [
+      {
+        title: '物料类型',
+        dataIndex: 'materialType',
+        key: 'materialType',
+        width: 100,
+        fixed: 'left',
+      },
+      {
+        title: '规格',
+        dataIndex: 'specification',
+        key: 'specification',
+        width: 120,
+        fixed: 'left',
+      },
+    ];
+
+    // 滚动列
+    const scrollColumns = [
+      {
+        title: '质量要求（含附件）',
+        dataIndex: 'qualityRequirement',
+        key: 'qualityRequirement',
+        width: 200,
+        render: (text, record) => (
+          <div>
+            <div style={{ marginBottom: 4 }}>{text}</div>
+            {record.attachments && record.attachments.length > 0 && (
+              <div>
+                {record.attachments.map((file, index) => (
+                  <Button
+                    key={index}
+                    type='link'
+                    size='small'
+                    style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
+                    onClick={() => message.info(`查看附件：${file}`)}
+                  >
+                    📎 {file}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        ),
+      },
+      {
+        title: '物料来源',
+        dataIndex: 'materialSource',
+        key: 'materialSource',
+        width: 100,
+        render: (text) => (
+          <span
+            style={{
+              color: text === '自产' ? '#52c41a' : '#1890ff',
+              fontWeight: 500,
+            }}
           >
-            {data.plan}
-          </Button>
-        </div>
-      </div>
-    );
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: '物料要求',
+        dataIndex: 'materialRequirement',
+        key: 'materialRequirement',
+        width: 150,
+        render: (text) => text || '-',
+      },
+    ];
+
+    // 按旬期分组日期列
+    const firstTenDates = dates.filter((d) => d.period === 'firstTen');
+    const middleTenDates = dates.filter((d) => d.period === 'middleTen');
+    const lastTenDates = dates.filter((d) => d.period === 'lastTen');
+
+    // 计算期间合计
+    const calculatePeriodTotals = (periodDates, dataSource) => {
+      let totalDemand = 0;
+      let totalPlan = 0;
+
+      dataSource.forEach((record) => {
+        periodDates.forEach((dateInfo) => {
+          const dayData = record.dailyData[dateInfo.date] || {
+            demand: 0,
+            plan: 0,
+          };
+          totalDemand += dayData.demand || 0;
+          totalPlan += dayData.plan || 0;
+        });
+      });
+
+      return { totalDemand, totalPlan };
+    };
+
+    // 生成日期列
+    const generateDateColumns = (periodDates, periodTitle) => {
+      const { totalDemand, totalPlan } = calculatePeriodTotals(
+        periodDates,
+        getFilteredDataSource()
+      );
+
+      return {
+        title: (
+          <div>
+            <div>{periodTitle}</div>
+            <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
+              <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
+              <span>/</span>
+              <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
+            </div>
+          </div>
+        ),
+        children: periodDates.map((dateInfo) => ({
+          title: `${dateInfo.date.slice(5)}`,
+          key: dateInfo.date,
+          width: 80,
+          render: (_, record) => {
+            const dayData = record.dailyData[dateInfo.date] || {
+              demand: 0,
+              plan: 0,
+            };
+            return (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ marginBottom: 4 }}>
+                  <InputNumber
+                    size='small'
+                    value={dayData.demand}
+                    onChange={(value) =>
+                      handleDemandChange(record.key, dateInfo.date, value)
+                    }
+                    min={0}
+                    style={{ width: '60px' }}
+                    placeholder='需求'
+                  />
+                </div>
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: dayData.plan > 0 ? '#52c41a' : '#666',
+                    fontWeight: dayData.plan > 0 ? '500' : 'normal',
+                    width: '6em',
+                    textAlign: 'left',
+                  }}
+                >
+                  计划: {dayData.plan}
+                </div>
+              </div>
+            );
+          },
+        })),
+      };
+    };
+
+    const dateColumns = [];
+    if (firstTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(firstTenDates, '上旬'));
+    }
+    if (middleTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(middleTenDates, '中旬'));
+    }
+    if (lastTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(lastTenDates, '下旬'));
+    }
+
+    return [...fixedColumns, ...scrollColumns, ...dateColumns];
   };
 
-  // 表格列定义
-  const columns = [
-    {
-      title: '物料类型',
-      dataIndex: 'materialType',
-      key: 'materialType',
-      width: 100,
-      fixed: 'left',
-    },
-    {
-      title: '质量要求（含附件）',
-      dataIndex: 'qualityRequirement',
-      key: 'qualityRequirement',
-      width: 200,
-      fixed: 'left',
-      render: (text, record) => (
-        <div>
-          <div style={{ marginBottom: 4 }}>{text}</div>
-          {record.attachments && record.attachments.length > 0 && (
-            <div>
-              {record.attachments.map((file, index) => (
-                <Button
-                  key={index}
-                  type="link"
-                  size="small"
-                  style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
-                  onClick={() => message.info(`查看附件：${file}`)}
-                >
-                  📎 {file}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: '物料来源',
-      dataIndex: 'materialSource',
-      key: 'materialSource',
-      width: 100,
-      fixed: 'left',
-      render: (text) => (
-        <span style={{ 
-          color: text === '自产' ? '#52c41a' : '#1890ff',
-          fontWeight: 500 
-        }}>
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: '规格',
-      dataIndex: 'specification',
-      key: 'specification',
-      width: 150,
-      fixed: 'left',
-    },
-    {
-      title: '物料要求',
-      dataIndex: 'materialRequirement',
-      key: 'materialRequirement',
-      width: 200,
-      render: (text) => text || '-',
-    },
-    {
-      title: '上旬(1-10)',
-      key: 'firstTen',
-      width: 120,
-      render: (_, record) => renderQuantityCell(record, 'firstTen'),
-    },
-    {
-      title: '中旬(11-20)',
-      key: 'middleTen',
-      width: 120,
-      render: (_, record) => renderQuantityCell(record, 'middleTen'),
-    },
-    {
-      title: '下旬(21-30)',
-      key: 'lastTen',
-      width: 120,
-      render: (_, record) => renderQuantityCell(record, 'lastTen'),
-    },
-  ];
+  const columns = generateColumns();
 
   // 抽屉中的表格列定义
   const drawerColumns = [
@@ -329,9 +490,7 @@ const MaterialArrivalRequirement = () => {
       key: 'status',
       width: 100,
       render: (status) => (
-        <Tag color={status === '已确认' ? 'green' : 'orange'}>
-          {status}
-        </Tag>
+        <Tag color={status === '已确认' ? 'green' : 'orange'}>{status}</Tag>
       ),
     },
   ];
@@ -339,31 +498,45 @@ const MaterialArrivalRequirement = () => {
   // 导出Excel
   const handleExport = () => {
     const filteredData = getFilteredDataSource();
-    const exportData = filteredData.map(item => ({
-      '物料类型': item.materialType,
-      '规格': item.specification,
-      '物料要求': item.materialRequirement || '-',
-      '上旬需求数量': item.firstTen.demand,
-      '上旬计划数量': item.firstTen.plan,
-      '中旬需求数量': item.middleTen.demand,
-      '中旬计划数量': item.middleTen.plan,
-      '下旬需求数量': item.lastTen.demand,
-      '下旬计划数量': item.lastTen.plan,
-    }));
+    const dates = generateDatesForMonth(selectedMonth);
+
+    const exportData = filteredData.map((item) => {
+      const row = {
+        物料类型: item.materialType,
+        规格: item.specification,
+        质量要求: item.qualityRequirement,
+        物料来源: item.materialSource,
+        物料要求: item.materialRequirement || '-',
+      };
+
+      // 添加每日的需求量和计划量
+      dates.forEach((dateInfo) => {
+        const dayData = item.dailyData[dateInfo.date] || { demand: 0, plan: 0 };
+        row[`${dateInfo.day}日需求量`] = dayData.demand;
+        row[`${dateInfo.day}日计划量`] = dayData.plan;
+      });
+
+      return row;
+    });
 
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, '物料到货需求');
-    XLSX.writeFile(wb, `物料到货需求_${selectedMonth.format('YYYY年MM月')}.xlsx`);
+    XLSX.writeFile(
+      wb,
+      `物料到货需求_${selectedMonth.format('YYYY年MM月')}.xlsx`
+    );
   };
 
   return (
     <div>
-      <div className="page-header">
+      <div className='page-header'>
         <h1>物料到货需求</h1>
       </div>
-      
-      <Card style={{ marginTop: '16px', marginRight: '16px', marginBottom: '16px' }}>
+
+      <Card
+        style={{ marginTop: '16px', marginRight: '16px', marginBottom: '16px' }}
+      >
         <div style={{ marginBottom: 16 }}>
           <Space wrap>
             <span>物料类型：</span>
@@ -372,47 +545,56 @@ const MaterialArrivalRequirement = () => {
               onChange={handleMaterialTypeChange}
               style={{ width: 120 }}
             >
-              {materialTypeOptions.map(option => (
-                <Option key={option} value={option}>{option}</Option>
+              {materialTypeOptions.map((option) => (
+                <Option key={option} value={option}>
+                  {option}
+                </Option>
               ))}
             </Select>
-            
+
             <span>物料要求：</span>
             <Select
               value={selectedMaterialRequirement}
               onChange={handleMaterialRequirementChange}
               style={{ width: 200 }}
-              placeholder="请选择物料要求"
+              placeholder='请选择物料要求'
             >
-              {materialRequirementOptions.map(option => (
-                <Option key={option} value={option}>{option}</Option>
+              {materialRequirementOptions.map((option) => (
+                <Option key={option} value={option}>
+                  {option}
+                </Option>
               ))}
             </Select>
-            
+
             <span>日期：</span>
             <DatePicker
-              picker="month"
+              picker='month'
               value={selectedMonth}
               onChange={handleMonthChange}
-              format="YYYY年MM月"
+              format='YYYY年MM月'
             />
-            
-            <Button 
-              type="primary" 
-              icon={<DownloadOutlined />}
-              onClick={handleExport}
+
+            <Button
+              type='primary'
+              icon={<SaveOutlined />}
+              onClick={handleSave}
+              loading={loading}
             >
+              保存
+            </Button>
+
+            <Button icon={<DownloadOutlined />} onClick={handleExport}>
               导出Excel
             </Button>
           </Space>
         </div>
-        
+
         <Table
           ref={tableRef}
           columns={columns}
           dataSource={getFilteredDataSource()}
           loading={loading}
-          scroll={{ x: 800 }}
+          scroll={{ x: 1500 }}
           pagination={{
             showSizeChanger: true,
             showQuickJumper: true,
@@ -420,10 +602,10 @@ const MaterialArrivalRequirement = () => {
           }}
         />
       </Card>
-      
+
       <Drawer
         title={drawerTitle}
-        placement="right"
+        placement='right'
         width={800}
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
@@ -432,7 +614,7 @@ const MaterialArrivalRequirement = () => {
           columns={drawerColumns}
           dataSource={drawerData}
           pagination={false}
-          size="small"
+          size='small'
         />
       </Drawer>
     </div>

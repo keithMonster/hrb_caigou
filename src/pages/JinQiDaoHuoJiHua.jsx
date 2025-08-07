@@ -23,8 +23,6 @@ const RecentArrivalPlan = () => {
   const [loading, setLoading] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(dayjs());
   const [selectedMaterialType, setSelectedMaterialType] = useState('全部');
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [editingData, setEditingData] = useState({});
 
   // 物料类型选项
   const materialTypeOptions = [
@@ -60,107 +58,104 @@ const RecentArrivalPlan = () => {
 
 
 
-  // 模拟数据
-  const mockData = [
-    {
-      key: '1',
-      materialType: '外圈',
-      qualityRequirement: '表面粗糙度Ra≤0.8μm，硬度HRC58-62',
-      attachments: ['技术要求.pdf', '检验标准.doc'],
-      materialSource: '外购',
-      specification: '234424BM',
-      materialRequirement: '表面粗糙度Ra≤0.8',
-      firstTen: 500,
-      middleTen: 300,
-      lastTen: 200,
-      subPlans: [
-        {
-          key: '1_1',
-          parentKey: '1',
-          arrivalDate: '2025-01-05',
-          arrivalQuantity: 500,
-        },
-        {
-          key: '1_2',
-          parentKey: '1',
-          arrivalDate: '2025-01-15',
-          arrivalQuantity: 300,
-        },
-        {
-          key: '1_3',
-          parentKey: '1',
-          arrivalDate: '2025-01-25',
-          arrivalQuantity: 200,
-        },
-      ],
-    },
-    {
-      key: '2',
-      materialType: '内圈',
-      qualityRequirement: '硬度HRC58-62，精度等级P5',
-      attachments: ['质量标准.pdf'],
-      materialSource: '自产',
-      specification: '7006C',
-      materialRequirement: '硬度HRC58-62',
-      firstTen: 400,
-      middleTen: 300,
-      lastTen: 100,
-      subPlans: [
-        {
-          key: '2_1',
-          parentKey: '2',
-          arrivalDate: '2025-01-08',
-          arrivalQuantity: 400,
-        },
-        {
-          key: '2_2',
-          parentKey: '2',
-          arrivalDate: '2025-01-18',
-          arrivalQuantity: 300,
-        },
-        {
-          key: '2_3',
-          parentKey: '2',
-          arrivalDate: '2025-01-28',
-          arrivalQuantity: 100,
-        },
-      ],
-    },
-    {
-      key: '3',
-      materialType: '密封件',
-      qualityRequirement: '耐温-40℃~+120℃，密封性能良好',
-      attachments: ['材料证书.pdf', '测试报告.doc'],
-      materialSource: '外购',
-      specification: '6004-RZ',
-      materialRequirement: '耐温-40~120℃',
-      firstTen: 1000,
-      middleTen: 800,
-      lastTen: 600,
-      subPlans: [
-        {
-          key: '3_1',
-          parentKey: '3',
-          arrivalDate: '2025-01-10',
-          arrivalQuantity: 1000,
-        },
-        {
-          key: '3_2',
-          parentKey: '3',
-          arrivalDate: '2025-01-20',
-          arrivalQuantity: 800,
-        },
-        {
-          key: '3_3',
-          parentKey: '3',
-          arrivalDate: '2025-01-30',
-          arrivalQuantity: 600,
-        },
-      ],
-    },
-  ];
+  // 生成当月的日期列表
+  const generateDatesForMonth = (month) => {
+    const startDate = month.startOf('month');
+    const endDate = month.endOf('month');
+    const dates = [];
+    
+    for (let date = startDate; date.isBefore(endDate) || date.isSame(endDate); date = date.add(1, 'day')) {
+      dates.push({
+        date: date.format('YYYY-MM-DD'),
+        day: date.date(),
+        period: date.date() <= 10 ? 'firstTen' : date.date() <= 20 ? 'middleTen' : 'lastTen'
+      });
+    }
+    
+    return dates;
+  };
 
-  const [data, setData] = useState(mockData);
+  // 模拟数据
+  const generateMockData = () => {
+    const dates = generateDatesForMonth(selectedMonth);
+    return [
+      {
+        key: '1',
+        materialType: '外圈',
+        qualityRequirement: '表面粗糙度Ra≤0.8μm，硬度HRC58-62',
+        attachments: ['技术要求.pdf', '检验标准.doc'],
+        materialSource: '外购',
+        specification: '234424BM',
+        materialRequirement: '表面粗糙度Ra≤0.8',
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: [1, 11, 21].includes(dateInfo.day) ? 150 : 0,
+            plan: [1, 11, 21].includes(dateInfo.day) ? 120 : 0
+          };
+          return acc;
+        }, {}),
+      },
+      {
+        key: '2',
+        materialType: '内圈',
+        qualityRequirement: '硬度HRC58-62，精度等级P5',
+        attachments: ['质量标准.pdf'],
+        materialSource: '外购',
+        specification: '7006C',
+        materialRequirement: '硬度HRC58-62',
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: [5, 15, 25].includes(dateInfo.day) ? 100 : 0,
+            plan: [5, 15, 25].includes(dateInfo.day) ? 90 : 0
+          };
+          return acc;
+        }, {}),
+      },
+      {
+        key: '3',
+        materialType: '密封件',
+        qualityRequirement: '耐温-40℃~+120℃，密封性能良好',
+        attachments: ['材料证书.pdf', '测试报告.doc'],
+        materialSource: '外购',
+        specification: '6004-RZ',
+        materialRequirement: '耐温-40~120℃',
+        dailyData: dates.reduce((acc, dateInfo) => {
+          acc[dateInfo.date] = {
+            demand: [3, 13, 23].includes(dateInfo.day) ? 200 : 0,
+            plan: [3, 13, 23].includes(dateInfo.day) ? 180 : 0
+          };
+          return acc;
+        }, {}),
+      },
+    ];
+  };
+
+  const [data, setData] = useState([]);
+
+  // 初始化数据
+  React.useEffect(() => {
+    setData(generateMockData());
+  }, [selectedMonth]);
+
+  // 处理计划量变化
+  const handlePlanChange = (recordKey, date, value) => {
+    const updatedData = data.map(item => {
+      if (item.key === recordKey) {
+        return {
+          ...item,
+          dailyData: {
+            ...item.dailyData,
+            [date]: {
+              ...item.dailyData[date],
+              plan: value || 0
+            }
+          }
+        };
+      }
+      return item;
+    });
+    setData(updatedData);
+  };
 
   // 保存数据
   const handleSave = () => {
@@ -171,218 +166,166 @@ const RecentArrivalPlan = () => {
     }, 1000);
   };
 
-  // 处理展开行中的新增计划
-  const handleAddSubPlan = (parentKey) => {
-    const newSubPlan = {
-      key: `${parentKey}_${Date.now()}`,
-      parentKey,
-      arrivalDate: dayjs().format('YYYY-MM-DD'),
-      arrivalQuantity: 0,
-    };
+
+
+  // 生成表格列定义
+  const generateColumns = () => {
+    const dates = generateDatesForMonth(selectedMonth);
     
-    const updatedData = data.map(item => {
-      if (item.key === parentKey) {
-        return {
-          ...item,
-          subPlans: [...(item.subPlans || []), newSubPlan]
-        };
-      }
-      return item;
-    });
-    
-    setData(updatedData);
-    message.success('新增计划成功');
-  };
+    // 基础固定列
+    const fixedColumns = [
+      {
+        title: '物料类型',
+        dataIndex: 'materialType',
+        key: 'materialType',
+        width: 100,
+        fixed: 'left',
+      },
+      {
+        title: '规格',
+        dataIndex: 'specification',
+        key: 'specification',
+        width: 120,
+        fixed: 'left',
+      },
+    ];
 
-  // 处理子计划数据变更
-  const handleSubPlanChange = (parentKey, subPlanKey, field, value) => {
-    const updatedData = data.map(item => {
-      if (item.key === parentKey) {
-        const updatedSubPlans = (item.subPlans || []).map(subPlan => {
-          if (subPlan.key === subPlanKey) {
-            return { ...subPlan, [field]: value };
-          }
-          return subPlan;
-        });
-        return { ...item, subPlans: updatedSubPlans };
-      }
-      return item;
-    });
-    setData(updatedData);
-  };
+    // 滚动列
+    const scrollColumns = [
+      {
+        title: '质量要求（含附件）',
+        dataIndex: 'qualityRequirement',
+        key: 'qualityRequirement',
+        width: 200,
+        render: (text, record) => (
+          <div>
+            <div style={{ marginBottom: 4 }}>{text}</div>
+            {record.attachments && record.attachments.length > 0 && (
+              <div>
+                {record.attachments.map((file, index) => (
+                  <Button
+                    key={index}
+                    type="link"
+                    size="small"
+                    style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
+                    onClick={() => message.info(`查看附件：${file}`)}
+                  >
+                    📎 {file}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        ),
+      },
+      {
+        title: '物料来源',
+        dataIndex: 'materialSource',
+        key: 'materialSource',
+        width: 100,
+        render: (text) => (
+          <span style={{ 
+            color: text === '自产' ? '#52c41a' : '#1890ff',
+            fontWeight: 500 
+          }}>
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: '物料要求',
+        dataIndex: 'materialRequirement',
+        key: 'materialRequirement',
+        width: 150,
+        render: (text) => text || '-',
+      },
+    ];
 
-  // 删除子计划
-  const handleDeleteSubPlan = (parentKey, subPlanKey) => {
-    const updatedData = data.map(item => {
-      if (item.key === parentKey) {
-        const updatedSubPlans = (item.subPlans || []).filter(subPlan => subPlan.key !== subPlanKey);
-        return { ...item, subPlans: updatedSubPlans };
-      }
-      return item;
-    });
-    setData(updatedData);
-    message.success('删除计划成功');
-  };
+    // 按旬期分组日期列
+    const firstTenDates = dates.filter(d => d.period === 'firstTen');
+    const middleTenDates = dates.filter(d => d.period === 'middleTen');
+    const lastTenDates = dates.filter(d => d.period === 'lastTen');
 
-  // 渲染展开行内容
-   const expandedRowRender = (record) => {
-     return (
-        <div style={{ padding: '16px', paddingLeft: '80px', backgroundColor: '#fafafa' }}>
-         {(record.subPlans || []).map((subPlan, planIndex) => (
-           <div key={subPlan.key} style={{ marginBottom: planIndex < (record.subPlans || []).length - 1 ? '24px' : '0' }}>
-             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
-               <h4 style={{ margin: '0', color: '#1890ff' }}>计划 {planIndex + 1}</h4>
-               <Button
-                 type="text"
-                 size="small"
-                 onClick={() => handleAddSubPlan(record.key)}
-                 style={{ color: '#52c41a' }}
-               >
-                 新增
-               </Button>
-               {(record.subPlans || []).length > 1 && (
-                 <Button
-                   type="text"
-                   size="small"
-                   onClick={() => handleDeleteSubPlan(record.key, subPlan.key)}
-                   style={{ color: '#ff4d4f' }}
-                 >
-                   删除
-                 </Button>
-               )}
+    // 计算期间合计
+     const calculatePeriodTotals = (periodDates, dataSource) => {
+       let totalDemand = 0;
+       let totalPlan = 0;
+       
+       dataSource.forEach(record => {
+         periodDates.forEach(dateInfo => {
+           const dayData = record.dailyData[dateInfo.date] || { demand: 0, plan: 0 };
+           totalDemand += dayData.demand || 0;
+           totalPlan += dayData.plan || 0;
+         });
+       });
+       
+       return { totalDemand, totalPlan };
+     };
+
+     // 生成日期列
+     const generateDateColumns = (periodDates, periodTitle) => {
+       const { totalDemand, totalPlan } = calculatePeriodTotals(periodDates, getFilteredDataSource());
+       
+       return {
+         title: (
+           <div>
+             <div>{periodTitle}</div>
+             <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
+               <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
+               <span>/</span>
+               <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
              </div>
-             
-             {/* 到货信息行 */}
-             <div style={{ marginBottom: '12px' }}>
-               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                   <span style={{ fontWeight: 500, minWidth: '80px', flexShrink: 0 }}>到货日期:</span>
-                   <DatePicker
-                     value={subPlan.arrivalDate ? dayjs(subPlan.arrivalDate) : null}
-                     onChange={(date) => handleSubPlanChange(record.key, subPlan.key, 'arrivalDate', date ? date.format('YYYY-MM-DD') : '')}
-                     format="YYYY-MM-DD"
-                     size="small"
-                     style={{ width: '140px' }}
-                   />
+           </div>
+         ),
+         children: periodDates.map(dateInfo => ({
+           title: `${dateInfo.date.slice(5)}`,
+           key: dateInfo.date,
+           width: 80,
+           render: (_, record) => {
+             const dayData = record.dailyData[dateInfo.date] || { demand: 0, plan: 0 };
+             return (
+               <div style={{ textAlign: 'center' }}>
+                 <div style={{ 
+                   marginBottom: 4, 
+                   fontSize: '12px', 
+                   color: dayData.demand > 0 ? '#1890ff' : '#666',
+                   width: '6em',
+                   textAlign: 'left'
+                 }}>
+                   需求: {dayData.demand}
                  </div>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                   <span style={{ fontWeight: 500, minWidth: '80px', flexShrink: 0 }}>到货数量:</span>
+                 <div>
                    <InputNumber
-                     value={subPlan.arrivalQuantity}
-                     onChange={(value) => handleSubPlanChange(record.key, subPlan.key, 'arrivalQuantity', value)}
-                     min={0}
                      size="small"
-                     style={{ width: '140px' }}
-                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                     parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                     placeholder="请输入数量"
+                     value={dayData.plan}
+                     onChange={(value) => handlePlanChange(record.key, dateInfo.date, value)}
+                     min={0}
+                     style={{ width: '60px' }}
+                     placeholder="计划"
                    />
                  </div>
                </div>
-             </div>
-           </div>
-         ))}
-         
-         {/* 新增计划按钮 */}
-         {(!record.subPlans || record.subPlans.length === 0) && (
-           <div style={{ textAlign: 'center', padding: '20px 0' }}>
-             <Button
-               type="dashed"
-               onClick={() => handleAddSubPlan(record.key)}
-               style={{ width: '200px' }}
-             >
-               + 新增到货计划
-             </Button>
-           </div>
-         )}
-       </div>
-     );
-   };
+             );
+           },
+         }))
+       };
+     };
 
-  // 表格列定义
-  const columns = [
-    {
-      title: '物料类型',
-      dataIndex: 'materialType',
-      key: 'materialType',
-      width: 100,
-      fixed: 'left',
-    },
-    {
-      title: '质量要求（含附件）',
-      dataIndex: 'qualityRequirement',
-      key: 'qualityRequirement',
-      width: 200,
-      fixed: 'left',
-      render: (text, record) => (
-        <div>
-          <div style={{ marginBottom: 4 }}>{text}</div>
-          {record.attachments && record.attachments.length > 0 && (
-            <div>
-              {record.attachments.map((file, index) => (
-                <Button
-                  key={index}
-                  type="link"
-                  size="small"
-                  style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
-                  onClick={() => message.info(`查看附件：${file}`)}
-                >
-                  📎 {file}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: '物料来源',
-      dataIndex: 'materialSource',
-      key: 'materialSource',
-      width: 100,
-      fixed: 'left',
-      render: (text) => (
-        <span style={{ 
-          color: text === '自产' ? '#52c41a' : '#1890ff',
-          fontWeight: 500 
-        }}>
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: '规格',
-      dataIndex: 'specification',
-      key: 'specification',
-      width: 150,
-      fixed: 'left',
-    },
-    {
-      title: '物料要求',
-      dataIndex: 'materialRequirement',
-      key: 'materialRequirement',
-      width: 200,
-      render: (text) => text || '-',
-    },
-    {
-      title: '上旬(1-10)',
-      key: 'firstTen',
-      width: 120,
-      render: (_, record) => record.firstTen?.toLocaleString() || 0,
-    },
-    {
-      title: '中旬(11-20)',
-      key: 'middleTen',
-      width: 120,
-      render: (_, record) => record.middleTen?.toLocaleString() || 0,
-    },
-    {
-      title: '下旬(21-30)',
-      key: 'lastTen',
-      width: 120,
-      render: (_, record) => record.lastTen?.toLocaleString() || 0,
-    },
-  ];
+    const dateColumns = [];
+    if (firstTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(firstTenDates, '上旬'));
+    }
+    if (middleTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(middleTenDates, '中旬'));
+    }
+    if (lastTenDates.length > 0) {
+      dateColumns.push(generateDateColumns(lastTenDates, '下旬'));
+    }
+
+    return [...fixedColumns, ...scrollColumns, ...dateColumns];
+  };
+
+  const columns = generateColumns();
 
   // 导出Excel
   const handleExport = () => {
@@ -457,28 +400,15 @@ const RecentArrivalPlan = () => {
           columns={columns}
           dataSource={getFilteredDataSource()}
           loading={loading}
-          expandable={{
-             expandedRowRender,
-             expandedRowKeys,
-             onExpandedRowsChange: setExpandedRowKeys,
-             defaultExpandAllRows: true,
-             expandIcon: ({ expanded, onExpand, record }) => (
-               <Button
-                 type="text"
-                 size="small"
-                 onClick={e => onExpand(record, e)}
-                 style={{ padding: '0 2px', color: '#188dfa' }}
-               >
-                 {expanded ? '收起' : '展开'}
-               </Button>
-             ),
-           }}
-          scroll={{ x: 1000 }}
           pagination={{
+            total: getFilteredDataSource().length,
+            pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total) => `共 ${total} 条记录`,
           }}
+          scroll={{ x: 1500, y: 600 }}
+          size="small"
         />
       </Card>
       
