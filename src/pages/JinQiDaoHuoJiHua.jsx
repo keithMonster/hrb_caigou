@@ -13,6 +13,7 @@ import {
 import {
   DownloadOutlined,
   SaveOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
@@ -23,6 +24,7 @@ const RecentArrivalPlan = () => {
   const [loading, setLoading] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(dayjs());
   const [selectedMaterialType, setSelectedMaterialType] = useState('全部');
+  const [isEditMode, setIsEditMode] = useState(true);
 
   // 物料类型选项
   const materialTypeOptions = [
@@ -157,13 +159,18 @@ const RecentArrivalPlan = () => {
     setData(updatedData);
   };
 
-  // 保存数据
+  // 保存数据或切换编辑模式
   const handleSave = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      message.success('保存成功');
-    }, 1000);
+    if (isEditMode) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        message.success('保存成功');
+        setIsEditMode(false);
+      }, 1000);
+    } else {
+      setIsEditMode(true);
+    }
   };
 
 
@@ -262,65 +269,97 @@ const RecentArrivalPlan = () => {
        return { totalDemand, totalPlan };
      };
 
-     // 生成日期列
-     const generateDateColumns = (periodDates, periodTitle) => {
-       const { totalDemand, totalPlan } = calculatePeriodTotals(periodDates, getFilteredDataSource());
-       
-       return {
-         title: (
-           <div>
-             <div>{periodTitle}</div>
-             <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
-               <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
-               <span>/</span>
-               <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
-             </div>
-           </div>
-         ),
-         children: periodDates.map(dateInfo => ({
-           title: `${dateInfo.date.slice(5)}`,
-           key: dateInfo.date,
-           width: 80,
-           render: (_, record) => {
-             const dayData = record.dailyData[dateInfo.date] || { demand: 0, plan: 0 };
-             return (
-               <div style={{ textAlign: 'center' }}>
-                 <div style={{ 
-                   marginBottom: 4, 
-                   fontSize: '12px', 
-                   color: dayData.demand > 0 ? '#1890ff' : '#666',
-                   width: '6em',
-                   textAlign: 'left'
-                 }}>
-                   需求: {dayData.demand}
-                 </div>
-                 <div>
-                   <InputNumber
-                     size="small"
-                     value={dayData.plan}
-                     onChange={(value) => handlePlanChange(record.key, dateInfo.date, value)}
-                     min={0}
-                     style={{ width: '60px' }}
-                     placeholder="计划"
-                   />
-                 </div>
-               </div>
-             );
-           },
-         }))
-       };
-     };
+     // 检查某一天是否所有规格的计划都为0
+      const isDayAllZeroPlan = (dateStr, dataSource) => {
+        return dataSource.every(record => {
+          const dayData = record.dailyData[dateStr] || { demand: 0, plan: 0 };
+          return dayData.plan === 0;
+        });
+      };
+
+      // 生成日期列
+      const generateDateColumns = (periodDates, periodTitle) => {
+        const filteredDataSource = getFilteredDataSource();
+        
+        // 在展示状态下过滤掉计划全为0的日期
+        const visibleDates = isEditMode ? periodDates : periodDates.filter(dateInfo => 
+          !isDayAllZeroPlan(dateInfo.date, filteredDataSource)
+        );
+        
+        if (visibleDates.length === 0) {
+          return null;
+        }
+        
+        const { totalDemand, totalPlan } = calculatePeriodTotals(visibleDates, filteredDataSource);
+        
+        return {
+          title: (
+            <div>
+              <div>{periodTitle}</div>
+              <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
+                <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
+                <span>/</span>
+                <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
+              </div>
+            </div>
+          ),
+          children: visibleDates.map(dateInfo => ({
+            title: `${dateInfo.date.slice(5)}`,
+            key: dateInfo.date,
+            width: 80,
+            render: (_, record) => {
+              const dayData = record.dailyData[dateInfo.date] || { demand: 0, plan: 0 };
+              return (
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ 
+                    marginBottom: 4, 
+                    fontSize: '12px', 
+                    color: dayData.demand > 0 ? '#1890ff' : '#666',
+                    width: '6em',
+                    textAlign: 'left'
+                  }}>
+                    需求: {dayData.demand}
+                  </div>
+                  <div>
+                    {isEditMode ? (
+                      <InputNumber
+                        size="small"
+                        value={dayData.plan}
+                        onChange={(value) => handlePlanChange(record.key, dateInfo.date, value)}
+                        min={0}
+                        style={{ width: '60px' }}
+                        placeholder="计划"
+                      />
+                    ) : (
+                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{dayData.plan}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            },
+          }))
+        };
+      };
 
     const dateColumns = [];
-    if (firstTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(firstTenDates, '上旬'));
-    }
-    if (middleTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(middleTenDates, '中旬'));
-    }
-    if (lastTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(lastTenDates, '下旬'));
-    }
+     if (firstTenDates.length > 0) {
+       const firstTenColumn = generateDateColumns(firstTenDates, '上旬');
+       if (firstTenColumn) {
+         dateColumns.push(firstTenColumn);
+       }
+     }
+     if (middleTenDates.length > 0) {
+       const middleTenColumn = generateDateColumns(middleTenDates, '中旬');
+       if (middleTenColumn) {
+         dateColumns.push(middleTenColumn);
+       }
+     }
+     if (lastTenDates.length > 0) {
+       const lastTenColumn = generateDateColumns(lastTenDates, '下旬');
+       if (lastTenColumn) {
+         dateColumns.push(lastTenColumn);
+       }
+     }
 
     return [...fixedColumns, ...scrollColumns, ...dateColumns];
   };
@@ -378,13 +417,13 @@ const RecentArrivalPlan = () => {
               format="YYYY年MM月"
             />
             
-            <Button 
+            <Button
               type="primary"
-              icon={<SaveOutlined />}
+              icon={isEditMode ? <SaveOutlined /> : <EditOutlined />}
               onClick={handleSave}
               loading={loading}
             >
-              保存
+              {isEditMode ? '保存' : '编辑'}
             </Button>
             
             <Button 

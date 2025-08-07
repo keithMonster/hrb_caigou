@@ -12,7 +12,11 @@ import {
   message,
   InputNumber,
 } from 'antd';
-import { DownloadOutlined, SaveOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined,
+  SaveOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
 
@@ -377,11 +381,30 @@ const MaterialArrivalRequirement = () => {
       return { totalDemand, totalPlan };
     };
 
+    // 检查某一天是否所有规格的需求都为0
+    const isDayAllZeroDemand = (dateStr, dataSource) => {
+      return dataSource.every(record => {
+        const dayData = record.dailyData[dateStr] || { demand: 0, plan: 0 };
+        return dayData.demand === 0;
+      });
+    };
+
     // 生成日期列
     const generateDateColumns = (periodDates, periodTitle) => {
+      const filteredDataSource = getFilteredDataSource();
+      
+      // 在展示状态下过滤掉需求全为0的日期
+      const visibleDates = isEditMode ? periodDates : periodDates.filter(dateInfo => 
+        !isDayAllZeroDemand(dateInfo.date, filteredDataSource)
+      );
+      
+      if (visibleDates.length === 0) {
+        return null;
+      }
+      
       const { totalDemand, totalPlan } = calculatePeriodTotals(
-        periodDates,
-        getFilteredDataSource()
+        visibleDates,
+        filteredDataSource
       );
 
       return {
@@ -395,7 +418,7 @@ const MaterialArrivalRequirement = () => {
             </div>
           </div>
         ),
-        children: periodDates.map((dateInfo) => ({
+        children: visibleDates.map((dateInfo) => ({
           title: `${dateInfo.date.slice(5)}`,
           key: dateInfo.date,
           width: 80,
@@ -405,18 +428,32 @@ const MaterialArrivalRequirement = () => {
               plan: 0,
             };
             return (
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: 'left' }}>
                 <div style={{ marginBottom: 4 }}>
-                  <InputNumber
-                    size='small'
-                    value={dayData.demand}
-                    onChange={(value) =>
-                      handleDemandChange(record.key, dateInfo.date, value)
-                    }
-                    min={0}
-                    style={{ width: '60px' }}
-                    placeholder='需求'
-                  />
+                  {isEditMode ? (
+                    <InputNumber
+                      size='small'
+                      value={dayData.demand}
+                      onChange={(value) =>
+                        handleDemandChange(record.key, dateInfo.date, value)
+                      }
+                      min={0}
+                      style={{ width: '60px' }}
+                      placeholder='需求'
+                    />
+                  ) : (
+                    <InputNumber
+                      size='small'
+                      value={dayData.demand}
+                      readOnly
+                      onChange={(value) =>
+                        handleDemandChange(record.key, dateInfo.date, value)
+                      }
+                      min={0}
+                      style={{ width: '60px' }}
+                      placeholder='需求'
+                    />
+                  )}
                 </div>
                 <div
                   style={{
@@ -438,13 +475,22 @@ const MaterialArrivalRequirement = () => {
 
     const dateColumns = [];
     if (firstTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(firstTenDates, '上旬'));
+      const firstTenColumn = generateDateColumns(firstTenDates, '上旬');
+      if (firstTenColumn) {
+        dateColumns.push(firstTenColumn);
+      }
     }
     if (middleTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(middleTenDates, '中旬'));
+      const middleTenColumn = generateDateColumns(middleTenDates, '中旬');
+      if (middleTenColumn) {
+        dateColumns.push(middleTenColumn);
+      }
     }
     if (lastTenDates.length > 0) {
-      dateColumns.push(generateDateColumns(lastTenDates, '下旬'));
+      const lastTenColumn = generateDateColumns(lastTenDates, '下旬');
+      if (lastTenColumn) {
+        dateColumns.push(lastTenColumn);
+      }
     }
 
     return [...fixedColumns, ...scrollColumns, ...dateColumns];
@@ -575,12 +621,12 @@ const MaterialArrivalRequirement = () => {
             />
 
             <Button
-              type='primary'
-              icon={<SaveOutlined />}
+              type="primary"
+              icon={isEditMode ? <SaveOutlined /> : <EditOutlined />}
               onClick={handleSave}
               loading={loading}
             >
-              保存
+              {isEditMode ? '保存' : '编辑'}
             </Button>
 
             <Button icon={<DownloadOutlined />} onClick={handleExport}>
