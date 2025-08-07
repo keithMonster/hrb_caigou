@@ -18,6 +18,7 @@ import {
   ExportOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { COLORS, FONT_SIZES, SPACING, createProductionSourceStyle } from '../utils/uiConstants';
 
 const MaterialPreparationRequirement = () => {
   const [filterForm] = Form.useForm();
@@ -154,7 +155,7 @@ const MaterialPreparationRequirement = () => {
                   key={index}
                   type="link"
                   size="small"
-                  style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
+                  style={{ padding: 0, marginRight: SPACING.MD, fontSize: FONT_SIZES.SM }}
                   onClick={() => message.info(`查看附件：${file}`)}
                 >
                   📎 {file}
@@ -172,7 +173,7 @@ const MaterialPreparationRequirement = () => {
       width: 100,
       render: (text) => (
         <span style={{ 
-          color: text === '自产' ? '#52c41a' : '#1890ff',
+          ...createProductionSourceStyle(text),
           fontWeight: 500 
         }}>
           {text}

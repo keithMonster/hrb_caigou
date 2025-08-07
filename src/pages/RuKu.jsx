@@ -20,6 +20,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { STATUS_COLORS, createRateStyle } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -226,7 +227,7 @@ const Warehousing = () => {
       width: 100,
       align: 'right',
       render: (value) => (
-        <span style={{ fontWeight: 500, color: '#52c41a' }}>{value}</span>
+        <span style={{ fontWeight: 500, color: STATUS_COLORS.POSITIVE }}>{value}</span>
       ),
     },
     {
@@ -313,9 +314,8 @@ const Warehousing = () => {
       render: (_, record) => {
         if (record.qualifiedQuantity === 0) return '0%';
         const rate = ((record.warehouseQuantity / record.qualifiedQuantity) * 100).toFixed(1);
-        const color = rate === '100.0' ? '#52c41a' : rate === '0.0' ? '#ff4d4f' : '#1890ff';
         return (
-          <span style={{ color, fontWeight: 500 }}>
+          <span style={createRateStyle(rate)}>
             {rate}%
           </span>
         );
