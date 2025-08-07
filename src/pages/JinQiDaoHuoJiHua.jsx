@@ -68,7 +68,7 @@ const RecentArrivalPlan = () => {
     
     for (let date = startDate; date.isBefore(endDate) || date.isSame(endDate); date = date.add(1, 'day')) {
       dates.push({
-        date: date.format('YYYY-MM-DD'),
+        date: date.format('YYYY/MM/DD'),
         day: date.date(),
         period: date.date() <= 10 ? 'firstTen' : date.date() <= 20 ? 'middleTen' : 'lastTen'
       });

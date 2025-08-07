@@ -68,7 +68,7 @@ const MaterialArrivalRequirement = () => {
       date = date.add(1, 'day')
     ) {
       dates.push({
-        date: date.format('YYYY-MM-DD'),
+        date: date.format('YYYY/MM/DD'),
         day: date.date(),
         period:
           date.date() <= 10
