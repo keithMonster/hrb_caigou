@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, COMPONENT_SIZES } from '../utils/uiConstants';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -503,17 +504,17 @@ const ProductionPlan = () => {
         fixed: 'left',
         render: (value, record) => (
           <div>
-            <div style={{ color: value ? '#ff4d4f' : '#999', marginBottom: '4px' }}>
+            <div style={{ color: value ? COLORS.ERROR : COLORS.TEXT_PLACEHOLDER, marginBottom: SPACING.SM }}>
               {value || '-'}
             </div>
             {record.qualityDocument && (
               <div>
-                <FileTextOutlined style={{ color: '#1890ff', marginRight: '4px' }} />
+                <FileTextOutlined style={{ color: COLORS.PRIMARY, marginRight: SPACING.SM }} />
                 <a 
                   href={record.qualityDocument.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ fontSize: '12px', color: '#1890ff' }}
+                  style={{ fontSize: FONT_SIZES.SM, color: COLORS.PRIMARY }}
                 >
                   {record.qualityDocument.name}
                 </a>
@@ -555,7 +556,7 @@ const ProductionPlan = () => {
       width: 80,
       align: 'right',
       render: (_, record) => (
-        <div style={{ fontWeight: 'bold', color: '#1890ff' }}>
+        <div style={{ fontWeight: 'bold', color: COLORS.PRIMARY }}>
           {record.totalDemand || 0}
         </div>
       ),
@@ -570,7 +571,7 @@ const ProductionPlan = () => {
       align: 'right',
       fixed: 'right',
       render: (value) => (
-        <div style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+        <div style={{ fontWeight: 'bold', color: COLORS.ERROR }}>
           {value || '-'}
         </div>
       ),
@@ -584,37 +585,37 @@ const ProductionPlan = () => {
     const dateCols = generateDateColumns(selectedDateRange);
     
     return (
-      <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
+      <div style={{ padding: SPACING.XL, backgroundColor: COLORS.BACKGROUND_LIGHT }}>
         {record.planGroups.map((planGroup, groupIndex) => (
-          <div key={planGroup.key} style={{ marginBottom: '16px' }}>
+          <div key={planGroup.key} style={{ marginBottom: SPACING.XL }}>
             {/* 计划标题行 */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              marginBottom: '8px',
-              padding: '8px',
-              backgroundColor: '#f0f0f0',
-              borderRadius: '4px'
+              marginBottom: SPACING.MD,
+            padding: SPACING.MD,
+            backgroundColor: COLORS.BACKGROUND_DARK,
+            borderRadius: BORDER_RADIUS.MD
             }}>
-              <span style={{ fontWeight: 'bold', marginRight: '8px' }}>
+              <span style={{ fontWeight: 'bold', marginRight: SPACING.MD }}>
                 计划 {groupIndex + 1}:
               </span>
               <InfoCircleOutlined 
                 style={{ 
-                  color: '#1890ff', 
+                  color: COLORS.PRIMARY, 
                   cursor: 'pointer', 
-                  marginRight: '16px',
-                  fontSize: '16px'
+                  marginRight: SPACING.XL,
+                  fontSize: FONT_SIZES.LG
                 }}
                 onClick={() => handleOpenMaterialDrawer(record, planGroup, groupIndex)}
                 title="查看物料准备计划"
               />
-              <span style={{ marginRight: '8px' }}>生产线:</span>
+              <span style={{ marginRight: SPACING.MD }}>生产线:</span>
               <Select
                 size="small"
                 value={planGroup.productionLine}
                 onChange={(value) => handleProductionLineChange(record.key, planGroup.key, value)}
-                style={{ width: 100, marginRight: '16px' }}
+                style={{ width: COMPONENT_SIZES.INPUT_LG, marginRight: SPACING.XL }}
               >
                 <Option value="生产线1">生产线1</Option>
                 <Option value="生产线2">生产线2</Option>
@@ -628,7 +629,7 @@ const ProductionPlan = () => {
                 size="small"
                 type="text"
                 onClick={() => handleAddPlanGroup(record.key)}
-                style={{ marginRight: '8px', color: '#52c41a' }}
+                style={{ marginRight: SPACING.MD, color: COLORS.SUCCESS }}
               >
                 新增
               </Button>
@@ -637,7 +638,7 @@ const ProductionPlan = () => {
                   size="small"
                   type="text"
                   onClick={() => handleDeletePlanGroup(record.key, planGroup.key)}
-                  style={{ color: '#ff4d4f' }}
+                  style={{ color: COLORS.ERROR }}
                 >
                   删除
                 </Button>
@@ -648,13 +649,13 @@ const ProductionPlan = () => {
             <div style={{ 
               display: 'flex', 
               alignItems: 'center',
-              padding: '8px',
-              backgroundColor: '#fff',
-              border: '1px solid #d9d9d9',
-              borderRadius: '4px'
+              padding: SPACING.MD,
+              backgroundColor: COLORS.WHITE,
+              border: `1px solid ${COLORS.BORDER_LIGHT}`,
+              borderRadius: BORDER_RADIUS.MD
             }}>
               <div style={{ 
-                width: '120px', 
+                width: COMPONENT_SIZES.INPUT_XL, 
                 fontWeight: 'bold',
                 flexShrink: 0
               }}>
@@ -664,19 +665,19 @@ const ProductionPlan = () => {
                 flex: 1, 
                 display: 'flex', 
                 overflowX: 'auto',
-                paddingBottom: '4px'
+                paddingBottom: SPACING.SM
               }}>
                 {dateCols.map((date, dateIndex) => (
                     <div key={dateIndex} style={{ 
-                      minWidth: '70px', 
-                      marginRight: '8px',
+                      minWidth: COMPONENT_SIZES.MIN_WIDTH_SM, 
+                      marginRight: SPACING.MD,
                       flexShrink: 0
                     }}>
                     <div style={{ 
-                      fontSize: '12px', 
-                      color: '#666', 
+                      fontSize: FONT_SIZES.SM, 
+                      color: COLORS.TEXT_LIGHT, 
                       textAlign: 'center',
-                      marginBottom: '4px'
+                      marginBottom: SPACING.SM
                     }}>
                       {date.format('MM/DD')}
                     </div>
@@ -684,7 +685,7 @@ const ProductionPlan = () => {
                       size="small"
                       value={planGroup.dailyPlans[dateIndex]}
                       onChange={(value) => handlePlanGroupDailyChange(record.key, planGroup.key, dateIndex, value)}
-                      style={{ width: '70px' }}
+                      style={{ width: COMPONENT_SIZES.MIN_WIDTH_SM }}
                       min={0}
                       precision={0}
                       placeholder="0"
@@ -693,10 +694,10 @@ const ProductionPlan = () => {
                 ))}
               </div>
               <div style={{ 
-                width: '100px', 
+                width: COMPONENT_SIZES.INPUT_LG, 
                 textAlign: 'right',
                 fontWeight: 'bold',
-                color: '#1890ff',
+                color: COLORS.PRIMARY,
                 flexShrink: 0
               }}>
                 总计: {planGroup.totalPlan || 0}
@@ -858,7 +859,7 @@ const ProductionPlan = () => {
                 type="text"
                 size="small"
                 onClick={e => onExpand(record, e)}
-                style={{ padding: '0 2px', color: '#188dfa' }}
+                style={{ padding: `0 ${SPACING.SM}`, color: COLORS.LINK }}
               >
                 {expanded ? '收起' : '展开'}
               </Button>
@@ -893,11 +894,11 @@ const ProductionPlan = () => {
 
             return (
               <Table.Summary.Row
-                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
+                style={{ backgroundColor: COLORS.BACKGROUND_LIGHT, fontWeight: 'bold' }}
               >
                 <Table.Summary.Cell
                   index={0}
-                  style={{ fontWeight: 'bold', color: '#1890ff' }}
+                  style={{ fontWeight: 'bold', color: COLORS.PRIMARY }}
                 >
                   合计
                 </Table.Summary.Cell>
@@ -917,20 +918,20 @@ const ProductionPlan = () => {
                   <Table.Summary.Cell
                     key={`summary_${index}`}
                     index={index + 3}
-                    style={{ textAlign: 'right', fontWeight: 'bold', color: '#1890ff' }}
+                    style={{ textAlign: 'right', fontWeight: 'bold', color: COLORS.PRIMARY }}
                   >
                     {totalDemandQuantities[index]}
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
                   index={dateCols.length + 3}
-                  style={{ fontWeight: 'bold', textAlign: 'right', color: '#1890ff' }}
+                  style={{ fontWeight: 'bold', textAlign: 'right', color: COLORS.PRIMARY }}
                 >
                   {totalDemand}
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={dateCols.length + 4}
-                  style={{ fontWeight: 'bold', textAlign: 'right', color: '#ff4d4f' }}
+                  style={{ fontWeight: 'bold', textAlign: 'right', color: COLORS.ERROR }}
                 >
                   {totalOct31Demand}
                 </Table.Summary.Cell>
@@ -1003,7 +1004,7 @@ const ProductionPlan = () => {
             dataIndex="requirement"
             key="requirement"
             render={(value) => (
-              <span style={{ color: value === '-' ? '#999' : '#000' }}>
+              <span style={{ color: value === '-' ? COLORS.TEXT_PLACEHOLDER : COLORS.BLACK }}>
                 {value}
               </span>
             )}
@@ -1024,39 +1025,39 @@ const ProductionPlan = () => {
           <div>
             {/* 计划信息概览 */}
             <Card size="small" style={{ marginBottom: 16 }}>
-              <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: SPACING.XXL, alignItems: 'center' }}>
                 <div><strong>型号:</strong> {materialDrawerData.model}</div>
                 <div><strong>生产线:</strong> {materialDrawerData.productionLine}</div>
-                <div><strong>计划总量:</strong> <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{materialDrawerData.totalPlan}</span></div>
+                <div><strong>计划总量:</strong> <span style={{ color: COLORS.PRIMARY, fontWeight: 'bold' }}>{materialDrawerData.totalPlan}</span></div>
               </div>
             </Card>
 
             {/* 计划数量明细 */}
             <Card title="计划数量" size="small" style={{ marginBottom: 16 }}>
-              <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
+              <div style={{ display: 'flex', gap: SPACING.MD, overflowX: 'auto', paddingBottom: SPACING.MD }}>
                 {materialDrawerData.dateColumns.map((date, index) => (
-                  <div key={index} style={{ minWidth: '70px', textAlign: 'center', flexShrink: 0 }}>
-                    <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
+                  <div key={index} style={{ minWidth: COMPONENT_SIZES.MIN_WIDTH_SM, textAlign: 'center', flexShrink: 0 }}>
+                    <div style={{ fontSize: FONT_SIZES.SM, color: COLORS.TEXT_LIGHT, marginBottom: SPACING.SM }}>
                       {date.format('MM/DD')}
                     </div>
                     <div style={{ 
-                      padding: '4px 8px', 
-                      backgroundColor: '#f0f0f0', 
-                      borderRadius: '4px',
+                      padding: `${SPACING.SM} ${SPACING.MD}`,
+                  backgroundColor: COLORS.BACKGROUND_DARK,
+                  borderRadius: BORDER_RADIUS.MD,
                       fontWeight: 'bold'
                     }}>
                       {materialDrawerData.dailyPlans[index] || 0}
                     </div>
                   </div>
                 ))}
-                <div style={{ minWidth: '80px', textAlign: 'center', flexShrink: 0 }}>
-                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>汇总</div>
+                <div style={{ minWidth: COMPONENT_SIZES.MIN_WIDTH_MD, textAlign: 'center', flexShrink: 0 }}>
+                  <div style={{ fontSize: FONT_SIZES.SM, color: COLORS.TEXT_LIGHT, marginBottom: SPACING.SM }}>汇总</div>
                   <div style={{ 
-                    padding: '4px 8px', 
-                    backgroundColor: '#e6f7ff', 
-                    borderRadius: '4px',
-                    fontWeight: 'bold',
-                    color: '#1890ff'
+                    padding: `${SPACING.SM} ${SPACING.MD}`,
+                  backgroundColor: COLORS.HIGHLIGHT,
+                  borderRadius: BORDER_RADIUS.MD,
+                  fontWeight: 'bold',
+                  color: COLORS.PRIMARY
                   }}>
                     {materialDrawerData.totalPlan}
                   </div>
@@ -1113,7 +1114,7 @@ const ProductionPlan = () => {
                       const unitConsumption = materialRecord.unitConsumption || 0;
                       const calculatedQuantity = planQuantity * unitConsumption;
                       return (
-                        <span style={{ fontWeight: 500, color: '#000' }}>
+                        <span style={{ fontWeight: 500, color: COLORS.BLACK }}>
                           {calculatedQuantity.toFixed(2)}
                         </span>
                       );
@@ -1128,7 +1129,7 @@ const ProductionPlan = () => {
                       const unitConsumption = materialRecord.unitConsumption || 0;
                       const totalPlanQuantity = materialDrawerData.totalPlan || 0;
                       const total = unitConsumption * totalPlanQuantity;
-                      return <span style={{ fontWeight: 500, color: '#1890ff' }}>{total.toFixed(2)}</span>;
+                      return <span style={{ fontWeight: 500, color: COLORS.PRIMARY }}>{total.toFixed(2)}</span>;
                     },
                   }
                 ]}

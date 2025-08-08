@@ -19,6 +19,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, COMPONENT_SIZES, createProductionSourceStyle } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -321,7 +322,7 @@ const MaterialArrivalRequirement = () => {
                     key={index}
                     type='link'
                     size='small'
-                    style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
+                    style={{ padding: 0, marginRight: SPACING.MD, fontSize: FONT_SIZES.SM }}
                     onClick={() => message.info(`查看附件：${file}`)}
                   >
                     📎 {file}
@@ -340,7 +341,7 @@ const MaterialArrivalRequirement = () => {
         render: (text) => (
           <span
             style={{
-              color: text === '自产' ? '#52c41a' : '#1890ff',
+              ...createProductionSourceStyle(text),
               fontWeight: 500,
             }}
           >
@@ -411,10 +412,10 @@ const MaterialArrivalRequirement = () => {
         title: (
           <div>
             <div>{periodTitle}</div>
-            <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
-              <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
+            <div style={{ fontSize: FONT_SIZES.SM, fontWeight: 'normal' }}>
+              <span style={{ color: COLORS.SUCCESS }}>计划:{totalPlan}</span>
               <span>/</span>
-              <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
+              <span style={{ color: COLORS.PRIMARY }}>需求:{totalDemand}</span>
             </div>
           </div>
         ),
@@ -438,7 +439,7 @@ const MaterialArrivalRequirement = () => {
                         handleDemandChange(record.key, dateInfo.date, value)
                       }
                       min={0}
-                      style={{ width: '60px' }}
+                      style={{ width: COMPONENT_SIZES.INPUT_SM }}
                       placeholder='需求'
                     />
                   ) : (
@@ -450,15 +451,15 @@ const MaterialArrivalRequirement = () => {
                         handleDemandChange(record.key, dateInfo.date, value)
                       }
                       min={0}
-                      style={{ width: '60px' }}
+                      style={{ width: COMPONENT_SIZES.INPUT_SM }}
                       placeholder='需求'
                     />
                   )}
                 </div>
                 <div
                   style={{
-                    fontSize: '12px',
-                    color: dayData.plan > 0 ? '#52c41a' : '#666',
+                    fontSize: FONT_SIZES.SM,
+          color: dayData.plan > 0 ? COLORS.SUCCESS : COLORS.TEXT_LIGHT,
                     fontWeight: dayData.plan > 0 ? '500' : 'normal',
                     width: '6em',
                     textAlign: 'left',
@@ -581,7 +582,7 @@ const MaterialArrivalRequirement = () => {
       </div>
 
       <Card
-        style={{ marginTop: '16px', marginRight: '16px', marginBottom: '16px' }}
+        style={{ marginTop: SPACING.XL, marginRight: SPACING.XL, marginBottom: SPACING.XL }}
       >
         <div style={{ marginBottom: 16 }}>
           <Space wrap>

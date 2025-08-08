@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, COMPONENT_SIZES } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -167,17 +168,17 @@ const PurchasePlan = () => {
         title: '型号',
         dataIndex: 'model',
         key: 'model',
-        width: 120,
+        width: COMPONENT_SIZES.TABLE_COL_LG,
         fixed: 'left',
       },
       {
         title: '质量要求',
         dataIndex: 'qualityRequirement',
         key: 'qualityRequirement',
-        width: 200,
+        width: COMPONENT_SIZES.TABLE_COL_XXL,
         fixed: 'left',
         render: (value) => (
-          <span style={{ color: value ? '#ff4d4f' : '#999' }}>
+          <span style={{ color: value ? COLORS.ERROR : COLORS.TEXT_PLACEHOLDER }}>
             {value || '-'}
           </span>
         ),
@@ -189,7 +190,7 @@ const PurchasePlan = () => {
       columns.push({
         title: date.format('MM/DD'),
         key: `day_${index}`,
-        width: 110,
+        width: COMPONENT_SIZES.TABLE_COL_MD_PLUS,
         align: 'center',
         render: (_, record) => {
           const quantity = record.expectedPurchase[index];
@@ -203,9 +204,9 @@ const PurchasePlan = () => {
                 style={{
                   cursor: hasData ? 'pointer' : 'default',
                   fontWeight: hasData ? 'bold' : 'normal',
-                  fontSize: '13px',
+                  fontSize: FONT_SIZES.BASE,
                   lineHeight: '1.2',
-                  marginBottom: hasData ? '2px' : '0'
+                  marginBottom: hasData ? SPACING.SM : '0'
                 }}
               >
                 {quantity || '-'}
@@ -214,8 +215,8 @@ const PurchasePlan = () => {
                  <div 
                    className='price-value'
                    style={{
-                     fontSize: '11px',
-                     color: '#666',
+                     fontSize: FONT_SIZES.XS,
+                     color: COLORS.TEXT_LIGHT,
                      lineHeight: '1.2',
                      textAlign: 'right'
                    }}
@@ -234,7 +235,7 @@ const PurchasePlan = () => {
       title: '汇总',
       dataIndex: 'total',
       key: 'total',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       align: 'center',
       fixed: 'right',
       render: (_, record) => {
@@ -247,15 +248,15 @@ const PurchasePlan = () => {
         
         return (
           <div className='cell-content' style={{ textAlign: 'center' }}>
-            <div className='plan-value total-value' style={{ fontWeight: 'bold', fontSize: '13px', lineHeight: '1.2', marginBottom: expectedTotal > 0 ? '2px' : '0' }}>
+            <div className='plan-value total-value' style={{ fontWeight: 'bold', fontSize: FONT_SIZES.BASE, lineHeight: '1.2', marginBottom: expectedTotal > 0 ? SPACING.SM : '0' }}>
               {expectedTotal}
             </div>
             {expectedTotal > 0 && (
               <div 
                 className='price-value'
                 style={{
-                  fontSize: '11px',
-                  color: '#666',
+                  fontSize: FONT_SIZES.XS,
+                  color: COLORS.TEXT_LIGHT,
                   lineHeight: '1.2',
                   textAlign: 'right'
                 }}
@@ -322,7 +323,7 @@ const PurchasePlan = () => {
           <Form.Item label='日期' name='dateRange'>
             <RangePicker
               placeholder={['开始日期', '结束日期']}
-              style={{ width: 240 }}
+              style={{ width: COMPONENT_SIZES.TABLE_COL_XXXL }}
               value={selectedDateRange}
               onChange={(dates) => {
                 setSelectedDateRange(dates);
@@ -336,7 +337,7 @@ const PurchasePlan = () => {
             <Select 
               placeholder='请选择型号' 
               allowClear 
-              style={{ width: 150 }}
+              style={{ width: COMPONENT_SIZES.TABLE_COL_MD_LG }}
               value={selectedModel}
               onChange={(value) => {
                 handleModelFilterChange(value || '全部');
@@ -355,7 +356,7 @@ const PurchasePlan = () => {
             <Select 
               placeholder='请选择质量要求' 
               allowClear 
-              style={{ width: 120 }}
+              style={{ width: COMPONENT_SIZES.TABLE_COL_LG }}
               value={selectedQualityRequirement}
               onChange={(value) => {
                 handleQualityRequirementChange(value);

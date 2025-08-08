@@ -98,7 +98,7 @@ export const SPACING = {
 /**
  * 组件尺寸
  */
-export const SIZES = {
+export const COMPONENT_SIZES = {
   // 输入框宽度
   INPUT_SM: '60px',
   INPUT_MD: '80px',
@@ -112,8 +112,22 @@ export const SIZES = {
   // 最小宽度
   MIN_WIDTH_SM: '70px',
   MIN_WIDTH_MD: '80px',
-  MIN_WIDTH_LG: '90px'
+  MIN_WIDTH_LG: '90px',
+  
+  // 表格列宽度
+  TABLE_COL_XS: 60,
+  TABLE_COL_SM: 80,
+  TABLE_COL_MD: 100,
+  TABLE_COL_MD_PLUS: 110,
+  TABLE_COL_LG: 120,
+  TABLE_COL_MD_LG: 150,
+  TABLE_COL_XL: 180,
+  TABLE_COL_XXL: 200,
+  TABLE_COL_XXXL: 240
 };
+
+// 保持向后兼容
+export const SIZES = COMPONENT_SIZES;
 
 /**
  * 边框圆角

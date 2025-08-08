@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, COMPONENT_SIZES } from '../utils/uiConstants';
 
 const QualityInspection = () => {
   const [filterForm] = Form.useForm();
@@ -201,26 +202,26 @@ const QualityInspection = () => {
       title: '合同编号',
       dataIndex: 'contractNo',
       key: 'contractNo',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
       fixed: 'left',
     },
     {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
-      width: 180,
+      width: COMPONENT_SIZES.TABLE_COL_XL,
     },
     {
       title: '型号',
       dataIndex: 'model',
       key: 'model',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
     },
     {
       title: '到货数量',
       dataIndex: 'arrivalQuantity',
       key: 'arrivalQuantity',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       align: 'right',
       render: (value) => (
         <span style={{ fontWeight: 500 }}>{value}</span>
@@ -230,7 +231,7 @@ const QualityInspection = () => {
       title: '验收日期',
       dataIndex: 'inspectionDate',
       key: 'inspectionDate',
-      width: 150,
+      width: COMPONENT_SIZES.TABLE_COL_MD_LG,
       render: (value, record) => (
         <DatePicker
           size="small"
@@ -265,13 +266,13 @@ const QualityInspection = () => {
       title: '入库数量',
       dataIndex: 'warehouseQuantity',
       key: 'warehouseQuantity',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       align: 'right',
       render: (value, record) => (
         <Button 
           type="link" 
           onClick={() => showWarehouseDrawer(record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
+          style={{ padding: 0, color: value > 0 ? COLORS.PRIMARY : COLORS.TEXT_TERTIARY }}
         >
           {value}
         </Button>

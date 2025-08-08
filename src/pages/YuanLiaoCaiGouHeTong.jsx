@@ -22,6 +22,7 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { COMPONENT_SIZES } from '../utils/uiConstants';
 
 const RawMaterialPurchaseContract = () => {
   const [filterForm] = Form.useForm();
@@ -344,7 +345,7 @@ const RawMaterialPurchaseContract = () => {
       title: '合同编号',
       dataIndex: 'contractNo',
       key: 'contractNo',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
       fixed: 'left',
       render: (value, record, index) => {
         const obj = {
@@ -363,7 +364,7 @@ const RawMaterialPurchaseContract = () => {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
-      width: 180,
+      width: COMPONENT_SIZES.TABLE_COL_XL,
       render: (value, record, index) => {
         const obj = {
           children: value,
@@ -400,13 +401,13 @@ const RawMaterialPurchaseContract = () => {
       title: '规格',
       dataIndex: 'specification',
       key: 'specification',
-      width: 200,
+      width: COMPONENT_SIZES.TABLE_COL_XXL,
     },
     {
       title: '采购数量',
       dataIndex: 'purchaseQuantity',
       key: 'purchaseQuantity',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       align: 'right',
       render: (value) => value?.toLocaleString(),
     },
@@ -466,7 +467,7 @@ const RawMaterialPurchaseContract = () => {
     {
       title: '操作',
       key: 'action',
-      width: 80,
+      width: COMPONENT_SIZES.TABLE_COL_SM,
       fixed: 'right',
       render: (_, record) => {
         const obj = {

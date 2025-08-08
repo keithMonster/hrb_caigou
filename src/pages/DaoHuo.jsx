@@ -22,6 +22,7 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { COMPONENT_SIZES } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -261,13 +262,13 @@ const Arrival = () => {
       title: '型号',
       dataIndex: 'model',
       key: 'model',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
     },
     {
       title: '到货数量',
       dataIndex: 'arrivalQuantity',
       key: 'arrivalQuantity',
-      width: 80,
+      width: COMPONENT_SIZES.TABLE_COL_SM,
       align: 'right',
     },
     {
@@ -286,7 +287,7 @@ const Arrival = () => {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
-      width: 180,
+      width: COMPONENT_SIZES.TABLE_COL_XL,
     },
     {
       title: '操作',

@@ -23,6 +23,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, createValueStyle } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -370,9 +371,9 @@ const OrderWarehousingMatch = () => {
   // 渲染展开行（订单详情）
   const renderExpandedRow = (record) => {
     return (
-      <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
-        <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontWeight: 'bold', fontSize: '14px' }}>订单分配详情</span>
+      <div style={{ padding: SPACING.XL, backgroundColor: COLORS.BACKGROUND_LIGHT }}>
+        <div style={{ marginBottom: SPACING.LG, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontWeight: 'bold', fontSize: FONT_SIZES.MD }}>订单分配详情</span>
           <Button
             type="primary"
             size="small"
@@ -467,7 +468,7 @@ const OrderWarehousingMatch = () => {
             ]}
           />
         ) : (
-          <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+          <div style={{ textAlign: 'center', color: COLORS.TEXT_PLACEHOLDER, padding: SPACING.XXL }}>
             暂无订单，点击"新增订单"按钮添加订单
           </div>
         )}
@@ -506,7 +507,7 @@ const OrderWarehousingMatch = () => {
       width: 100,
       align: 'right',
       render: (value) => (
-        <span style={{ fontWeight: 500, color: '#1890ff' }}>{value}</span>
+        <span style={{ fontWeight: 500, ...createValueStyle(value) }}>{value}</span>
       ),
     },
     {
@@ -516,7 +517,7 @@ const OrderWarehousingMatch = () => {
       width: 120,
       align: 'right',
       render: (value) => (
-        <span style={{ fontWeight: 500, color: value > 0 ? '#52c41a' : '#999' }}>
+        <span style={{ fontWeight: 500, color: value > 0 ? COLORS.SUCCESS : COLORS.TEXT_PLACEHOLDER }}>
           {value || 0}
         </span>
       ),
@@ -528,7 +529,7 @@ const OrderWarehousingMatch = () => {
       width: 100,
       align: 'right',
       render: (value) => {
-        const color = value === 0 ? '#52c41a' : value > 0 ? '#fa8c16' : '#ff4d4f';
+        const color = value === 0 ? COLORS.SUCCESS : value > 0 ? COLORS.WARNING : COLORS.ERROR;
         return (
           <span style={{ fontWeight: 500, color }}>{value}</span>
         );
@@ -540,7 +541,7 @@ const OrderWarehousingMatch = () => {
       width: 80,
       align: 'center',
       render: (_, record) => (
-        <span style={{ color: '#1890ff' }}>
+        <span style={{ color: COLORS.PRIMARY }}>
           {record.orders ? record.orders.length : 0}
         </span>
       ),
@@ -661,7 +662,7 @@ const OrderWarehousingMatch = () => {
               type="text"
               size="small"
               onClick={e => onExpand(record, e)}
-              style={{ padding: '0 2px', color: '#188dfa' }}
+              style={{ padding: `0 ${SPACING.SM}`, color: COLORS.LINK }}
             >
               {expanded ? '收起' : '展开'}
             </Button>

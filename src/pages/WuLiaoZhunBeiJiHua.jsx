@@ -20,6 +20,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, BORDER_RADIUS, COMPONENT_SIZES } from '../utils/uiConstants';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -351,11 +352,11 @@ const PurchasePlan = () => {
   // 生成物料展开内容
   const renderExpandedRow = (record) => {
     return (
-      <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
+      <div style={{ padding: SPACING.XL, backgroundColor: COLORS.BACKGROUND_LIGHT }}>
         {record.planGroups.map((group, groupIndex) => (
-          <div key={group.key} style={{ marginBottom: groupIndex < record.planGroups.length - 1 ? '24px' : '0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '12px' }}>
-              <h4 style={{ margin: '0', color: '#1890ff' }}>计划 {groupIndex + 1}</h4>
+          <div key={group.key} style={{ marginBottom: groupIndex < record.planGroups.length - 1 ? SPACING.XXL : '0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: SPACING.LG, gap: SPACING.LG }}>
+              <h4 style={{ margin: '0', color: COLORS.PRIMARY }}>计划 {groupIndex + 1}</h4>
               <Select
                 size="small"
                 value={group.groupType}
@@ -370,7 +371,7 @@ const PurchasePlan = () => {
                 type="text"
                 size="small"
                 onClick={() => handleAddPlanGroup(record.key)}
-                style={{ color: '#52c41a' }}
+                style={{ color: COLORS.SUCCESS }}
               >
                 新增
               </Button>
@@ -379,7 +380,7 @@ const PurchasePlan = () => {
                   type="text"
                   size="small"
                   onClick={() => handleDeletePlanGroup(record.key, group.key)}
-                  style={{ color: '#ff4d4f' }}
+                  style={{ color: COLORS.ERROR }}
                 >
                   删除
                 </Button>
@@ -387,19 +388,19 @@ const PurchasePlan = () => {
             </div>
             
             {/* 计划数量行 */}
-            <div style={{ marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontWeight: 500, minWidth: '80px', flexShrink: 0 }}>计划数量:</span>
+            <div style={{ marginBottom: SPACING.LG }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: SPACING.MD }}>
+                <span style={{ fontWeight: 500, minWidth: COMPONENT_SIZES.MIN_WIDTH_MD, flexShrink: 0 }}>计划数量:</span>
                 <div style={{ 
                   flex: 1, 
                   overflowX: 'auto', 
                   display: 'flex', 
-                  gap: '8px',
-                  paddingBottom: '4px'
+                  gap: SPACING.MD,
+                   paddingBottom: SPACING.SM
                 }}>
                   {dateColumns.map((date, index) => (
-                    <div key={index} style={{ width: '90px', textAlign: 'center', flexShrink: 0 }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>
+                    <div key={index} style={{ width: COMPONENT_SIZES.MIN_WIDTH_LG, textAlign: 'center', flexShrink: 0 }}>
+                      <div style={{ fontSize: FONT_SIZES.SM, color: COLORS.TEXT_LIGHT, marginBottom: SPACING.SM }}>
                         {date.format('MM/DD')}
                       </div>
                       <InputNumber
@@ -414,9 +415,9 @@ const PurchasePlan = () => {
                       />
                     </div>
                   ))}
-                  <div style={{ width: '80px', textAlign: 'center', flexShrink: 0 }}>
-                    <div style={{ fontSize: '12px', color: '#666', marginBottom: '2px' }}>汇总</div>
-                    <span style={{ fontWeight: 500, color: '#1890ff' }}>
+                  <div style={{ width: COMPONENT_SIZES.MIN_WIDTH_MD, textAlign: 'center', flexShrink: 0 }}>
+                    <div style={{ fontSize: FONT_SIZES.SM, color: COLORS.TEXT_LIGHT, marginBottom: SPACING.SM }}>汇总</div>
+                    <span style={{ fontWeight: 500, color: COLORS.PRIMARY }}>
                       {group.dailyPlans.reduce((sum, val) => sum + (val || 0), 0)}
                     </span>
                   </div>
@@ -503,7 +504,7 @@ const PurchasePlan = () => {
                     const unitConsumption = materialRecord.unitConsumption || 0;
                     const calculatedQuantity = planQuantity * unitConsumption;
                     return (
-                      <span style={{ fontWeight: 500, color: '#000' }}>
+                      <span style={{ fontWeight: 500, color: COLORS.BLACK }}>
                         {calculatedQuantity.toFixed(2)}
                       </span>
                     );
@@ -519,7 +520,7 @@ const PurchasePlan = () => {
                     const unitConsumption = materialRecord.unitConsumption || 0;
                     const totalPlanQuantity = group.dailyPlans.reduce((sum, val) => sum + (val || 0), 0);
                     const total = unitConsumption * totalPlanQuantity;
-                    return <span style={{ fontWeight: 500, color: '#1890ff' }}>{total.toFixed(2)}</span>;
+                    return <span style={{ fontWeight: 500, color: COLORS.PRIMARY }}>{total.toFixed(2)}</span>;
                   },
                 }
               ]}
@@ -552,17 +553,17 @@ const PurchasePlan = () => {
         fixed: 'left',
         render: (value, record) => (
           <div>
-            <div style={{ color: value ? '#ff4d4f' : '#999', marginBottom: '4px' }}>
+            <div style={{ color: value ? COLORS.ERROR : COLORS.TEXT_PLACEHOLDER, marginBottom: SPACING.SM }}>
               {value || '-'}
             </div>
             {record.qualityDocument && (
               <div>
-                <FileTextOutlined style={{ color: '#1890ff', marginRight: '4px' }} />
+                <FileTextOutlined style={{ color: COLORS.PRIMARY, marginRight: SPACING.SM }} />
                 <a 
                   href={record.qualityDocument.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ fontSize: '12px', color: '#1890ff' }}
+                  style={{ fontSize: FONT_SIZES.SM, color: COLORS.PRIMARY }}
                 >
                   {record.qualityDocument.name}
                 </a>
@@ -581,7 +582,7 @@ const PurchasePlan = () => {
       width: 90,
       align: 'right',
       render: () => (
-        <span style={{ fontWeight: 500, color: '#000' }}>100</span>
+        <span style={{ fontWeight: 500, color: COLORS.BLACK }}>100</span>
       ),
     }));
 
@@ -594,7 +595,7 @@ const PurchasePlan = () => {
         align: 'right',
         fixed: 'right',
         render: () => (
-          <span style={{ fontWeight: 500, color: '#1890ff' }}>1000</span>
+          <span style={{ fontWeight: 500, color: COLORS.PRIMARY }}>1000</span>
         ),
       },
       {
@@ -605,7 +606,7 @@ const PurchasePlan = () => {
         align: 'right',
         fixed: 'right',
         render: (value) => (
-          <span style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+          <span style={{ fontWeight: 'bold', color: COLORS.ERROR }}>
             {value || '-'}
           </span>
         ),
@@ -784,7 +785,7 @@ const PurchasePlan = () => {
                 type="text"
                 size="small"
                 onClick={e => onExpand(record, e)}
-                style={{ padding: '0 2px' ,color:'#188dfa'}}
+                style={{ padding: `0 ${SPACING.SM}`, color: COLORS.LINK }}
               >
                 {expanded ? '收起' : '展开'}
               </Button>
@@ -803,7 +804,7 @@ const PurchasePlan = () => {
 
             return (
               <Table.Summary.Row
-                style={{ backgroundColor: '#fafafa', fontWeight: 'bold' }}
+                style={{ backgroundColor: COLORS.BACKGROUND_LIGHT, fontWeight: 'bold' }}
               >
                 <Table.Summary.Cell
                   index={0}
@@ -813,7 +814,7 @@ const PurchasePlan = () => {
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={1}
-                  style={{ fontWeight: 'bold', color: '#1890ff' }}
+                  style={{ fontWeight: 'bold', color: COLORS.PRIMARY }}
                 >
                   合计
                 </Table.Summary.Cell>
@@ -823,20 +824,20 @@ const PurchasePlan = () => {
                     index={index + 2}
                     style={{ textAlign: 'right' }}
                   >
-                    <span style={{ fontWeight: 'bold', color: '#1890ff' }}>1000</span>
+                    <span style={{ fontWeight: 'bold', color: COLORS.PRIMARY }}>1000</span>
                   </Table.Summary.Cell>
                 ))}
                 <Table.Summary.Cell
                   index={dateCols.length + 2}
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
-                  <span style={{ fontWeight: 'bold', color: '#1890ff' }}>10000</span>
+                  <span style={{ fontWeight: 'bold', color: COLORS.PRIMARY }}>10000</span>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell
                   index={dateCols.length + 3}
                   style={{ fontWeight: 'bold', textAlign: 'right' }}
                 >
-                  <span style={{ fontWeight: 'bold', color: '#ff4d4f' }}>
+                  <span style={{ fontWeight: 'bold', color: COLORS.ERROR }}>
                     {totalDec31Demand}
                   </span>
                 </Table.Summary.Cell>

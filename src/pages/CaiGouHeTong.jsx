@@ -24,6 +24,7 @@ import {
   MinusCircleOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { COLORS, COMPONENT_SIZES, createValueStyle } from '../utils/uiConstants';
 
 const PurchaseContract = () => {
   const [form] = Form.useForm();
@@ -373,7 +374,7 @@ const PurchaseContract = () => {
       title: '合同编号',
       dataIndex: 'contractNo',
       key: 'contractNo',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
       render: (value, record, index) => {
         const obj = {
           children: value,
@@ -409,7 +410,7 @@ const PurchaseContract = () => {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
-      width: 180,
+      width: COMPONENT_SIZES.TABLE_COL_XL,
       render: (value, record, index) => {
         const obj = {
           children: value,
@@ -433,7 +434,7 @@ const PurchaseContract = () => {
       title: '采购数量',
       dataIndex: 'purchaseQuantity',
       key: 'purchaseQuantity',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       align: 'right',
     },
     {
@@ -446,7 +447,7 @@ const PurchaseContract = () => {
         <Button 
           type="link" 
           onClick={() => showDrawer('arrival', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
+          style={{ padding: 0, color: value > 0 ? COLORS.PRIMARY : COLORS.TEXT_TERTIARY }}
         >
           {value}
         </Button>
@@ -462,7 +463,7 @@ const PurchaseContract = () => {
         <Button 
           type="link" 
           onClick={() => showDrawer('inspection', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
+          style={{ padding: 0, color: value > 0 ? COLORS.PRIMARY : COLORS.TEXT_TERTIARY }}
         >
           {value}
         </Button>
@@ -478,7 +479,7 @@ const PurchaseContract = () => {
         <Button 
           type="link" 
           onClick={() => showDrawer('qualified', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
+          style={{ padding: 0, color: value > 0 ? COLORS.PRIMARY : COLORS.TEXT_TERTIARY }}
         >
           {value}
         </Button>
@@ -494,7 +495,7 @@ const PurchaseContract = () => {
         <Button 
           type="link" 
           onClick={() => showDrawer('warehouse', record)}
-          style={{ padding: 0, color: value > 0 ? '#1890ff' : '#8c8c8c' }}
+          style={{ padding: 0, color: value > 0 ? COLORS.PRIMARY : COLORS.TEXT_TERTIARY }}
         >
           {value}
         </Button>
@@ -517,7 +518,7 @@ const PurchaseContract = () => {
     {
       title: '操作',
       key: 'action',
-      width: 80,
+      width: COMPONENT_SIZES.TABLE_COL_SM,
       render: (_, record) => (
         <Button 
           type="link" 
@@ -702,7 +703,7 @@ const PurchaseContract = () => {
                         rules={[{ required: true, message: '请选择型号' }]}
                         style={{ marginBottom: 0, flex: 1 }}
                       >
-                        <Select placeholder="请选择型号" style={{ width: 200 }}>
+                        <Select placeholder="请选择型号" style={{ width: COMPONENT_SIZES.TABLE_COL_XXL }}>
                           <Select.Option value="6206">6206</Select.Option>
                           <Select.Option value="6206-ZZ">6206-ZZ</Select.Option>
                           <Select.Option value="6315-2RZ">6315-2RZ</Select.Option>
@@ -719,7 +720,7 @@ const PurchaseContract = () => {
                         <InputNumber
                           min={1}
                           placeholder="数量"
-                          style={{ width: 120 }}
+                          style={{ width: COMPONENT_SIZES.TABLE_COL_LG }}
                         />
                       </Form.Item>
                       <MinusCircleOutlined onClick={() => remove(name)} />

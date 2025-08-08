@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { COLORS, FONT_SIZES, SPACING, COMPONENT_SIZES, createProductionSourceStyle } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -214,7 +215,7 @@ const RecentArrivalPlan = () => {
                     key={index}
                     type="link"
                     size="small"
-                    style={{ padding: 0, marginRight: 8, fontSize: '12px' }}
+                    style={{ padding: 0, marginRight: SPACING.MD, fontSize: FONT_SIZES.SM }}
                     onClick={() => message.info(`查看附件：${file}`)}
                   >
                     📎 {file}
@@ -232,7 +233,7 @@ const RecentArrivalPlan = () => {
         width: 100,
         render: (text) => (
           <span style={{ 
-            color: text === '自产' ? '#52c41a' : '#1890ff',
+            ...createProductionSourceStyle(text),
             fontWeight: 500 
           }}>
             {text}
@@ -296,10 +297,10 @@ const RecentArrivalPlan = () => {
           title: (
             <div>
               <div>{periodTitle}</div>
-              <div style={{ fontSize: '12px', fontWeight: 'normal' }}>
-                <span style={{ color: '#52c41a' }}>计划:{totalPlan}</span>
+              <div style={{ fontSize: FONT_SIZES.SM, fontWeight: 'normal' }}>
+                <span style={{ color: COLORS.SUCCESS }}>计划:{totalPlan}</span>
                 <span>/</span>
-                <span style={{ color: '#1890ff' }}>需求:{totalDemand}</span>
+                <span style={{ color: COLORS.PRIMARY }}>需求:{totalDemand}</span>
               </div>
             </div>
           ),
@@ -313,8 +314,8 @@ const RecentArrivalPlan = () => {
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ 
                     marginBottom: 4, 
-                    fontSize: '12px', 
-                    color: dayData.demand > 0 ? '#1890ff' : '#666',
+                    fontSize: FONT_SIZES.SM,
+            color: dayData.demand > 0 ? COLORS.PRIMARY : COLORS.TEXT_LIGHT,
                     width: '6em',
                     textAlign: 'left'
                   }}>
@@ -327,11 +328,11 @@ const RecentArrivalPlan = () => {
                         value={dayData.plan}
                         onChange={(value) => handlePlanChange(record.key, dateInfo.date, value)}
                         min={0}
-                        style={{ width: '60px' }}
+                        style={{ width: COMPONENT_SIZES.INPUT_SM }}
                         placeholder="计划"
                       />
                     ) : (
-                      <span style={{ fontSize: '14px', fontWeight: '500' }}>{dayData.plan}</span>
+                      <span style={{ fontSize: FONT_SIZES.MD, fontWeight: '500' }}>{dayData.plan}</span>
                     )}
                   </div>
                 </div>
@@ -395,7 +396,7 @@ const RecentArrivalPlan = () => {
         <h1>近期计划到货</h1>
       </div>
       
-      <Card style={{ marginTop: '16px', marginRight: '16px', marginBottom: '16px' }}>
+      <Card style={{ marginTop: SPACING.XL, marginRight: SPACING.XL, marginBottom: SPACING.XL }}>
         <div style={{ marginBottom: 16 }}>
           <Space wrap>
             <span>物料类型：</span>

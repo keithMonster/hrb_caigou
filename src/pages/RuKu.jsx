@@ -20,7 +20,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
-import { STATUS_COLORS, createRateStyle } from '../utils/uiConstants';
+import { STATUS_COLORS, createRateStyle, COLORS, FONT_SIZES, SPACING, COMPONENT_SIZES } from '../utils/uiConstants';
 
 const { Option } = Select;
 
@@ -205,14 +205,14 @@ const Warehousing = () => {
       title: '合同编号',
       dataIndex: 'contractNo',
       key: 'contractNo',
-      width: 120,
+      width: COMPONENT_SIZES.TABLE_COL_MD,
       fixed: 'left',
     },
     {
       title: '供应商',
       dataIndex: 'supplier',
       key: 'supplier',
-      width: 180,
+      width: COMPONENT_SIZES.TABLE_COL_LG,
     },
     {
       title: '型号',
@@ -224,7 +224,7 @@ const Warehousing = () => {
       title: '合格数量',
       dataIndex: 'qualifiedQuantity',
       key: 'qualifiedQuantity',
-      width: 100,
+      width: COMPONENT_SIZES.TABLE_COL_SM,
       align: 'right',
       render: (value) => (
         <span style={{ fontWeight: 500, color: STATUS_COLORS.POSITIVE }}>{value}</span>
@@ -234,7 +234,7 @@ const Warehousing = () => {
       title: '入库日期',
       dataIndex: 'warehouseDate',
       key: 'warehouseDate',
-      width: 150,
+      width: COMPONENT_SIZES.TABLE_COL_MD_LG,
       render: (value, record) => (
         <DatePicker
           size="small"
@@ -330,9 +330,9 @@ const Warehousing = () => {
       </div>
 
       {/* 筛选区域 */}
-      <Card className="filter-card" style={{ marginBottom: 16 }}>
+      <Card className="filter-card" style={{ marginBottom: SPACING.XL }}>
         <Form form={filterForm} layout="inline">
-          <Row gutter={16} style={{ width: '100%' }}>
+          <Row gutter={SPACING.XL} style={{ width: '100%' }}>
             <Col span={8}>
               <Form.Item label="合同编号" name="contractNo">
                 <Input placeholder="请输入合同编号" allowClear />
